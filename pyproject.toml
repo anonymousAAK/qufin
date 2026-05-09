@@ -1,0 +1,113 @@
+[build-system]
+requires = ["hatchling>=1.26", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qufin"
+dynamic = ["version"]
+description = "Research-grade quantum algorithms for production-grade quant finance."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Adarsh", email = "adarsh@example.com" }]
+keywords = [
+  "quantum",
+  "finance",
+  "qaoa",
+  "amplitude-estimation",
+  "portfolio-optimization",
+  "option-pricing",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Office/Business :: Financial :: Investment",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "numpy>=1.26,<3.0",
+  "scipy>=1.11",
+  "pandas>=2.1",
+  "pyarrow>=15.0",
+  "pydantic>=2.6",
+  "qiskit>=1.0,<3.0",
+  "qiskit-aer>=0.14",
+  "qiskit-algorithms>=0.3",
+  "cvxpy>=1.4",
+  "QuantLib>=1.32",
+  "scikit-learn>=1.4",
+  "statsmodels>=0.14",
+  "arch>=6.3",
+  "yfinance>=0.2.40",
+  "fredapi>=0.5",
+  "networkx>=3.2",
+  "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+ibm = ["qiskit-ibm-runtime>=0.20"]
+pennylane = ["pennylane>=0.36", "pennylane-lightning>=0.36"]
+cirq = ["cirq-core>=1.3"]
+braket = ["amazon-braket-sdk>=1.80"]
+ml = ["torch>=2.2"]
+viz = ["plotly>=5.20"]
+docs = ["sphinx>=7", "sphinx-book-theme", "myst-nb", "sphinx-copybutton"]
+dev = [
+  "pytest>=8",
+  "pytest-cov",
+  "pytest-benchmark",
+  "hypothesis>=6.99",
+  "ruff",
+  "black",
+  "mypy>=1.10",
+  "pre-commit",
+  "nbstripout",
+]
+all = ["qufin[ibm,pennylane,cirq,braket,ml,viz]"]
+
+[project.urls]
+Homepage = "https://github.com/qufinance/qufin"
+Documentation = "https://qufinance.github.io/qufin"
+Issues = "https://github.com/qufinance/qufin/issues"
+Changelog = "https://github.com/qufinance/qufin/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/qufin/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qufin"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "PL", "RUF"]
+ignore = ["PLR0913"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+plugins = ["numpy.typing.mypy_plugin", "pydantic.mypy"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+markers = [
+  "slow: tests that take >5s",
+  "hardware: tests that require real quantum hardware credentials",
+  "regression: paper-reproduction regression tests",
+]

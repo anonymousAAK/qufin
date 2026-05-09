@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "qufin: Research-grade quantum algorithms for quant finance"
+authors:
+  - given-names: Adarsh
+license: Apache-2.0
+repository-code: "https://github.com/qufinance/qufin"
+keywords:
+  - quantum computing
+  - finance
+  - portfolio optimization
+  - option pricing
+  - amplitude estimation
+  - QAOA
