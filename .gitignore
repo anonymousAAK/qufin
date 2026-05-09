@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data cache
+data/*.parquet
+data/*.csv
+!data/README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docs build
+docs/_build/
+
+# Benchmark outputs
+benchmarks/leaderboard.md
+benchmarks/leaderboard.json
+
+# Secrets
+.env
+*.key
+credentials.json
