@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\synthesis\aqc_plugin.py
+# hypothesis_version: 6.151.14
+
+[1000, 'L-BFGS-B', 'config', 'connectivity_type', 'depth', 'full', 'initial_point', 'maxiter', 'network_layout', 'optimizer', 'seed', 'spin']

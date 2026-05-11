@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\_add_control.py
+# hypothesis_version: 6.151.14
+
+['c', 'control', 'cx', 'cz', 'definition', 'h', 'noancilla', 'p', 'rx', 'ry', 'rz', 'sx', 'sxdg', 'target', 'u', 'x', 'y', 'z', '{0}']

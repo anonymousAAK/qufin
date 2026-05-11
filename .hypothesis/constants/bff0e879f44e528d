@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\_misc.py
+# hypothesis_version: 6.151.14
+
+['1', 'LinAlgError', 'LinAlgWarning', '__array__', 'fdFD', 'i', 'lange', 'norm', 'nrm2', 'preferred']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\simplejson\decoder.py
+# hypothesis_version: 6.151.14
+
+[239, 4300, 55296, 56320, 64512, 65279, 65535, 65536, '\x08', '"', ',', '-Infinity', '/', ':', '>dd', 'Expecting value', 'Extra data', 'Infinity', 'JSONDecoder', 'NaN', '[ \\t\\n\\r]*', '\\', '\\u', ']', '^[0-9a-fA-F]{4}$', 'b', 'f', 'hex', 'inf', 'n', 'nan', 'r', 't', 'u', 'utf-8', '}', 'ï»¿']

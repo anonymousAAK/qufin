@@ -68,7 +68,7 @@ def heston_paths(
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Generate Heston stochastic-volatility model paths.
 
-    Uses the QE (Quadratic-Exponential) discretization scheme for the
+    Uses Euler-Maruyama discretization with full truncation for the
     variance process to avoid negative variances.
 
     Parameters

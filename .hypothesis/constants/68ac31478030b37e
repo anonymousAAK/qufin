@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\synthesis\two_qubit\xx_decompose\circuits.py
+# hypothesis_version: 6.151.14
+
+[0.01, 'X shift', 'affix_circuit', 'prefix_circuit', 'reflect XX, YY']

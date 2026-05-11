@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\options\amplitude_estimation\iqae.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.01, 0.05, 1.0, 1000, 1024, '1', 'beta', 'ci', 'estimate', 'k', 'n_good', 'n_total', 'round']

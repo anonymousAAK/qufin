@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\arithmetic\polynomial_pauli_rotations.py
+# hypothesis_version: 6.151.14
+
+[0.0, 'PolyPauli', 'Y', 'poly', 'state', 'target', 'x', 'y']

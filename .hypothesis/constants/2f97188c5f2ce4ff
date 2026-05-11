@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\scs_conif.py
+# hypothesis_version: 6.151.14
+
+[1e-05, 0.0001, 0.5, 1.0, 1000, '3.0.0', 'A', 'F', 'P', 'SCS', 'b', 'c', 'eps', 'eps_abs', 'eps_rel', 'f', 'info', 'iter', 'pobj', 's', 'setupTime', 'setup_time', 'solveTime', 'solve_time', 'statusVal', 'status_val', 'use_quad_obj', 'x', 'y', 'z']

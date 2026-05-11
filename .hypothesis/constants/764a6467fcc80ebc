@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\qp_solvers\highs_qpif.py
+# hypothesis_version: 6.151.14
+
+['Ax', 'HIGHS', 'basis', 'csc', 'info', 'kInfeasible', 'kIterationLimit', 'kModelError', 'kNotset', 'kObjectiveBound', 'kObjectiveTarget', 'kOptimal', 'kSolutionLimit', 'kSolveError', 'kTimeLimit', 'kUnbounded', 'l', 'log_to_console', 'model_status', 'n_eq', 'n_ineq', 'n_var', 'run_time', 'solution', 'u', 'write_model_file']

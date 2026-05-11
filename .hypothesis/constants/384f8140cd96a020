@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\risk\stress.py
+# hypothesis_version: 6.151.14
+
+[-200.0, -150.0, -50.0, -0.38, -0.34, -0.226, -0.19, 0.0, 0.5, 1.5, 2.0, 4.0, 100.0, 200.0, 300.0, 10000, '1987-10-19', '2008-09-15', '2020-03-16', '2022-06-13', 'Black Monday 1987', 'COVID 2020', 'GFC 2008', 'Rates 2022', 'equity_pnl', 'pct_loss', 'rates_pnl', 'scenario', 'spread_pnl', 'total_pnl', 'vol_pnl']

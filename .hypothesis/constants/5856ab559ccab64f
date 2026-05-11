@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\controlflow\builder.py
+# hypothesis_version: 6.151.14
+
+[0.0, '_allow_jumps', '_built', '_condition', '_forbidden_message', '_instructions', '_parent', '_stretches_capture', '_stretches_local', '_vars_capture', '_vars_local', 'global_phase', 'registers']

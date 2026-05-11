@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\controlflow\box.py
+# hypothesis_version: 6.151.14
+
+['_annotations', '_circuit', '_duration', '_label', '_unit', 'box', 'dt', 'expr', 'ms', 'ns', 'ps', 's', 'us']

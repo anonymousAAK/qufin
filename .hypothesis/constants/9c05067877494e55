@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\preset_passmanagers\generate_preset_pass_manager.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1.0, '_skip_target', 'approximation_degree', 'basis_gates', 'c3sx', 'c3x', 'ccx', 'ccz', 'coupling_map', 'cswap', 'default', 'delay', 'hls_config', 'init_method', 'initial_layout', 'layout_method', 'measure', 'optimization_method', 'rc3x', 'rccx', 'reset', 'routing_method', 'scheduling_method', 'seed_transpiler', 'target', 'timing_constraints', 'translation_method']

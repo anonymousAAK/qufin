@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pyarrow\__init__.py
+# hypothesis_version: 6.151.14
+
+['\nCompression Codecs:', '\nFilesystems:', '\nMemory:', '\nOptional modules:', '\nPlatform:', '*.*.dylib', '*.so.*', ', ', '-', '--exists', '--libs-only-L', '-L', '.', '../', 'ARROW_HOME', 'Arrow C++ build type', 'Arrow C++ compiler', 'AzureFileSystem', 'Bytes allocated', 'Default backend', 'Detected SIMD Level', 'Enabled', 'GcsFileSystem', 'HadoopFileSystem', 'Library', 'Max memory', 'OS / Arch', 'PKG_CONFIG', 'Package kind', 'PyArrow build type', 'S3FileSystem', 'SIMD Level', 'Supported Backends', 'arrow', 'arrow.lib', 'arrow_python', 'brotli', 'bz2', 'csv', 'cuda', 'dataset', 'describe_command', 'dylib', 'feather', 'flight', 'fs', 'gandiva', 'gzip', 'include', 'json', 'lib', 'linux', 'lz4', 'lz4_frame', 'not indicated', 'orc', 'parquet', 'pkg-config', 'pkg-config failed: ', 'pyarrow.libs', 'snappy', 'utf8', 'win32', 'zstd']

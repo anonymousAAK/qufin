@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\synthesis\unitary_synthesis.py
+# hypothesis_version: 6.151.14
+
+[1.0, 'basis_gates', 'config', 'coupling_map', 'default', 'duration', 'error', 'gate_errors', 'gate_errors_by_qubit', 'gate_lengths', 'matched_basis', 'natural_direction', 'pulse_optimize', 'swap', 'target', 'unitary']

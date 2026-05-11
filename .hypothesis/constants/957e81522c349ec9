@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\core\internals\base.py
+# hypothesis_version: 6.151.14
+
+['_replace_regex', 'apply', 'cond', 'fillna', 'inplace', 'interpolate', 'mask', 'new', 'object', 'other', 'pad_or_backfill', 'putmask', 'replace', 'replace_list', 'round', 'shift', 'where']

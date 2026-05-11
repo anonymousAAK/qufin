@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\expressions\leaf.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.25, 1.0, 2.0, '%s value must be %s.', ', %s=%s', ', %s=(%s, %s)', 'F', 'NSD', 'PSD', 'boolean', 'boolean_idx', 'bounds', 'complex', 'dcp', 'diag', 'diagonal', 'float', 'hermitian', 'ib', 'imag', 'imaginary', 'in bounds', 'integer', 'integer_idx', 'neg', 'negative', 'nonneg', 'nonnegative', 'nonpos', 'nonpositive', 'pos', 'positive', 'real', 'sparsity', 'symmetric']

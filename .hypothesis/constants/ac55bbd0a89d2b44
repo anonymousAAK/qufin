@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\utilities\debug_tools.py
+# hypothesis_version: 6.151.14
+
+[10000, '\n%s', '\n|--  %s', 'DCP', 'DGP', 'args', 'concave', 'convex', 'is_dcp', 'is_dgp', 'is_{}', 'log_log_', '{}{}']

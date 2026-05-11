@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\_classical_resource_map.py
+# hypothesis_version: 6.151.14
+
+['add_register', 'bit_map', 'register_map', 'target_cregs', 'var_map']

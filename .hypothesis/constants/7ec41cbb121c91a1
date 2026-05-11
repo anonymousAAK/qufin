@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\benchmarks\leaderboard.py
+# hypothesis_version: 6.151.14
+
+[' |', ' | ', '---', 'No results.', 'backend', 'depth', 'family', 'inf', 'objective', 'problem', 'qubits', 'rank', 'rel_error', 'solver', 'wall_s', 'wall_seconds', '| ', '—']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\io\gbq.py
+# hypothesis_version: 6.151.14
+
+['fail', 'max_results', 'pandas_gbq', 'progress_bar_type', 'use_bqstorage_api']

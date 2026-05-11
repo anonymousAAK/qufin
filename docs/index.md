@@ -1,0 +1,89 @@
+# qufin
+
+**Research-grade quantum algorithms for quantitative finance.**
+
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+---
+
+## What is qufin?
+
+`qufin` is a Python library that brings quantum amplitude estimation, QAOA/VQE portfolio optimization, quantum credit-risk analysis, and quantum deep hedging into one package — with **classical baselines on every problem** and a **standardized benchmark harness** for honest quantum-vs-classical comparison.
+
+## Why qufin?
+
+- **Qiskit Finance** is in community-maintenance mode since 2023
+- **PennyLane** has no finance modules
+- ~80% of 2024-2025 quantum-finance papers ship without code
+
+qufin fills this gap with production-grade implementations that run on simulators today and real quantum hardware tomorrow.
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Data["Data Layer"]
+        EQ[Equities - Yahoo Finance]
+        MACRO[Macro - FRED API]
+        SYNTH[Synthetic - GBM/Heston/Merton]
+    end
+
+    subgraph Classical["Classical Algorithms"]
+        MV[Mean-Variance / CVXPY]
+        BL[Black-Litterman]
+        HRP[Hierarchical Risk Parity]
+        RP[Risk Parity]
+        BS[Black-Scholes]
+        MC[Monte Carlo]
+        BIN[Binomial Tree]
+    end
+
+    subgraph Quantum["Quantum Algorithms"]
+        QAOA[QAOA Portfolio]
+        VQE[VQE Portfolio]
+        QAE[Amplitude Estimation]
+        QVAR[Quantum VaR/CVaR]
+    end
+
+    subgraph Backends["Backend Abstraction"]
+        MOCK[MockBackend]
+        AER[Qiskit Aer]
+        IBM[IBM Runtime]
+        NOISE[Noisy Aer + Mitigation]
+    end
+
+    subgraph Analysis["Analysis"]
+        BT[Backtesting Engine]
+        BENCH[Benchmark Runner]
+        METRICS[Performance Metrics]
+    end
+
+    Data --> Classical
+    Data --> Quantum
+    Quantum --> Backends
+    Classical --> Analysis
+    Quantum --> Analysis
+```
+
+## Quick Example
+
+```python
+from qufin.options.european import EuropeanOption
+
+opt = EuropeanOption(s0=100, k=105, sigma=0.2, r=0.05, T=1.0)
+print(f"Price: ${opt.bs_price():.2f}")
+print(f"Delta: {opt.bs_delta():.4f}")
+print(f"Gamma: {opt.bs_gamma():.4f}")
+```
+
+## Package Overview
+
+| Module | Classical | Quantum |
+|--------|-----------|---------|
+| `portfolio` | Mean-Variance, Black-Litterman, HRP, Risk Parity | QAOA (X/XY/Grover mixers), VQE (CVaR) |
+| `options` | Black-Scholes, Monte Carlo, Binomial (CRR) | Canonical QAE, IQAE, MLAE, FQAE |
+| `risk` | Historical/Parametric VaR, CVaR, Stress Testing | Quantum VaR, Credit Risk (Egger) |
+| `hedging` | Delta Hedging | Deep Hedging, Quantum Deep Hedging |
+| `backends` | — | Qiskit Aer, IBM Runtime, Noise Models, Error Mitigation |
+| `backtesting` | Walk-Forward Engine, 15+ Performance Metrics | — |
+| `benchmarks` | Standardized Problems, Leaderboard | Scaling Analysis |

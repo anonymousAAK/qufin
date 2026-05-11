@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\dagcircuit\dagdependency.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.7, '_condition', '_directive', 'color', 'commute', 'dt', 'measure', 'op']

@@ -1,0 +1,97 @@
+site_name: qufin
+site_description: Research-grade quantum algorithms for quantitative finance
+site_url: https://qufinance.github.io/qufin/
+repo_url: https://github.com/qufinance/qufin
+repo_name: qufinance/qufin
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            heading_level: 3
+            members_order: source
+            docstring_style: numpy
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/install.md
+    - Quickstart: getting-started/quickstart.md
+  - User Guide:
+    - Portfolio Optimization: user-guide/portfolio.md
+    - Option Pricing: user-guide/options.md
+    - Risk Management: user-guide/risk.md
+    - Backends: user-guide/backends.md
+    - Backtesting: user-guide/backtesting.md
+  - Theory:
+    - QAOA for Portfolio: theory/qaoa.md
+    - Quantum Amplitude Estimation: theory/qae.md
+    - QUBO Formulation: theory/qubo.md
+  - API Reference:
+    - Backends: api/backends.md
+    - Portfolio: api/portfolio.md
+    - Options: api/options.md
+    - Risk: api/risk.md
+    - Backtesting: api/backtesting.md
+    - Data: api/data.md
+    - Benchmarks: api/benchmarks.md
+  - Benchmarks: benchmarks.md

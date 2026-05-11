@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\portfolio\classical\mean_variance.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1.0, 'max_return', 'max_sharpe', 'min_variance']

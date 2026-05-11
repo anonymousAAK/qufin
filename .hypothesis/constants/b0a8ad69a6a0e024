@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\dagcircuit\dagdepnode.py
+# hypothesis_version: 6.151.14
+
+['_op', '_qargs', 'barrier', 'cargs', 'cindices', 'condition', 'isblocked', 'matchedwith', 'name', 'node_id', 'op', 'predecessors', 'qindices', 'reachable', 'sort_key', 'successors', 'successorstovisit', 'type']

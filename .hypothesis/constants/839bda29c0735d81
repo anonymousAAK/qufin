@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pydantic\dataclasses.py
+# hypothesis_version: 6.151.14
+
+['_T', '__firstlineno__', '__pydantic_config__', '__setstate__', 'dataclass', 'dataclass-on-model', 'kw_only', 'rebuild_dataclass', 'slots']

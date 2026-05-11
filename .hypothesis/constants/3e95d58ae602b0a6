@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\cosmo_conif.py
+# hypothesis_version: 6.151.14
+
+['COSMO', 'Dual_infeasible', 'Max_iter_reached', 'Primal_infeasible', 'Solved', 'Time_limit_reached', 'Unsolved', 'ep', 'f', 'l', 'p', 'q', 's', 'setup_time', 'solver_time', 'use_quad_obj', 'verbose']

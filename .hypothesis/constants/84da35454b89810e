@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\parameterexpression.py
+# hypothesis_version: 6.151.14
+
+['Abs', '__add__', '__mul__', '__pow__', '__radd__', '__rmul__', '__rpow__', '__rsub__', '__rtruediv__', '__sub__', '__truediv__', 'abs', 'acos', 'arccos', 'arcsin', 'arctan', 'asin', 'atan', 'conjugate', 'cos', 'exp', 'gradient', 'log', 'sign', 'sin', 'subs', 'tan']

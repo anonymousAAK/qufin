@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\lin_ops\canon_backend.py
+# hypothesis_version: 6.151.14
+
+['CanonBackend', 'Constant', 'DictTensorView', 'PythonCanonBackend', 'RustCanonBackend', 'SciPyCanonBackend', 'SciPyTensorView', 'TensorRepresentation', 'TensorView']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\highs_conif.py
+# hypothesis_version: 6.151.14
+
+[', \\d+:\\d+', 'Ax', 'HIGHS', 'basis', 'csc', 'highs_options', 'info', 'is_mip', 'kInfeasible', 'kIterationLimit', 'kModelError', 'kNotset', 'kObjectiveBound', 'kObjectiveTarget', 'kOptimal', 'kSolutionLimit', 'kSolveError', 'kTimeLimit', 'kUnbounded', 'l', 'log_to_console', 'model_status', 'run_time', 'solution', 'u', 'write_model_file']

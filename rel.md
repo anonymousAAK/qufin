@@ -569,7 +569,7 @@ Total: ~102 days of paper work, fits Weeks 14–16 partially + ongoing through y
 - **IBM Quantum**: through IBM Quantum Credits or hardware sponsorship — stronger after a paper.
 
 ## 6.8 Recruitment / career angle
-- **Anthropic Fellows / AI lab roles**: this project signals (a) systems thinking, (b) shipping, (c) ML/quantum bridge — frame in application as "led 18-week solo OSS shipping a 15-paper-reproduction toolkit". Quantify outcomes (downloads, stars, citations).
+- **AI lab research roles**: this project signals (a) systems thinking, (b) shipping, (c) ML/quantum bridge — frame in application as "led 18-week solo OSS shipping a 15-paper-reproduction toolkit". Quantify outcomes (downloads, stars, citations).
 - **PhD applications**: target labs whose papers you reproduced — Egger (IBM Zurich), Woerner (IBM Zurich), Stamatopoulos / Zeng (Goldman), Pistoia / Shaydulin (JPM GTAR), Kerenidis (CNRS / QC Ware). Reach out 2 months before deadlines with the repro notebook attached.
 - **Bank quant research roles** (e.g., JPM GTAR, Goldman R&D, BBVA Quantum): direct hiring contacts after first publication or QCE talk.
 
@@ -583,7 +583,7 @@ Total: ~102 days of paper work, fits Weeks 14–16 partially + ongoing through y
 | Major bank releases competing OSS | Medium (JPM and Goldman publish papers, not code) | Ship faster; if it happens, integrate / interoperate (Apache-2.0 is compatible) |
 | Quantum advantage proofs show portfolio QUBO is asymptotically *harder*, not easier | Medium-High (QIPM analysis is sobering: Dalzell 2211.12489) | Position the toolkit as *honest* about this — the benchmark harness is its own value even if quantum loses; emphasize NISQ-era heuristic exploration |
 | Hardware bottleneck (no real-device runs possible) | Medium | Lean on simulator; document `MockBackend` and `Aer-noise` workflows; lobby Unitary Foundation, IBM Open Plan, AWS Credits |
-| Solo developer burnout | High | Cap at 5 days/week, 6 hours/day; LLM-augmented = use Claude / Cursor for boilerplate; recruit 1 co-maintainer by Month 6 (good-first-issue funnel); take a fixed week off after Week 13 |
+| Solo developer burnout | High | Cap at 5 days/week, 6 hours/day; LLM-augmented coding for boilerplate; recruit 1 co-maintainer by Month 6 (good-first-issue funnel); take a fixed week off after Week 13 |
 | Breaking changes in Qiskit 2.x or 3.x | High over 18 months | Pin upper bounds; CI runs against `qiskit==latest` weekly to catch early |
 
 ---

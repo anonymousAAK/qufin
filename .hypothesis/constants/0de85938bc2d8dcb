@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\dqcp2dcp\dqcp2dcp.py
+# hypothesis_version: 6.151.14
+
+[0.0, 'BisectionData', 'feas_problem', 'nonneg', 'nonpos', 'param', 'tighten_lower', 'tighten_upper']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\aerbackend.py
+# hypothesis_version: 6.151.14
+
+['Output: %s', 'Simulation failed', 'T1', 'T2', 'backend_name', 'backend_version', 'basis_gates', 'circ_id', 'coupling_map', 'custom_instructions', 'data', 'date', 'delay', 'dt', 'executor', 'for_loop', 'frequency', 'gate_error', 'gate_length', 'header', 'if_else', 'job_id', 'max_experiments', 'measure', 'metadata', 'n_qubits', 'noise_model', 'num_qubits', 'parameterizations', 'parameters', 'qubit_properties', 'readout_error', 'readout_length', 'result_subtypes', 'result_types', 'results', 'status', 'success', 'switch_case', 'time_taken', 'timing_constraints', 'while_loop']

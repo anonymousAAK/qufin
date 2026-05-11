@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\hedging\deep_hedging.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.001, 0.05, 0.2, 0.5, 1.0, 2.0, 100.0, 200, 4096]

@@ -42,12 +42,17 @@ Thumbs.db
 
 # Docs build
 docs/_build/
+site/
 
 # Benchmark outputs
 benchmarks/leaderboard.md
 benchmarks/leaderboard.json
+benchmarks/results/
 
 # Secrets
 .env
 *.key
 credentials.json
+rel.md
+plan.md
+guide/

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\risk\credit\gaussian_copula.py
+# hypothesis_version: 6.151.14
+
+[0.99, 1.0, 100, 100000, 'conditional_pd', 'expected_loss', 'gaussian_copula_mc', 'var']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\diffcp_conif.py
+# hypothesis_version: 6.151.14
+
+[1e-05, 0.0001, '.', '3.0.0', 'DIFFCP', 'Failure', 'Indeterminate', 'Infeasible', 'Interrupted', 'Solved', 'Solved/Inaccurate', 'TOT_TIME', 'Unbounded', 'Unbounded/Inaccurate', 'eps', 'eps_abs', 'eps_rel', 'info', 'iter', 'pobj', 's', 'setupTime', 'setup_time', 'solveTime', 'solve_method', 'solve_time', 'status', 'statusVal', 'status_val', 'x', 'y']

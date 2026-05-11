@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\cone2cone\soc_dim3.py
+# hypothesis_version: 6.151.14
+
+['F', 'chain_dim4', 'leaf_cone_id', 'nonneg_dim1', 'nonneg_dim2', 'root_cone_id']

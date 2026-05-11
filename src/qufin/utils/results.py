@@ -7,7 +7,6 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 import numpy as np
-from numpy.typing import NDArray
 
 
 class _NumpyEncoder(json.JSONEncoder):

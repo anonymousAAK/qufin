@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\optimization\template_matching\forward_match.py
+# hypothesis_version: 6.151.14
+
+['_condition', 'iswap', 'ms', 'op', 'rxx', 'ryy', 'rzz', 'swap']

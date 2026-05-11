@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\utils\gates_basis.py
+# hypothesis_version: 6.151.14
+
+['all_gates_in_basis', 'barrier', 'delay', 'measure', 'reset', 'snapshot', 'store']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\arithmetic\adders\draper_qft_adder.py
+# hypothesis_version: 6.151.14
+
+['DraperQFTAdder', 'a', 'b', 'cout', 'fixed', 'full', 'half']

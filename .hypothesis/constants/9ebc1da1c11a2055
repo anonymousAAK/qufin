@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\backendconfiguration.py
+# hypothesis_version: 6.151.14
+
+[1e-09, 1e-06, 1000000.0, 1000000000.0, ')', ', ', 'backend_name', 'backend_version', 'basis_gates', 'conditional', 'configurable', 'coupling_map', 'credits_required', 'default_rep_delay', 'description', 'display_name', 'dt', 'dtm', 'gates', 'latency_map', 'local', 'max_experiments', 'max_shots', 'meas_lo_range', 'memory', 'n_qubits', 'n_registers', 'name', 'online_date', 'parameters', 'processor_type', 'qasm_def', 'qubit_lo_range', 'register_map', 'rep_delay_range', 'rep_times', 'sample_name', 'simulator', 'tags']

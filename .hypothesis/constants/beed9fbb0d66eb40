@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\routing\lookahead_swap.py
+# hypothesis_version: 6.151.14
+
+['_Step', '_SystemState', 'coupling_map', 'final_layout', 'gates_mapped', 'gates_remaining', 'graph', 'layout', 'partition', 'q', 'register', 'state', 'swaps', 'swaps_added']

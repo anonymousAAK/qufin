@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\noise\device\models.py
+# hypothesis_version: 6.151.14
+
+[1e-09, 47.99243, 1000000000.0, 'measure', 'ns', 'prob_meas0_prep1', 'prob_meas1_prep0']

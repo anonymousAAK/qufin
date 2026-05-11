@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\qp_solvers\gurobi_qpif.py
+# hypothesis_version: 6.151.14
+
+[-1e+20, 0.0, 0.5, 1e+20, 'DualReductions', 'GUROBI', 'OutputFlag', 'QCPDual', 'env', 'init_value', 'model', 'n_var', 'reoptimize', 'save_file', 'status']

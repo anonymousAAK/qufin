@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\risk\classical_var.py
+# hypothesis_version: 6.151.14
+
+[0.95, 1.0, 100, 100000, 'historical', 'monte_carlo', 'parametric', 'parametric_gaussian']

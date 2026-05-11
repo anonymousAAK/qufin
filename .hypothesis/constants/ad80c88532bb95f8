@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\options\barrier.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.05, 0.2, 0.5, 1.0, 100.0, 120.0, '-in', '-out', '0', 'down-and-in', 'down-and-out', 'in', 'out', 'up-and-in', 'up-and-out']

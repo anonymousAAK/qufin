@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\benchmarks\manifest.py
+# hypothesis_version: 6.151.14
+
+['--porcelain', 'HEAD', 'cvxpy', 'git', 'numpy', 'pandas', 'qiskit', 'qiskit-aer', 'qiskit-ibm-runtime', 'qufin', 'rev-parse', 'scipy', 'status']

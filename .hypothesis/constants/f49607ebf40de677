@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\aerprovider.py
+# hypothesis_version: 6.151.14
+
+['AerProvider', 'CPU', 'GPU', 'aer_simulator', 'automatic', 'density_matrix', 'device', 'method', 'provider', 'qasm_simulator', 'statevector', 'tensor_network', 'unitary', 'unitary_simulator']

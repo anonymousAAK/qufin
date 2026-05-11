@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\dihedral\dihedral.py
+# hypothesis_version: 6.151.14
+
+['\naffine function = \n', ' (', ' + 1', ' + x_', ')\n', ',', 'cnotdihedral', 'p', 'phase polynomial = \n', 's', 'sdg', 't', 'tdg', 'x_']

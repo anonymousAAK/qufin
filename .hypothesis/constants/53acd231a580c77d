@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\classical\expr\constructors.py
+# hypothesis_version: 6.151.14
+
+['add', 'bit_and', 'bit_not', 'bit_or', 'bit_xor', 'cast', 'div', 'equal', 'greater', 'greater_equal', 'index', 'less', 'less_equal', 'lift', 'logic_and', 'logic_not', 'logic_or', 'mul', 'not_equal', 'shift_left', 'shift_right', 'sub']

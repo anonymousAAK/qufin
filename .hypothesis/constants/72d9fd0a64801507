@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\highspy\highs.py
+# hypothesis_version: 6.151.14
+
+[-1.0, 0.0, 0.1, 1.0, '.', 'Invalid comparison.', 'Invalid parameter.', 'Unknown comparison.', '__getitem__', '__len__', 'bounds', 'callback_type', 'callbacks', 'check', 'constant', 'data_in', 'data_out', 'highs', 'idxs', 'index', 'initial', 'inner', 'lb', 'left', 'message', 'name', 'name_prefix', 'obj', 'out_array', 'output_flag', 'right', 'stable', 'type', 'ub', 'user_callback_data', 'user_data', 'vals']

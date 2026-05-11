@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\synthesis\multi_controlled\mcx_synthesis.py
+# hypothesis_version: 6.151.14
+
+['anc', 'ctrl', 'mcx_linear_depth', 'mcx_logn_depth', 'q', 'targ']

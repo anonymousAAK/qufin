@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\channel\superop.py
+# hypothesis_version: 6.151.14
+
+['F', 'Kraus', 'Operator', '_channel_rep', 'kraus', 'qargs', 'reset', 'to_matrix']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\measures.py
+# hypothesis_version: 6.151.14
+
+['1', 'CVXPY >= 1.0', 'Input', 'SCS', 'Target', '`diamond_norm`', 'channel', 'choi', 'diamond_norm', 'gate_error', 'process_fidelity', 'target', 'to_channel', 'to_operator', 'to_quantumchannel']

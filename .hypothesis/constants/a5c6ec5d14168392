@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\compatibility.py
+# hypothesis_version: 6.151.14
+
+['__', '_data', '_op_shape', 'density matrices', 'destabilizer', 'stabilizer', 'statevectors', 'superoperators', 'unitaries']

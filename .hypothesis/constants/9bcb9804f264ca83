@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\channel\transformations.py
+# hypothesis_version: 6.151.14
+
+[1e-10, 10000000000.0, 'Chi', 'Choi', 'F', 'Invalid shape_a', 'Invalid shape_b', 'Kraus', 'Operator', 'PTM', 'Stinespring', 'SuperOp', 'iAj,kAl->ikjl', 'iAj,kAl->jilk']

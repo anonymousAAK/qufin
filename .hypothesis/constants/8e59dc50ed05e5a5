@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\osqp\interface.py
+# hypothesis_version: 6.151.14
+
+['--inplace', '.jinja', 'A', 'Ax', 'Ax_idx', 'M', 'OSQP_ALGEBRA_BACKEND', 'OSQP_INFTY', 'OSQP_NAN', 'P', 'Px', 'Px_idx', 'SolverError', 'SolverStatus', '__', 'algebra', 'build_ext', 'builtin', 'cg_preconditioner', 'codegen_src', 'csc', 'cuda', 'diagonal', 'direct', 'emosqp', 'indirect', 'l', 'matrices', 'mkl', 'osqp.codegen', 'osqp.ext_builtin', 'osqp_cuda', 'osqp_error_type', 'osqp_mkl', 'osqp_status_type', 'polish', 'polishing', 'q', 'results', 'rho', 'setup.py', 'solver', 'solver_type', 'u', 'vectors', 'w', 'warm_start', 'warm_starting']

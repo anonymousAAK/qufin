@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\preset_passmanagers\clifford_t_pass_manager.py
+# hypothesis_version: 6.151.14
+
+['init', 'layout', 'routing', 'rz_optimization', 'rz_translation', 'scheduling', 't_optimization', 't_translation']

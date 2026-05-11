@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\solver.py
+# hypothesis_version: 6.151.14
+
+['dims', 'dual_var_id', 'eq_constr', 'other_constr', 'var_id']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\errors\__init__.py
+# hypothesis_version: 6.151.14
+
+['AbstractMethodError', 'CSSWarning', 'ClosedFileError', 'DataError', 'DatabaseError', 'DtypeWarning', 'DuplicateLabelError', 'EmptyDataError', 'IndexingError', 'IntCastingNaNError', 'InvalidColumnName', 'InvalidComparison', 'InvalidIndexError', 'InvalidVersion', 'LossySetitemError', 'MergeError', 'NoBufferPresent', 'NullFrequencyError', 'NumbaUtilError', 'OptionError', 'OutOfBoundsDatetime', 'OutOfBoundsTimedelta', 'ParserError', 'ParserWarning', 'PerformanceWarning', 'PyperclipException', 'SettingWithCopyError', 'SpecificationError', 'UnsortedIndexError', '_cacher', '_item_cache', 'classmethod', 'method', 'property', 'staticmethod']

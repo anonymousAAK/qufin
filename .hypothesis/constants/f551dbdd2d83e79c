@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\xpress_conif.py
+# hypothesis_version: 6.151.14
+
+[1e-30, 1e-09, '9.4.0', 'B', 'CVX_xpress_conic', 'E', 'F', 'I', 'L', 'XPRESS', 'bargaptarget', 'btype', 'cX{0:d}_{1:d}', 'col', 'cone_qc{0:d}', 'constraint_names', 'duals', 'eq_dual', 'feastol', 'getObjVal', 'ineq_dual', 'initial_mip_idxs', 'initial_mip_values', 'is_mip', 'isolcol', 'isolrow', 'lc_{0:05d}', 'linT_qc{0:d}_{1:d}', 'obj_value', 'orig_row', 'primal', 'problem', 'redcost', 'row', 'rtype', 'save_iis', 'status', 'variable_names', 'warmstart', 'write_mps', 'x', 'y']

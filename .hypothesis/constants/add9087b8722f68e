@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\constraints\power.py
+# hypothesis_version: 6.151.14
+
+[1e-08, 1e-06, 'F', 'PowND(%s, %s; %s)', 'SCS']

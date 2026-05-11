@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\dihedral\dihedral_circuits.py
+# hypothesis_version: 6.151.14
+
+['ccz', 'cs', 'csdg', 'cx', 'cz', 'id', 'p', 's', 'sdg', 'swap', 't', 'tdg', 'x', 'y', 'z']

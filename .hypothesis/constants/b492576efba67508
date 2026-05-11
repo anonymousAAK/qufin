@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\fft\_realtransforms_backend.py
+# hypothesis_version: 6.151.14
+
+['dct', 'dctn', 'dst', 'dstn', 'idct', 'idctn', 'idst', 'idstn']

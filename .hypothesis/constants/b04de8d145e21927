@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\preset_passmanagers\__init__.py
+# hypothesis_version: 6.151.14
+
+['generate_scheduling', 'generate_unroll_3q', 'level_0_pass_manager', 'level_1_pass_manager', 'level_2_pass_manager', 'level_3_pass_manager']

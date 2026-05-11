@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\classical\expr\visitors.py
+# hypothesis_version: 6.151.14
+
+['ExprVisitor', '_T_co', 'is_lvalue', 'iter_identifiers', 'iter_vars', 'other', 'other_key', 'self_key']

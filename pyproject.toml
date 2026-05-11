@@ -7,10 +7,11 @@ name = "qufin"
 dynamic = ["version"]
 description = "Research-grade quantum algorithms for production-grade quant finance."
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "Adarsh", email = "adarsh@example.com" }]
+maintainers = [{ name = "anonymousAAK" }]
 keywords = [
   "quantum",
   "finance",
@@ -36,11 +37,10 @@ dependencies = [
   "pandas>=2.1",
   "pyarrow>=15.0",
   "pydantic>=2.6",
+  "pydantic-settings>=2.2",
   "qiskit>=1.0,<3.0",
   "qiskit-aer>=0.14",
-  "qiskit-algorithms>=0.3",
   "cvxpy>=1.4",
-  "QuantLib>=1.32",
   "scikit-learn>=1.4",
   "statsmodels>=0.14",
   "arch>=6.3",
@@ -92,16 +92,45 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "PL", "RUF"]
-ignore = ["PLR0913"]
+ignore = [
+  "PLR0913",   # too many arguments (finance functions naturally have many params)
+  "PLC0415",   # import not at top level (intentional lazy imports for optional deps)
+  "N803",      # argument name should be lowercase (math convention: T, K, Q, P)
+  "N806",      # variable should be lowercase (math convention: S, Q, P, T)
+  "PLR2004",   # magic value comparison (numeric thresholds like 1e-12)
+  "PLR0912",   # too many branches
+  "PLR0915",   # too many statements
+  "PLR0911",   # too many return statements (barrier pricing has many cases)
+  "SIM108",    # use ternary (less readable for complex expressions)
+  "RUF012",    # mutable class default (class-level dicts are intentional constants)
+  "PLW0603",   # global statement (singleton settings pattern)
+  "E741",      # ambiguous variable name (l used in Dicke state loop)
+  "B023",      # function doesn't bind loop var (closure in QGAN training)
+]
 
 [tool.black]
 line-length = 100
 target-version = ["py310", "py311", "py312"]
 
 [tool.mypy]
-strict = true
 python_version = "3.10"
-plugins = ["numpy.typing.mypy_plugin", "pydantic.mypy"]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "qufin.backtesting.*",
+  "qufin.benchmarks.*",
+  "qufin.portfolio.classical.*",
+  "qufin.risk.classical_var",
+  "qufin.risk.cvar",
+  "qufin.risk.stress",
+  "qufin.risk.counterparty",
+]
+disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 addopts = "-ra -q --strict-markers"

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\scheduling\padding\context_aware_dynamical_decoupling.py
+# hypothesis_version: 6.151.14
+
+[1.0, '-- post collect', 'cx', 'cz', 'delay', 'ecr', 'node_start_time', 'open delays: %s', 'x']

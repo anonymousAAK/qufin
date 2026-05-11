@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\glpk_mi_conif.py
+# hypothesis_version: 6.151.14
+
+['GLPK', 'GLP_MSG_OFF', 'GLP_MSG_ON', 'max_iters', 'maxiters', 'msg_lev', 'primal', 'status', 'unknown', 'value', 'x']

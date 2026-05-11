@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\core\reshape\melt.py
+# hypothesis_version: 6.151.14
+
+['DataFrame.melt', 'F', '\\d+', 'caller', 'id_vars', 'melt', 'other', 'pd.melt(df, ', 'value', 'value_vars', 'variable']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passmanager.py
+# hypothesis_version: 6.151.14
+
+[1000, '_', '_CircuitsT', '_expanded_stages', '_stages', 'clbit_write_latency', 'conditional_latency', 'init', 'layout', 'node_start_time', 'num_input_qubits', 'optimization', 'output_name', 'post_', 'pre_', 'routing', 'scheduling', 'translation']

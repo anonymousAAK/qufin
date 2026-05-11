@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\core\arrays\floating.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1.0, 'Float32', 'Float64', 'float32', 'float64']

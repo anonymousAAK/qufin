@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\pauli_evolution.py
+# hypothesis_version: 6.151.14
+
+[1.0, ' + ', '(', ')', '+', ', ', '-', '0', '1', 'I', 'PauliEvolution', '])', 'exp(-it [', 'l', 'r']

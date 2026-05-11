@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\cvxcore\python\cppbackend.py
+# hypothesis_version: 6.151.14
+
+['CONV', 'DENSE_CONST', 'DIAG_MAT', 'DIAG_VEC', 'DIV', 'F', 'HSTACK', 'INDEX', 'KRON_L', 'KRON_R', 'MUL', 'MUL_ELEM', 'NEG', 'NO_OP', 'PARAM', 'PROMOTE', 'RESHAPE', 'RMUL', 'SCALAR_CONST', 'SPARSE_CONST', 'SUM', 'SUM_ENTRIES', 'TRACE', 'TRANSPOSE', 'UPPER_TRI', 'VARIABLE', 'VSTACK', 'dense', 'scalar', 'sparse', 'sum_entries', 'transpose']

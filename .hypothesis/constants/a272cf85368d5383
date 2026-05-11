@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\synthesis\hls_plugins.py
+# hypothesis_version: 6.151.14
+
+['actions_only', 'annotated', 'approximation_degree', 'ctrl_state', 'fixed', 'full', 'half', 'hls_data', 'input_qubits', 'insert_barriers', 'inverse', 'mcx', 'name', 'num_clean_ancillas', 'num_dirty_ancillas', 'optimization_metric', 'optimize_count', 'parallel_threshold', 'preserve_order', 'qft', 'qubit_tracker', 'relative_phase', 'reverse_qubits', 'section_size', 'seed', 'trials', 'upto_clifford', 'upto_phase', 'use_inverted', 'use_transposed']
