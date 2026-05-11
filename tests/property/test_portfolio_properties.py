@@ -74,7 +74,7 @@ def test_cardinality_penalty_correct_k_is_lower(n: int, seed: int) -> None:
     A = rng.normal(size=(100, n))
     cov = np.cov(A, rowvar=False)
     K = max(1, n // 3)
-    assume(K + 1 < n)
+    assume(n > K + 1)
     qubo = PortfolioQUBO(mu=mu, cov=cov, cardinality=K, gamma=0.1)
     bs_k = "1" * K + "0" * (n - K)
     bs_k1 = "1" * (K + 1) + "0" * (n - K - 1)

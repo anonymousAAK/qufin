@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import numpy as np
 import pytest
 
+from qufin.hedging.deep_hedging import DeepHedger, DeepHedgingConfig
 from qufin.hedging.delta import DeltaHedger, HedgeResult, bs_delta
-from qufin.hedging.deep_hedging import DeepHedgingConfig, DeepHedger
 
 
 class TestBsDelta:

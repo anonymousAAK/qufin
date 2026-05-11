@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from qufin.options.classical.black_scholes import (
     call_price,
@@ -13,7 +12,6 @@ from qufin.options.classical.black_scholes import (
     price_and_greeks,
     put_price,
     rho,
-    theta,
     vega,
 )
 

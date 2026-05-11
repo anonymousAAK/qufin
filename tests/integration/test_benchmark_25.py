@@ -9,11 +9,11 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from qufin.benchmarks.leaderboard import to_markdown, to_csv
+from qufin.benchmarks.leaderboard import to_csv, to_markdown
 from qufin.benchmarks.manifest import build_manifest
+from qufin.benchmarks.metrics import solution_quality
 from qufin.benchmarks.problems import portfolio_medium
 from qufin.benchmarks.runner import BenchmarkRunner, SolverEntry
-from qufin.benchmarks.metrics import solution_quality
 from qufin.portfolio.classical.mean_variance import Objective, mean_variance
 from qufin.portfolio.qubo import PortfolioQUBO
 

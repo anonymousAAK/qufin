@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from qufin.portfolio.classical.black_litterman import black_litterman
 from qufin.portfolio.classical.hrp import hrp
-from qufin.portfolio.classical.mean_variance import MVResult, Objective, mean_variance
+from qufin.portfolio.classical.mean_variance import Objective, mean_variance
 from qufin.portfolio.classical.risk_parity import risk_parity
 
 

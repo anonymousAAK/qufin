@@ -6,13 +6,13 @@ import numpy as np
 import pytest
 
 from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
-from qufin.options.amplitude_estimation.mlae import (
-    MLAEConfig,
-    MaximumLikelihoodAmplitudeEstimation,
-)
 from qufin.options.amplitude_estimation.fqae import (
-    FQAEConfig,
     FaithfulAmplitudeEstimation,
+    FQAEConfig,
+)
+from qufin.options.amplitude_estimation.mlae import (
+    MaximumLikelihoodAmplitudeEstimation,
+    MLAEConfig,
 )
 
 
@@ -58,7 +58,6 @@ class TestMLAE:
         from qufin.backends.qiskit_backend import QiskitAerBackend
 
         theta = np.pi / 8
-        expected = np.sin(theta) ** 2
         problem = _simple_bernoulli_problem(theta)
 
         backend = QiskitAerBackend(seed=42)

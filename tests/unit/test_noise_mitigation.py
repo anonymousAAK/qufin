@@ -61,6 +61,7 @@ class TestNoisyAerBackend:
     def test_ideal_matches_noiseless(self) -> None:
         """With ideal noise, results should match noiseless Aer."""
         from qiskit.circuit import QuantumCircuit
+
         from qufin.backends.noise_models import IDEAL, NoisyAerBackend
         from qufin.backends.qiskit_backend import QiskitAerBackend
 
@@ -84,7 +85,8 @@ class TestNoisyAerBackend:
     def test_noise_degrades_bell_state(self) -> None:
         """Noisy simulation should produce more errors than ideal."""
         from qiskit.circuit import QuantumCircuit
-        from qufin.backends.noise_models import NOISY_NEAR_TERM, IDEAL, NoisyAerBackend
+
+        from qufin.backends.noise_models import IDEAL, NOISY_NEAR_TERM, NoisyAerBackend
 
         qc = QuantumCircuit(2, 2)
         qc.h(0)
@@ -111,8 +113,9 @@ class TestNoisyAerBackend:
 
     def test_noise_monotonic_in_error_rate(self) -> None:
         """Higher error rate -> more entropy in output distribution."""
-        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
         from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
 
         qc = QuantumCircuit(3, 3)
         qc.h(0)
@@ -147,6 +150,7 @@ class TestSweepNoise:
 
     def test_sweep_returns_correct_structure(self) -> None:
         from qiskit.circuit import QuantumCircuit
+
         from qufin.backends.noise_models import sweep_noise
 
         qc = QuantumCircuit(1)
@@ -162,6 +166,7 @@ class TestSweepNoise:
 
     def test_sweep_ideal_has_low_entropy(self) -> None:
         from qiskit.circuit import QuantumCircuit
+
         from qufin.backends.noise_models import sweep_noise
 
         qc = QuantumCircuit(1)
@@ -180,8 +185,9 @@ class TestZNE:
     def test_zne_improves_over_noisy(self) -> None:
         """ZNE estimate should be closer to ideal than raw noisy result."""
         from qiskit.circuit import QuantumCircuit
-        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
+
         from qufin.backends.error_mitigation import zne_extrapolate
+        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
 
         # Circuit: prepare |11> (all ones)
         qc = QuantumCircuit(2)
@@ -226,6 +232,7 @@ class TestZNE:
         """Folded circuit should be logically equivalent to original."""
         from qiskit.circuit import QuantumCircuit
         from qiskit.quantum_info import Operator
+
         from qufin.backends.error_mitigation import _fold_circuit
 
         qc = QuantumCircuit(2)
@@ -248,8 +255,8 @@ class TestReadoutMitigation:
 
     def test_calibrate_readout_identity_for_ideal(self) -> None:
         """Ideal backend should produce identity calibration matrix."""
-        from qufin.backends.qiskit_backend import QiskitAerBackend
         from qufin.backends.error_mitigation import calibrate_readout
+        from qufin.backends.qiskit_backend import QiskitAerBackend
 
         backend = QiskitAerBackend(seed=42)
         cal = calibrate_readout(2, backend, shots=10000)
@@ -259,9 +266,10 @@ class TestReadoutMitigation:
 
     def test_mitigate_readout_improves_accuracy(self) -> None:
         """Readout mitigation should improve noisy results."""
-        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
-        from qufin.backends.error_mitigation import calibrate_readout, mitigate_readout
         from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.error_mitigation import calibrate_readout, mitigate_readout
+        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend
 
         profile = NoiseProfile(
             single_gate_error=0.0,
@@ -298,8 +306,9 @@ class TestTREX:
 
     def test_trex_returns_valid_distribution(self) -> None:
         from qiskit.circuit import QuantumCircuit
-        from qufin.backends.noise_models import NOISY_NEAR_TERM, NoisyAerBackend
+
         from qufin.backends.error_mitigation import trex_mitigate
+        from qufin.backends.noise_models import NOISY_NEAR_TERM, NoisyAerBackend
 
         qc = QuantumCircuit(2)
         qc.h(0)
@@ -323,9 +332,10 @@ class TestNoiseOnQAE:
     def test_iqae_degrades_under_noise(self) -> None:
         """IQAE accuracy should degrade with increasing noise."""
         from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.noise_models import IDEAL, NoiseProfile, NoisyAerBackend
         from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
         from qufin.options.amplitude_estimation.iqae import IQAEConfig, IterativeAmplitudeEstimation
-        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend, IDEAL
 
         qc = QuantumCircuit(1)
         qc.ry(2 * np.arcsin(np.sqrt(0.25)), 0)
@@ -356,7 +366,7 @@ class TestNoiseOnQAE:
     @pytest.mark.slow
     def test_qaoa_degrades_under_noise(self) -> None:
         """QAOA objective should worsen with increasing noise."""
-        from qufin.backends.noise_models import NoiseProfile, NoisyAerBackend, IDEAL
+        from qufin.backends.noise_models import IDEAL, NoiseProfile, NoisyAerBackend
         from qufin.portfolio.optimizers.qaoa import QAOAConfig, QAOAPortfolio
         from qufin.portfolio.qubo import PortfolioQUBO
 

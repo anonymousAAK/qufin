@@ -8,7 +8,6 @@ from hypothesis import strategies as st
 
 from qufin.options.classical.black_scholes import call_price, put_price, vega
 
-
 # Strategy for option parameters
 spot = st.floats(min_value=10, max_value=500)
 strike = st.floats(min_value=10, max_value=500)

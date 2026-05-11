@@ -5,6 +5,12 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from qufin.risk.credit.egger import (
+    EggerConfig,
+    build_expected_loss_problem,
+    egger_classical_reference,
+    egger_expected_loss,
+)
 from qufin.risk.credit.gaussian_copula import (
     CreditPortfolio,
     gaussian_copula_mc,
@@ -14,12 +20,6 @@ from qufin.risk.credit.nig_copula import (
     NIGParams,
     nig_copula_mc,
     nig_pdf,
-)
-from qufin.risk.credit.egger import (
-    EggerConfig,
-    egger_classical_reference,
-    egger_expected_loss,
-    build_expected_loss_problem,
 )
 
 

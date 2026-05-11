@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from qufin.options.classical.binomial import crr_tree
 from qufin.options.classical.black_scholes import call_price, put_price
 

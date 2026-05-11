@@ -4,26 +4,24 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from scipy.stats import skew, kurtosis
 
+from qufin.backtesting.engine import BacktestEngine, BacktestResult
 from qufin.backtesting.metrics import (
     PerformanceSummary,
     annualized_return,
     annualized_volatility,
+    calmar_ratio,
+    cvar_historical,
+    hit_rate,
+    information_ratio,
+    max_drawdown,
+    performance_summary,
     sharpe_ratio,
     sortino_ratio,
-    max_drawdown,
-    calmar_ratio,
-    turnover,
     tracking_error,
-    information_ratio,
-    hit_rate,
+    turnover,
     var_historical,
-    cvar_historical,
-    performance_summary,
 )
-from qufin.backtesting.engine import BacktestEngine, BacktestResult
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -187,7 +185,7 @@ class TestInformationRatio:
         rng = np.random.default_rng(3)
         bench = rng.normal(0, 0.01, 252)
         port = bench + 0.001  # constant outperformance
-        ir = information_ratio(port, bench)
+        information_ratio(port, bench)
         # Constant spread → tracking error ≈ 0, so IR may be 0 due to guard
         # Use non-constant outperformance instead
         port2 = bench + rng.uniform(0.0005, 0.002, 252)
@@ -293,8 +291,10 @@ class TestBacktestEngine:
         assert len(result.rebalance_dates) == expected_rebalances
 
     def test_transaction_costs_reduce_returns(self, daily_returns):
-        engine_0 = BacktestEngine(daily_returns, train_window=126, test_window=21, transaction_cost=0.0)
-        engine_tc = BacktestEngine(daily_returns, train_window=126, test_window=21, transaction_cost=0.01)
+        engine_0 = BacktestEngine(
+            daily_returns, train_window=126, test_window=21, transaction_cost=0.0)
+        engine_tc = BacktestEngine(
+            daily_returns, train_window=126, test_window=21, transaction_cost=0.01)
 
         r0 = engine_0.run(equal_weight_strategy)
         rtc = engine_tc.run(equal_weight_strategy)

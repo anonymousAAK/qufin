@@ -2,18 +2,13 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from qufin.options.asian import (
-    AsianOptionSpec,
     geometric_asian_closed_form,
 )
 from qufin.options.barrier import (
-    BarrierOptionSpec,
     barrier_closed_form,
 )
-from qufin.options.classical.monte_carlo import asian_mc, barrier_mc
+from qufin.options.classical.monte_carlo import asian_mc
 
 
 class TestGeometricAsianClosedForm:

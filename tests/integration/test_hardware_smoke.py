@@ -15,7 +15,6 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-
 hardware = pytest.mark.skipif(
     "not config.getoption('--hardware', default=False)",
     reason="Hardware tests require --hardware flag",
@@ -24,11 +23,10 @@ hardware = pytest.mark.skipif(
 
 def pytest_addoption(parser):
     """Add --hardware CLI flag to pytest."""
-    try:
+    import contextlib
+    with contextlib.suppress(ValueError):
         parser.addoption("--hardware", action="store_true", default=False,
                          help="Run tests on IBM Quantum hardware")
-    except ValueError:
-        pass  # Already added
 
 
 @hardware
@@ -89,6 +87,7 @@ class TestIBMHardwareSmoke:
     def test_iqae_simple(self, ibm_backend) -> None:
         """Run IQAE for a known amplitude on hardware."""
         from qiskit.circuit import QuantumCircuit
+
         from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
         from qufin.options.amplitude_estimation.iqae import IQAEConfig, IterativeAmplitudeEstimation
 
