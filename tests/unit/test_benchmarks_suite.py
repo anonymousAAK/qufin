@@ -5,9 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import numpy as np
-import pytest
-
 
 class TestClassicalBenchmarks:
     def test_bs_pricing(self):
@@ -67,7 +64,10 @@ class TestQuantumScaling:
         entries = bench_circuit_depth()
         # XY mixers should have deeper circuits than X mixer
         x_depths = [e.circuit_depth for e in entries if e.method == "mixer_x" and e.circuit_depth]
-        xy_depths = [e.circuit_depth for e in entries if e.method == "mixer_xy_ring" and e.circuit_depth]
+        xy_depths = [
+            e.circuit_depth for e in entries
+            if e.method == "mixer_xy_ring" and e.circuit_depth
+        ]
         if x_depths and xy_depths:
             assert max(xy_depths) > max(x_depths)
 

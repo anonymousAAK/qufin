@@ -2,22 +2,18 @@
 
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
-from qufin.options.bermudan import BermudanOptionSpec, bermudan_binomial
-from qufin.derivatives.bermudan_lsm import lsm_price
-from qufin.derivatives.path_dependent import (
-    LookbackOptionSpec,
-    lookback_mc,
-    cliquet_mc,
-)
 from qufin.derivatives.autocallable import (
     AutocallableSpec,
     autocallable_mc,
     resource_estimate_chakrabarti,
 )
-
+from qufin.derivatives.bermudan_lsm import lsm_price
+from qufin.derivatives.path_dependent import (
+    LookbackOptionSpec,
+    cliquet_mc,
+    lookback_mc,
+)
+from qufin.options.bermudan import BermudanOptionSpec, bermudan_binomial
 
 # -----------------------------------------------------------------------
 # Bermudan binomial tree
@@ -133,8 +129,8 @@ class TestCliquetMC:
         assert price > 0
 
     def test_deterministic_with_seed(self) -> None:
-        args = dict(s0=100.0, r=0.05, sigma=0.2, T=1.0,
-                    n_periods=4, n_paths=5_000, seed=99)
+        args = {"s0": 100.0, "r": 0.05, "sigma": 0.2, "T": 1.0,
+                "n_periods": 4, "n_paths": 5_000, "seed": 99}
         p1 = cliquet_mc(**args)
         p2 = cliquet_mc(**args)
         assert p1 == p2

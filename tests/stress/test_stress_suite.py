@@ -44,7 +44,7 @@ class TestModuleIntegrity:
                 failures.append(f"{name}: {exc}")
 
         assert count >= 80, f"Only {count} modules found — expected >= 80"
-        assert failures == [], f"Import failures:\n" + "\n".join(failures)
+        assert failures == [], "Import failures:\n" + "\n".join(failures)
 
     def test_top_level_exports(self) -> None:
         import qufin
@@ -109,9 +109,8 @@ class TestBlackScholesExact:
             call_price,
             delta,
             gamma,
-            vega,
-            theta,
             rho,
+            vega,
         )
 
         s, k, r, sigma, T = 100.0, 100.0, 0.05, 0.20, 1.0
@@ -119,7 +118,9 @@ class TestBlackScholesExact:
 
         # Delta
         d_analytical = delta(s, k, r, sigma, T, option_type="call")
-        d_fd = (call_price(s + eps, k, r, sigma, T) - call_price(s - eps, k, r, sigma, T)) / (2 * eps)
+        c_up = call_price(s + eps, k, r, sigma, T)
+        c_dn = call_price(s - eps, k, r, sigma, T)
+        d_fd = (c_up - c_dn) / (2 * eps)
         assert abs(d_analytical - d_fd) < 1e-5, f"Delta: {d_analytical} vs FD {d_fd}"
 
         # Gamma
@@ -133,12 +134,16 @@ class TestBlackScholesExact:
 
         # Vega
         v_analytical = vega(s, k, r, sigma, T)
-        v_fd = (call_price(s, k, r, sigma + eps, T) - call_price(s, k, r, sigma - eps, T)) / (2 * eps)
+        c_vup = call_price(s, k, r, sigma + eps, T)
+        c_vdn = call_price(s, k, r, sigma - eps, T)
+        v_fd = (c_vup - c_vdn) / (2 * eps)
         assert abs(v_analytical - v_fd) < 1e-4, f"Vega: {v_analytical} vs FD {v_fd}"
 
         # Rho
         rho_analytical = rho(s, k, r, sigma, T, option_type="call")
-        rho_fd = (call_price(s, k, r + eps, sigma, T) - call_price(s, k, r - eps, sigma, T)) / (2 * eps)
+        c_rup = call_price(s, k, r + eps, sigma, T)
+        c_rdn = call_price(s, k, r - eps, sigma, T)
+        rho_fd = (c_rup - c_rdn) / (2 * eps)
         assert abs(rho_analytical - rho_fd) < 1e-4, f"Rho: {rho_analytical} vs FD {rho_fd}"
 
     def test_implied_volatility_round_trip(self) -> None:
@@ -314,7 +319,7 @@ class TestPortfolioOptimization:
     def test_black_litterman_posterior(self, market_data) -> None:
         from qufin.portfolio.classical.black_litterman import black_litterman
 
-        mu, cov = market_data
+        _mu, cov = market_data
         market_caps = np.arange(1, 11, dtype=np.float64) * 1e9
         P = np.zeros((1, 10))
         P[0, 0] = 1
@@ -375,7 +380,6 @@ class TestQUBOPortfolio:
         qubo = PortfolioQUBO(mu, cov, gamma=1.0, cardinality=2)
         result = exhaustive_solve(qubo)
         # Global min should be the best among all 2^6 bitstrings
-        Q = qubo.build_matrix()
         for i in range(2**6):
             bs = format(i, "06b")
             obj = qubo.evaluate(bs)
@@ -421,6 +425,7 @@ class TestQAEVariants:
     def simple_problem(self):
         """A = sin^2(pi/6) = 0.25 problem."""
         from qiskit.circuit import QuantumCircuit
+
         from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
 
         qc = QuantumCircuit(1)
@@ -449,8 +454,8 @@ class TestQAEVariants:
     def test_mlae_accuracy(self, simple_problem) -> None:
         from qufin.backends.qiskit_backend import QiskitAerBackend
         from qufin.options.amplitude_estimation.mlae import (
-            MLAEConfig,
             MaximumLikelihoodAmplitudeEstimation,
+            MLAEConfig,
         )
 
         backend = QiskitAerBackend(seed=42)
@@ -477,8 +482,8 @@ class TestQAEVariants:
     def test_fqae_accuracy(self, simple_problem) -> None:
         from qufin.backends.qiskit_backend import QiskitAerBackend
         from qufin.options.amplitude_estimation.fqae import (
-            FQAEConfig,
             FaithfulAmplitudeEstimation,
+            FQAEConfig,
         )
 
         backend = QiskitAerBackend(seed=42)
@@ -821,7 +826,7 @@ class TestQuantumML:
 
     def test_vqc_predict_binary(self) -> None:
         from qufin.backends.mock import MockBackend
-        from qufin.ml.classifiers import VQCConfig, VariationalQuantumClassifier
+        from qufin.ml.classifiers import VariationalQuantumClassifier, VQCConfig
 
         cfg = VQCConfig(n_qubits=2, n_layers=1, n_epochs=5, seed=42)
         backend = MockBackend(seed=0)
@@ -1083,7 +1088,11 @@ class TestQuantumClassicalAgreement:
     def test_egger_credit_agrees_with_classical(self) -> None:
         """Egger QAE expected loss should agree with analytical."""
         from qufin.backends.qiskit_backend import QiskitAerBackend
-        from qufin.risk.credit.egger import EggerConfig, egger_classical_reference, egger_expected_loss
+        from qufin.risk.credit.egger import (
+            EggerConfig,
+            egger_classical_reference,
+            egger_expected_loss,
+        )
         from qufin.risk.credit.gaussian_copula import CreditPortfolio
 
         portfolio = CreditPortfolio(
@@ -1215,7 +1224,11 @@ class TestHeston:
 
     def test_heston_weak_vs_strong_euler(self) -> None:
         """Both Euler schemes should give similar terminal distributions."""
-        from qufin.options.heston import HestonParams, heston_strong_euler_terminal, heston_weak_euler_terminal
+        from qufin.options.heston import (
+            HestonParams,
+            heston_strong_euler_terminal,
+            heston_weak_euler_terminal,
+        )
 
         params = HestonParams(s0=100, v0=0.04, kappa=2.0, theta=0.04,
                               xi=0.3, rho=-0.7, r=0.05, T=1.0)
@@ -1292,17 +1305,17 @@ class TestEndToEndWorkflow:
 
     def test_full_option_pricing_pipeline(self) -> None:
         """BS -> MC -> binomial -> QAE problem build (no execution)."""
-        from qufin.options.classical.black_scholes import call_price, price_and_greeks
-        from qufin.options.classical.binomial import crr_tree
-        from qufin.options.classical.monte_carlo import european_mc
         from qufin.options.amplitude_estimation.european_qae import (
             EuropeanQAESpec,
             build_european_estimation_problem,
         )
+        from qufin.options.classical.binomial import crr_tree
+        from qufin.options.classical.black_scholes import call_price, price_and_greeks
+        from qufin.options.classical.monte_carlo import european_mc
 
         # Price with all methods
         bs = call_price(100, 100, 0.05, 0.2, 1.0)
-        greeks = price_and_greeks(100, 100, 0.05, 0.2, 1.0, "call")
+        price_and_greeks(100, 100, 0.05, 0.2, 1.0, "call")
         tree = crr_tree(100, 100, 0.05, 0.2, 1.0, n_steps=200)
         mc = european_mc(100, 100, 0.05, 0.2, 1.0, n_paths=100_000, option_type="call", seed=42)
 
@@ -1312,17 +1325,17 @@ class TestEndToEndWorkflow:
 
         # Build QAE problem (circuit construction, no execution)
         spec = EuropeanQAESpec(s0=100, k=100, r=0.05, sigma=0.2, T=1.0, n_qubits=3)
-        problem, rescale = build_european_estimation_problem(spec)
+        _problem, rescale = build_european_estimation_problem(spec)
         assert rescale > 0
 
     def test_full_credit_risk_pipeline(self) -> None:
         """Classical copula -> stress -> CVA."""
-        from qufin.risk.credit.gaussian_copula import CreditPortfolio, gaussian_copula_mc
         from qufin.risk.counterparty import (
             CounterpartyExposure,
             compute_cva,
             compute_ead_sa_ccr,
         )
+        from qufin.risk.credit.gaussian_copula import CreditPortfolio, gaussian_copula_mc
 
         # 1. Credit portfolio analysis
         portfolio = CreditPortfolio(

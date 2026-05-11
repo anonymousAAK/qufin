@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 
 from qufin.data.cache import clear_cache, get_cached, put_cache
 

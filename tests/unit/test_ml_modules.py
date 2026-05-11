@@ -6,10 +6,9 @@ import numpy as np
 import pytest
 
 from qufin.backends.mock import MockBackend
+from qufin.ml.classifiers import VariationalQuantumClassifier, VQCConfig
 from qufin.ml.kernels import ZZFeatureMap, quantum_kernel_matrix
 from qufin.ml.reservoir import QuantumReservoir, QuantumReservoirConfig
-from qufin.ml.classifiers import VariationalQuantumClassifier, VQCConfig
-
 
 # -----------------------------------------------------------------------
 # Quantum kernel matrix

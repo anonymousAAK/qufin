@@ -53,7 +53,7 @@ class TestTailProbabilityProblem:
         """Very low threshold -> high probability of exceeding."""
         problem = _build_tail_probability_problem(loss_dist, threshold=loss_dist.low - 1.0)
         # Build a measurable circuit
-        from qiskit.circuit import QuantumCircuit, ClassicalRegister
+        from qiskit.circuit import ClassicalRegister
 
         qc = problem.state_preparation.copy()
         n = qc.num_qubits

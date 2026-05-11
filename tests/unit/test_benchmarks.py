@@ -18,7 +18,7 @@ from qufin.benchmarks.problems import (
     portfolio_medium,
     portfolio_small,
 )
-from qufin.benchmarks.runner import BenchmarkRow, BenchmarkRunner, SolverEntry
+from qufin.benchmarks.runner import BenchmarkRunner, SolverEntry
 
 
 class TestProblems:

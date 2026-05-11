@@ -9,8 +9,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from qufin.benchmarks.metrics import solution_quality
 from qufin.benchmarks.problems import portfolio_small
-from qufin.benchmarks.metrics import solution_quality, feasibility_rate
 from qufin.portfolio.classical.mean_variance import Objective, mean_variance
 from qufin.portfolio.qubo import PortfolioQUBO
 

@@ -8,9 +8,9 @@ import pytest
 from qufin.options.heston import (
     HestonParams,
     heston_european_price,
+    heston_strong_euler_terminal,
     heston_terminal_distribution,
     heston_weak_euler_terminal,
-    heston_strong_euler_terminal,
     resource_estimates,
 )
 
@@ -63,7 +63,7 @@ class TestHestonPricing:
         assert std_err > 0
 
     def test_put_price_positive(self, default_params: HestonParams) -> None:
-        price, std_err = heston_european_price(
+        price, _std_err = heston_european_price(
             default_params, k=100, is_call=False,
             n_paths=50_000, seed=42,
         )
@@ -71,8 +71,10 @@ class TestHestonPricing:
 
     def test_put_call_parity(self, default_params: HestonParams) -> None:
         """C - P ~ S0 - K*exp(-rT) (approximate due to MC noise)."""
-        call, _ = heston_european_price(default_params, k=100, is_call=True, n_paths=200_000, seed=42)
-        put, _ = heston_european_price(default_params, k=100, is_call=False, n_paths=200_000, seed=42)
+        call, _ = heston_european_price(
+            default_params, k=100, is_call=True, n_paths=200_000, seed=42)
+        put, _ = heston_european_price(
+            default_params, k=100, is_call=False, n_paths=200_000, seed=42)
         parity = default_params.s0 - 100 * np.exp(-default_params.r * default_params.T)
         assert abs((call - put) - parity) < 1.0  # generous tolerance for MC
 

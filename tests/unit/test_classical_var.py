@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 
 from qufin.risk.classical_var import (
-    VaRResult,
     historical_var,
     monte_carlo_var,
     parametric_var,

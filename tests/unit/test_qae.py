@@ -5,11 +5,11 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
 from qufin.options.amplitude_estimation.canonical import (
     CanonicalAmplitudeEstimation,
     CanonicalQAEConfig,
 )
+from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
 from qufin.options.amplitude_estimation.iqae import (
     IQAEConfig,
     IterativeAmplitudeEstimation,
@@ -76,7 +76,6 @@ class TestCanonicalQAE:
         from qufin.backends.qiskit_backend import QiskitAerBackend
 
         theta = np.pi / 8
-        expected_a = np.sin(theta) ** 2  # ~0.146
         problem = _simple_bernoulli_problem(theta)
 
         backend = QiskitAerBackend(seed=42)
@@ -95,7 +94,6 @@ class TestIQAE:
         from qufin.backends.qiskit_backend import QiskitAerBackend
 
         theta = np.pi / 4
-        expected_a = np.sin(theta) ** 2  # 0.5
         problem = _simple_bernoulli_problem(theta)
 
         backend = QiskitAerBackend(seed=42)

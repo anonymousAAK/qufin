@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from qufin.data.synthetic import gbm_paths, heston_paths, merton_jump_paths
 
