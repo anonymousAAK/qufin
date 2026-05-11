@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\controlflow\if_else.py
+# hypothesis_version: 6.151.14
+
+['IfElseOp', '_appended', '_circuit', '_condition', '_depth', '_if_context', '_if_instruction', '_if_registers', '_in_loop', '_label', '_used', 'if_else']

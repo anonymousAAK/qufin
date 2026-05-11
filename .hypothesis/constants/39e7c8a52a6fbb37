@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\special_matrices.py
+# hypothesis_version: 6.151.14
+
+['_special_matrices', 'block_diag', 'circulant', 'companion', 'convolution_matrix', 'dft', 'fiedler', 'fiedler_companion', 'hadamard', 'hankel', 'helmert', 'hilbert', 'invhilbert', 'invpascal', 'leslie', 'linalg', 'pascal', 'special_matrices', 'toeplitz']

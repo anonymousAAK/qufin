@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\synthesis\high_level_synthesis.py
+# hypothesis_version: 6.151.14
+
+['barrier', 'default', 'delay', 'hls_data', 'input_qubits', 'measure', 'num_clean_ancillas', 'num_dirty_ancillas', 'optimization_metric', 'qubit_tracker', 'reset', 'sequential', 'snapshot', 'store']

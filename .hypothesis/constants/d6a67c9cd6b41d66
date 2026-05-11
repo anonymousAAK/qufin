@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\ml\classifiers.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-10, 0.01, 1.0, 200, 'COBYLA', 'maxiter']

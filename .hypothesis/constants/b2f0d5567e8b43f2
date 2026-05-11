@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\result\models.py
+# hypothesis_version: 6.151.14
+
+[')', 'avg', 'counts', 'data', 'header', 'meas_level', 'meas_return', 'memory', 'seed', 'shots', 'single', 'snapshots', 'statevector', 'status', 'success', 'unitary']

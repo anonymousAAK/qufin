@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\controlflow\while_loop.py
+# hypothesis_version: 6.151.14
+
+['_circuit', '_condition', '_label', 'while_loop']

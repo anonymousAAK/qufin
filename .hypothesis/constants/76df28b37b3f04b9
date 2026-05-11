@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\noise\errors\pauli_error.py
+# hypothesis_version: 6.151.14
+
+['QuantumError', 'id', 'instructions', 'name', 'operations', 'params', 'pauli', 'paulis', 'probabilities', 'qargs', 'qerror', 'qubits', 'type']

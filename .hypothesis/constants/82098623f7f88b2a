@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\portfolio\encodings.py
+# hypothesis_version: 6.151.14
+
+[0.0, 'binary', 'binary_3b', 'binary_5b', 'n_assets', 'one_hot', 'unary', 'unary_4']

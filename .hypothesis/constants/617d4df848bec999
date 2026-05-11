@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\portfolio\optimizers\qaoa.py
+# hypothesis_version: 6.151.14
+
+[1e-10, 1.0, 200, 8192, 'COBYLA', 'grover', 'inf', 'maxiter', 'x', 'xy_full', 'xy_ring']

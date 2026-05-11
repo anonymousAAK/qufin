@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\options\classical\binomial.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-12, 1.0, 200, 'american', 'call', 'european', 'put']

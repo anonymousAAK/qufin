@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\simplejson\encoder.py
+# hypothesis_version: 6.151.14
+
+[1023, 55296, 56320, 65536, '\x08', '"', '&', '([\\\\"]|[^\\ -~])', ',', ', ', '-Infinity', ': ', '<', '>', 'Infinity', 'NaN', '[', '[\\x00-\\x1f\\\\"]', '[\\x80-\\xff]', '[]', '\\', '\\"', '\\\\', '\\b', '\\f', '\\n', '\\r', '\\t', '\\u%04x', '\\u%04x\\u%04x', '\\u0026', '\\u003c', '\\u003e', '\\u2028', '\\u2029', ']', '_asdict', 'false', 'for_json', 'null', 'true', 'utf-8', '{', '{}', '}']

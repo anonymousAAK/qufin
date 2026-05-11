@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\optimization\template_matching\template_substitution.py
+# hypothesis_version: 6.151.14
+
+[312, 'c3x', 'c4x', 'ccx', 'ch', 'crx', 'cry', 'crz', 'cu3', 'cx', 'cy', 'cz', 'h', 'id', 'iswap', 'ms', 'p', 'r', 'rc3x', 'rccx', 'rx', 'rxx', 'ry', 'ryy', 'rz', 'rzx', 'rzz', 's', 'sdg', 'swap', 't', 'tdg', 'u1', 'u2', 'u3', 'x', 'y', 'z']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\routing\sabre_swap.py
+# hypothesis_version: 6.151.14
+
+[0.001, 0.5, 1.0, 'basic', 'cx', 'decay', 'final_layout', 'lookahead', 'q', 'u']

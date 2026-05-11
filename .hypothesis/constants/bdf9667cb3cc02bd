@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\cplex_conif.py
+# hypothesis_version: 6.151.14
+
+[-1.0, 0.0, 1.0, 12100000, 'B', 'C', 'CPLEX', 'E', 'I', 'L', '_CpxConstr', 'constr_type', 'cplex_filename', 'cplex_params', 'index', 'is_mip', 'model', 'reoptimize', 'soc_t_%d', 'soc_x_%d', 'x_%d']

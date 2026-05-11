@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\target.py
+# hypothesis_version: 6.151.14
+
+['Instructions:\n', 'Target\n', '_coupling_graph', '_gate_map', '_non_global_basis', 'base', 'coupling_graph', 'duration', 'error', 'properties', 's']

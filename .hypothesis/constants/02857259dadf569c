@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\utils\parallel.py
+# hypothesis_version: 6.151.14
+
+[', ', 'FALSE', 'QISKIT_IN_PARALLEL', 'QISKIT_NUM_PROCS', 'QISKIT_PARALLEL', 'TRUE', 'cpus', 'darwin', 'fork', 'forkserver', 'num_processes', 'os', 'parallel_enabled', 'python_build', 'python_compiler', 'python_version', 'sched_getaffinity', 'true', 'win32']

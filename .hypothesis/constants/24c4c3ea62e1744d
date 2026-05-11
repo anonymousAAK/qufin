@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\layout\sabre_layout.py
+# hypothesis_version: 6.151.14
+
+[0.001, 0.5, 1.0, 'ancilla', 'backward', 'cx', 'final_layout', 'forward', 'layout', 'u']

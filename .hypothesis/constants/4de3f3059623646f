@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\langsmith\_internal\_operations.py
+# hypothesis_version: 6.151.14
+
+[b'\r\n', '.', 'Content-Length', '_none', 'application/json', 'attachments', 'error', 'events', 'extra', 'feedback', 'id', 'inputs', 'model_dump', 'operation', 'outputs', 'patch', 'post', 'rb', 'serialized', 'trace_id']

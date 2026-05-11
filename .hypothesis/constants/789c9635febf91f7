@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\name_mapping.py
+# hypothesis_version: 6.151.14
+
+['break_loop', 'continue_loop', 'cu2', 'diagonal', 'for_loop', 'if_else', 'initialize', 'kraus', 'lam', 'mcp', 'mcphase', 'mcr', 'mcrx', 'mcry', 'mcrz', 'mcswap', 'mcsx', 'mcu', 'mcu1', 'mcu2', 'mcu3', 'mcx', 'mcx_gray', 'mcy', 'mcz', 'multiplexer', 'pauli', 'phi', 'qerror_loc', 'quantum_channel', 'reset', 'roerror', 'save_amplitudes', 'save_amplitudes_sq', 'save_clifford', 'save_density_matrix', 'save_expval', 'save_expval_var', 'save_probabilities', 'save_probs', 'save_probs_ket', 'save_stabilizer', 'save_state', 'save_statevector', 'save_superop', 'save_unitary', 'set_density_matrix', 'set_stabilizer', 'set_statevector', 'set_superop', 'set_unitary', 'store', 'superop', 'switch_case', 'unitary', 'while_loop']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\_standard_gates_commutations.py
+# hypothesis_version: 6.151.14
+
+['c3sx', 'ccx', 'ccz', 'ch', 'cs', 'csdg', 'cswap', 'csx', 'cx', 'cy', 'cz', 'dcx', 'ecr', 'h', 'id', 'iswap', 'rcccx', 'rccx', 'rxx', 'ryy', 'rzx', 'rzz', 's', 'sdg', 'swap', 'sx', 'sxdg', 't', 'tdg', 'x', 'y', 'z']

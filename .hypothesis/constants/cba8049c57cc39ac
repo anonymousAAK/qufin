@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\hamiltonian_gate.py
+# hypothesis_version: 6.151.14
+
+['hamiltonian', 'q', 'to_matrix', 'to_operator']

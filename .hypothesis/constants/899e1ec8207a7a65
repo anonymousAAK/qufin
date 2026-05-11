@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\spatial\kdtree.py
+# hypothesis_version: 6.151.14
+
+['KDTree', 'Rectangle', '_kdtree', 'cKDTree', 'distance_matrix', 'kdtree', 'minkowski_distance', 'minkowski_distance_p', 'spatial']

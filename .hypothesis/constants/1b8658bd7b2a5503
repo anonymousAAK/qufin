@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\io\excel\_util.py
+# hypothesis_version: 6.151.14
+
+[',', ':', 'A', 'Z', 'odf', 'ods', 'openpyxl', 'pyxlsb', 'reader', 'usecols_func', 'warn', 'writer', 'xlrd', 'xls', 'xlsb', 'xlsm', 'xlsx', 'xlsxwriter']

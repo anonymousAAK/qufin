@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\problems\problem.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1.0, ' -> ', ', ', '-', '=', 'CVXPY', 'Citations', 'Compilation', 'D', 'DCP', 'DGP', 'DQCP', 'DT', 'DT_TIME', 'D_TIME', 'NSD', 'Numerical solver', 'Optimal value: %.3e', 'PSD', 'Problem', 'Problem status: %s', 'Problem(%s, %s)', 'Reduction chain: %s', 'SizeMetrics', 'SolveResult', 'Solver %s failed: %s', 'Solver %s succeeds', "Solver '%s' failed. ", 'SolverStats', 'Summary', 'Unsupported context ', 'all_support_cpp', 'boolean', 'conic_solvers', 'dcp', 'dgp', 'dual_values', 'hermitian', 'high', 'integer', 'low', 'max_ndim', 'method', 'opt_value', 'primal_values', 'qp_solvers', 's', 'solver', 'solver_path', 'solver_verbose', 'status', 'subject to ', 'use_quad_obj', 'v']

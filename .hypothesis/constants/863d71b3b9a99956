@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\linalg\_decomp_lu.py
+# hypothesis_version: 6.151.14
+
+['1|2', 'C', 'C_CONTIGUOUS', 'WRITEABLE', 'a', 'b', 'd', 'f', 'fF', 'getrf', 'getrs', 'lu', 'lu_factor', 'lu_solve', 'piv']

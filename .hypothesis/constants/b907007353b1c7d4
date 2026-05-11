@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\options\amplitude_estimation\mlae.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-15, 1e-08, 1e-06, 1.0, 1.96, 1024, '1', 'bounded']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\synthesis\linear_phase\cnot_phase_synth.py
+# hypothesis_version: 6.151.14
+
+['int', 's', 'sdg', 't', 'tdg', 'z']

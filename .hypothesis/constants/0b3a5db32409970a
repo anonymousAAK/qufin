@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\benchmarks\runner.py
+# hypothesis_version: 6.151.14
+
+['backend', 'circuit_depth', 'error', 'n_qubits', 'nan', 'objective', 'seed']

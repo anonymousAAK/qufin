@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\qp_solvers\daqp_qpif.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-05, 'DAQP', 'cycle_tol', 'dual_tol', 'eps_prox', 'eta_prox', 'fval_bound', 'iter_limit', 'iterations', 'lam', 'pivot_tol', 'primal_tol', 'progress_tol', 'setup_time', 'solve_time', 'zero_tol']

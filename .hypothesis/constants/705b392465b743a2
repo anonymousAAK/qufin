@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\preset_passmanagers\builtin_plugins.py
+# hypothesis_version: 6.151.14
+
+[1000, 10000, 50000, 100000, 5000000, 30000000, 'all_gates_in_basis', 'basic', 'decay', 'default', 'delay', 'depth', 'depth_fixed_point', 'final_layout', 'for_loop', 'if_else', 'is_swap_mapped', 'layout', 'measure', 'none', 'optimization_loop', 'raise', 'reset', 'rz', 's', 'sabre', 'sabre_all_threads', 'sdg', 'size', 'size_fixed_point', 'switch_case', 'synthesis', 't', 'tdg', 'translation', 'translator', 'while_loop', 'z']

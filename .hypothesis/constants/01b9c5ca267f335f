@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\cvxopt_conif.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-10, 1.0, 123, 'CVXOPT', 'F', 'P_leq', 'Q', 'SM', 'chol', 'default_rng', 'dual infeasible', 'feasible', 'infeasible problem', 'int', 'kktsolver', 'l', 'max_iters', 'maxiters', 'optimal', 'primal infeasible', 'primal objective', 'q', 'refinement', 's', 'show_progress', 'solver_error', 'status', 'unbounded', 'undefined', 'unknown', 'x', 'y', 'z']

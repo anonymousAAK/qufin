@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\risk\credit\nig_copula.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-10, 0.3, 0.99, 1.0, 1.5, 100, 100000, 'es', 'expected_loss', 'method', 'n_simulations', 'nig_copula_mc', 'var']

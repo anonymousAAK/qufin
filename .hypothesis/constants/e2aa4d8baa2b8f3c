@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\optimization\consolidate_blocks.py
+# hypothesis_version: 6.151.14
+
+[1.0, 'block_list', 'cphase', 'crx', 'cry', 'crz', 'cx', 'cz', 'ecr', 'iswap', 'run_list', 'rxx', 'ryy', 'rzx', 'rzz']

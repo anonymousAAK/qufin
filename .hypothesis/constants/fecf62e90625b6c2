@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\symplectic\base_pauli.py
+# hypothesis_version: 6.151.14
+
+[b'Y', 255, 256, '-', '-i', '1', 'I', 'X', 'Y', 'Z', 'ascii', 'ccx', 'ccz', 'cx', 'cy', 'cz', 'dtype', 'ecr', 'h', 'i', 'id', 'iden', 's', 'sdg', 'sinv', 'swap', 't', 'tdg', 'u', 'x', 'y', 'z']

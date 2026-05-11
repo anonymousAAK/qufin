@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\_lib\pyprima\common\preproc.py
+# hypothesis_version: 6.151.14
+
+[0.1, 0.5, 3.0, 4.0, 7.0, 100.0, '(N+1)(N+2)/2 + 1', 'bobyqa', 'cobyla', 'lincoa', 'newuoa', 'num_vars + 2', 'num_vars + 3', 'uobyqa']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\generalized_gates\linear_function.py
+# hypothesis_version: 6.151.14
+
+[' + ', '(', ')\n', ', ', '2.1', 'barrier', 'cx', 'definition', 'delay', 'in Qiskit 3.0', 'linear_function', 'swap', 'x_']

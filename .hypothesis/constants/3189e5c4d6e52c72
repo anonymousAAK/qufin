@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\coupling.py
+# hypothesis_version: 6.151.14
+
+[', ', 'CouplingMap', '[', ']', '_dist_matrix', '_is_symmetric', '_qubit_list', '_size', 'description', 'full', 'graph', 'grid', 'heavy-hex', 'heavy-square', 'hexagonal-lattice', 'line', 'neato', 'ring']

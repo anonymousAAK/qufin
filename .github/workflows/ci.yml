@@ -16,7 +16,12 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
       - run: pip install -e ".[dev]"
-      - run: pytest -m "not hardware and not slow"
+      - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml
+      - uses: codecov/codecov-action@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        with:
+          file: coverage.xml
+          fail_ci_if_error: false
 
   lint:
     runs-on: ubuntu-latest
@@ -26,13 +31,53 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - run: pip install ruff black
+      - run: pip install ruff
       - run: ruff check src/ tests/
-      - run: black --check src/ tests/
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: |
+          mypy src/qufin/backtesting/ \
+               src/qufin/risk/classical_var.py \
+               src/qufin/risk/stress.py \
+               src/qufin/risk/counterparty.py \
+               src/qufin/portfolio/classical/
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install bandit pip-audit
+      - run: bandit -r src/qufin/ -ll -q
+      - run: pip install -e . && pip-audit
+        continue-on-error: true
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]" mkdocs mkdocs-material "mkdocstrings[python]"
+      - run: mkdocs build --strict
+        continue-on-error: true
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: test
+    needs: [test, lint, typecheck]
     runs-on: ubuntu-latest
     permissions:
       id-token: write

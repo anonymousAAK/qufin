@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\scip_conif.py
+# hypothesis_version: 6.151.14
+
+['BINARY', 'CONTINUOUS', 'EQUAL', 'INTEGER', 'LESS_THAN_OR_EQUAL', 'SCIP', 'bestsollimit', 'eq_dual', 'gaplimit', 'ineq_dual', 'infeasible', 'inforunbd', 'is_mip', 'memlimit', 'model', 'nodelimit', 'optimal', 'primal', 'restartlimit', 'scip_params', 'scip_status', 'soc_t_%d', 'sollimit', 'stallnodelimit', 'status', 'timelimit', 'totalnodelimit', 'unbounded', 'unknown', 'userinterrupt', 'value', 'x_%d', 'y']

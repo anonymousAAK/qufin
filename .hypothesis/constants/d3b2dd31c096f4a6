@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\highspy\__init__.py
+# hypothesis_version: 6.151.14
+
+['BasisValidity', 'HIGHS_VERSION_MAJOR', 'HIGHS_VERSION_MINOR', 'HIGHS_VERSION_PATCH', 'HessianFormat', 'Highs', 'HighsBasis', 'HighsBasisStatus', 'HighsHessian', 'HighsIis', 'HighsInfo', 'HighsInfoType', 'HighsLogType', 'HighsLp', 'HighsModel', 'HighsModelStatus', 'HighsOptionType', 'HighsOptions', 'HighsPresolveStatus', 'HighsRanging', 'HighsRangingRecord', 'HighsSolution', 'HighsSparseMatrix', 'HighsStatus', 'HighsVarType', 'IisBoundStatus', 'IisStrategy', 'MatrixFormat', 'ObjSense', 'SolutionStatus', '_Highs', '__doc__', 'cb', 'kBasisValidityValid', 'kHighsIInf', 'kHighsInf', 'kHighsUndefined', 'kSolutionStatusNone', 'simplex_constants']

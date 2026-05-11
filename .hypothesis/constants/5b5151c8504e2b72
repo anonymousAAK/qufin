@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\options\classical\monte_carlo.py
+# hypothesis_version: 6.151.14
+
+[0.0, 0.5, 1.96, 252, 100000, 'arithmetic', 'call', 'down-and-in', 'down-and-out', 'geometric', 'put', 'up-and-in', 'up-and-out']

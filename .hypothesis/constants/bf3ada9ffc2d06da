@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\util\_validators.py
+# hypothesis_version: 6.151.14
+
+['BoolishNoneT', 'BoolishT', 'argument', 'arguments', 'ascending', 'both', 'int_allowed', 'left', 'neither', 'none_allowed', 'numpy_nullable', 'pyarrow', 'right']

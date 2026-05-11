@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\ecos_bb_conif.py
+# hypothesis_version: 6.151.14
+
+['ECOS', 'exitFlag', 'info', 'is_mip', 'iter', 'mi_verbose', 'pcost', 'timing', 'tsetup', 'tsolve', 'x', 'y', 'z']

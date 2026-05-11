@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\arithmetic\functional_pauli_rotations.py
+# hypothesis_version: 6.151.14
+
+['F', 'Y', 'x', 'y', 'z']

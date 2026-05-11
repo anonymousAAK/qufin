@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\twirling.py
+# hypothesis_version: 6.151.14
+
+['_standard_gate', 'cx', 'cz', 'ecr', 'iswap']

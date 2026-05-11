@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\noise\errors\quantum_error.py
+# hypothesis_version: 6.151.14
+
+[1.0, 'I', 'condition', 'id', 'instructions', 'kraus', 'label', 'measure', 'name', 'operations', 'params', 'pauli', 'probabilities', 'qerror', 'qubits', 'reset', 'to_instruction', 'type', 'unitary', 'x', 'y', 'z']

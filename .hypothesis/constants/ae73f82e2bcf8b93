@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\rustworkx\visualization\graphviz.py
+# hypothesis_version: 6.151.14
+
+['-T', '-V', '-o', '_S', '_T', 'canon', 'circo', 'cmap', 'cmapx', 'cmapx_np', 'dia', 'dot', 'fdp', 'fig', 'gd', 'gd2', 'gif', 'graphviz_draw', 'hpgl', 'imap', 'imap_np', 'ismap', 'jpe', 'jpeg', 'jpg', 'mif', 'mp', 'neato', 'pcl', 'pdf', 'pic', 'plain', 'plain-ext', 'png', 'ps', 'ps2', 'sfdp', 'svg', 'svgz', 'twopi', 'utf-8', 'utf8', 'vml', 'vmlz', 'vrml', 'vtx', 'wbmp', 'xdor', 'xlib']

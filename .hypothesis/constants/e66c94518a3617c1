@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\problems\objective.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1.0, 'Maximize', 'Unsupported context ', 'dcp', 'dgp', 'maximize', 'minimize', 'objective']

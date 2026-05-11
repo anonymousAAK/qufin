@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\quantumcircuit.py
+# hypothesis_version: 6.151.14
+
+[1e-15, 1e-12, 1e-09, 1e-06, 0.001, 1000.0, 1000000.0, 1000000000.0, 1000000000000.0, 1000000000000000.0, '1', '1.3.0', '11', '2.1', '2.3', 'BitType', 'G', 'M', 'P', 'S', 'T', '__len__', '_builder_api', '_condition', '_data', '_dg', '_directive', '_reverse', 'advanced', 'alike', 'ancilla', 'annotated', 'basic', 'basic-dirty-ancilla', 'box', 'c', 'captures', 'circuit', 'drop', 'dt', 'expected a register', 'expr', 'f', 'ignore', 'in Qiskit 3.0', 'in Qiskit 3.0.0', 'k', 'layout', 'm', 'meas', 'medium', 'mode', 'ms', 'n', 'noancilla', 'ns', 'num_ancilla_qubits', 'p', 'params', 'ps', 'q', 'qiskit', 'recursion', 's', 'text', 'to_instruction', 'u', 'unreachable.', 'us', 'v-chain', 'v-chain-dirty', 'µ']

@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\cvx_attr2constr.py
+# hypothesis_version: 6.151.14
+
+['F', 'NSD', 'PSD', 'bounds', 'diag', 'neg', 'nonneg', 'nonpos', 'pos', 'sparse_coeff', 'sparsity', 'symmetric']

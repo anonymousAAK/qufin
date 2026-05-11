@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\backendproperties.py
+# hypothesis_version: 6.151.14
+
+["'", 'T1', 'T2', '_', 'backend_name', 'backend_version', 'date', 'duration', 'error', 'frequency', 'gate', 'gate_error', 'gate_length', 'gates', 'general', 'ies', 'ignore', 'last_update_date', 'measure', 'name', 'operational', 'parameters', 'qubits', 'readout_error', 'readout_length', 's', 'unit', 'value', "y '"]

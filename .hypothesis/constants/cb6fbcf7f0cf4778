@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\symplectic\sparse_pauli_op.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-14, 1.0, 256, 'I', 'Input list is empty', 'SparsePauliOp(', 'coeffs', 'copy', 'data', 'labels', 'qargs', 'stable', 'sympify']

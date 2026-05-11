@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\scipy\_lib\pyprima\common\linalg.py
+# hypothesis_version: 6.151.14
+
+[1e-10, 0.001, 0.1, 1.0, 2.1, 10.0, 100.0, 1000000.0, 'G @ X = [||X||, 0]', 'x must be a 2-vector']

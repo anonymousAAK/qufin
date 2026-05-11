@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\core\common.py
+# hypothesis_version: 6.151.14
+
+['__array__', '__name__', 'all', 'any', 'cumprod', 'cumsum', 'ignore', 'max', 'mean', 'median', 'min', 'np.maximum.reduce', 'np.minimum.reduce', 'np.sum', 'prod', 'std', 'sum', 'var']

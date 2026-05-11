@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\quantum_info\operators\symplectic\clifford_circuits.py
+# hypothesis_version: 6.151.14
+
+[1e-10, 0.5, 'ccx', 'ccz', 'cx', 'cy', 'cz', 'dcx', 'ecr', 'h', 'i', 'id', 'iden', 'iswap', 's', 'sdg', 'sinv', 'swap', 'sx', 'sxdg', 't', 'tdg', 'u', 'v', 'w', 'x', 'y', 'z']

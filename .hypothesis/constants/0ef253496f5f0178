@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\lin_ops\lin_op.py
+# hypothesis_version: 6.151.14
+
+['broadcast_to', 'concatenate', 'conv', 'dense_const', 'diag_mat', 'diag_vec', 'div', 'hstack', 'index', 'kron_l', 'kron_r', 'mul', 'mul_elem', 'neg', 'no_op', 'param', 'promote', 'reshape', 'rmul', 'scalar_const', 'sparse_const', 'sum', 'sum_entries', 'trace', 'transpose', 'upper_tri', 'variable', 'vstack']

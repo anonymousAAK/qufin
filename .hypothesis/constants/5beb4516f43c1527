@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit_aer\backends\unitary_simulator.py
+# hypothesis_version: 6.151.14
+
+[1e-10, 1000000.0, 'CPU', 'GPU', 'Thrust', 'backend_name', 'backend_version', 'basis_gates', 'ccx', 'ccz', 'conditional', 'coupling_map', 'cp', 'cswap', 'csx', 'cu', 'cu1', 'cu2', 'cu3', 'custom_instructions', 'cx', 'cy', 'cz', 'delay', 'description', 'device', 'diagonal', 'double', 'gates', 'h', 'id', 'local', 'max_shots', 'mcp', 'mcphase', 'mcr', 'mcrx', 'mcry', 'mcrz', 'mcswap', 'mcsx', 'mcu', 'mcu1', 'mcu2', 'mcu3', 'mcx', 'mcy', 'mcz', 'memory', 'method', 'multiplexer', 'n_qubits', 'open_pulse', 'p', 'pauli', 'r', 'reset', 'rx', 'rxx', 'ry', 'ryy', 'rz', 'rzx', 'rzz', 's', 'save_state', 'save_unitary', 'sdg', 'set_unitary', 'simulator', 'swap', 'sx', 'sxdg', 't', 'tdg', 'u', 'u1', 'u2', 'u3', 'unitary', 'unitary_simulator', 'url', 'x', 'y', 'z']

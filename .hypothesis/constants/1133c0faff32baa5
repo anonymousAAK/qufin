@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\transforms\partial_optimize.py
+# hypothesis_version: 6.151.14
+
+['PartialProblem', 'Unsupported context', 'dcp', 'dgp']

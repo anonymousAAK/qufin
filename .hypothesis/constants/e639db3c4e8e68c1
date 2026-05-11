@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\optimization\optimize_1q_decomposition.py
+# hypothesis_version: 6.151.14
+
+[0.0, 'U3', 'U321', 'ZSX', 'ZSXX', 'p', 'r', 'rx', 'ry', 'rz', 'sx', 'u', 'u1', 'u2', 'u3', 'x']

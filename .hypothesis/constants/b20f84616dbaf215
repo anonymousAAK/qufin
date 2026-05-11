@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\synthesis\two_qubit\xx_decompose\weyl.py
+# hypothesis_version: 6.151.14
+
+['X shift', 'X,Y shift', 'X,Y,Z shift', 'X,Z shift', 'Y shift', 'Y,Z shift', 'Z shift', 'no reflection', 'no shift', 'reflect XX, YY', 'reflect XX, ZZ', 'reflect YY, ZZ']

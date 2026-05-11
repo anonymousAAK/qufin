@@ -1,0 +1,4 @@
+# file: C:\Users\adars\OneDrive\Desktop\qufinance\src\qufin\risk\quantum_var.py
+# hypothesis_version: 6.151.14
+
+[0.0, 1e-10, 0.01, 0.05, 0.95, 1.0, 3.0, 1024, '0', 'canonical', 'cx', 'hi', 'id', 'iqae', 'lo', 'mlae', 'prob_exceed', 'step', 'threshold', 'u3']

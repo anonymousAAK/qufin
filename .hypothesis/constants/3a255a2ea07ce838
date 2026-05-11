@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\utils\units.py
+# hypothesis_version: 6.151.14
+
+[1000, 'G', 'M', 'P', 'T', 'f', 'k', 'm', 'n', 'p', 'u', 'µ']

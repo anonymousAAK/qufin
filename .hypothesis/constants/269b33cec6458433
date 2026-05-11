@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\pandas\io\pickle.py
+# hypothesis_version: 6.151.14
+
+['compression_options', 'filepath_or_buffer', 'ignore', 'infer', 'latin-1', 'rb', 'storage_options', 'wb']

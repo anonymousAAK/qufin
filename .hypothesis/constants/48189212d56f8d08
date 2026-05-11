@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\conic_solvers\cbc_conif.py
+# hypothesis_version: 6.151.14
+
+['CBC', 'automaticScaling', 'dual infeasible', 'dualTolerance', 'infeasibilityCost', 'logLevel', 'maxNumIteration', 'optimal', 'presolve', 'primal', 'primal infeasible', 'primalTolerance', 'relaxation abandoned', 'scaling', 'solution', 'status', 'stopped on gap', 'stopped on nodes', 'stopped on solutions', 'stopped on time', 'unset', 'value', 'x']

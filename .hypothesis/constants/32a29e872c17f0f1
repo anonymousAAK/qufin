@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\transpiler\passes\scheduling\scheduling\alap.py
+# hypothesis_version: 6.151.14
+
+['clbit_write_latency', 'node_start_time', 'stretch', 'time_unit']

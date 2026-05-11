@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\constraints\nonpos.py
+# hypothesis_version: 6.151.14
+
+['%s <= %s', '%s <= 0', '%s >= 0', 'Unsupported context ', 'dcp', 'dgp']

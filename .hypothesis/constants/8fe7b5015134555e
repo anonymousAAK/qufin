@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\qiskit\circuit\library\generalized_gates\pauli.py
+# hypothesis_version: 6.151.14
+
+['I', 'X', 'Y', 'Z', 'pauli', 'q']

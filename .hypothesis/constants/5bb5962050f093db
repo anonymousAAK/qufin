@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\utilities\citations.py
+# hypothesis_version: 6.151.14
+
+['CBC', 'CLARABEL', 'COPT', 'COSMO', 'CPLEX', 'CUCLARABEL', 'CUOPT', 'CVXOPT', 'CVXPY', 'DAQP', 'DCP', 'DGP', 'DIFFCP', 'DQCP', 'ECOS', 'ECOS_EXP', 'GLOP', 'GLPK', 'GLPK_MI', 'GUROBI', 'HIGHS', 'KNITRO', 'MOREAU', 'MOSEK', 'MOSEK_EXP', 'MPAX', 'NAG', 'OSQP', 'PDLP', 'PIQP', 'PROXQP', 'QOCO', 'QPALM', 'SCIP', 'SCIPY', 'SCS', 'SDPA', 'XPRESS']

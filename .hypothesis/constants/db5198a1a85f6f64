@@ -1,0 +1,4 @@
+# file: C:\Users\adars\AppData\Roaming\Python\Python314\site-packages\cvxpy\reductions\solvers\qp_solvers\xpress_qpif.py
+# hypothesis_version: 6.151.14
+
+[1e-30, 1e-09, 'B', 'CVX_xpress_qp', 'E', 'F', 'I', 'L', 'XPRESS', 'bargaptarget', 'bariter', 'constraint_names', 'feastol', 'getDual', 'getObjVal', 'getProbStatusString', 'getSolution', 'ineq_{0:09d}', 'initial_mip_idxs', 'initial_mip_values', 'model', 'n_eq', 'n_ineq', 'n_var', 'obj_value', 'solver_error', 'status', 'variable_names', 'warmstart', 'write_mps']
