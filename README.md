@@ -19,7 +19,7 @@
 
 *Every quantum algorithm ships with a classical baseline. No hype -- just reproducible results.*
 
-[Installation](#installation) &bull; [Quickstart](#quickstart) &bull; [Modules](#modules) &bull; [Architecture](#architecture) &bull; [Backends](#backends) &bull; [Benchmarks](#benchmarks) &bull; [Contributing](#contributing)
+[Installation](#installation) &bull; [Quickstart](#quickstart) &bull; [Modules](#modules) &bull; [Architecture](#architecture) &bull; [Backends](#backends) &bull; [Benchmarks](#benchmarks) &bull; [Docs](https://anonymousAAK.github.io/qufin/) &bull; [Contributing](#contributing)
 
 </div>
 

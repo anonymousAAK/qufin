@@ -47,7 +47,7 @@ print(f"BS Price: {opt.bs_price():.4f}")  # ~10.45
 ## Development Setup
 
 ```bash
-git clone https://github.com/qufinance/qufin.git
+git clone https://github.com/anonymousAAK/qufin.git
 cd qufin
 pip install -e ".[dev]"
 pytest tests/unit/  # Run tests

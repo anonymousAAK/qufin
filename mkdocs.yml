@@ -1,8 +1,8 @@
 site_name: qufin
 site_description: Research-grade quantum algorithms for quantitative finance
-site_url: https://qufinance.github.io/qufin/
-repo_url: https://github.com/qufinance/qufin
-repo_name: qufinance/qufin
+site_url: https://anonymousAAK.github.io/qufin/
+repo_url: https://github.com/anonymousAAK/qufin
+repo_name: anonymousAAK/qufin
 
 theme:
   name: material
@@ -69,7 +69,7 @@ plugins:
             show_root_full_path: false
             heading_level: 3
             members_order: source
-            docstring_style: numpy
+            docstring_style: google
 
 nav:
   - Home: index.md

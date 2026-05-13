@@ -72,10 +72,10 @@ dev = [
 all = ["qufin[ibm,pennylane,cirq,braket,ml,viz]"]
 
 [project.urls]
-Homepage = "https://github.com/qufinance/qufin"
-Documentation = "https://qufinance.github.io/qufin"
-Issues = "https://github.com/qufinance/qufin/issues"
-Changelog = "https://github.com/qufinance/qufin/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/anonymousAAK/qufin"
+Documentation = "https://anonymousAAK.github.io/qufin"
+Issues = "https://github.com/anonymousAAK/qufin/issues"
+Changelog = "https://github.com/anonymousAAK/qufin/blob/master/CHANGELOG.md"
 
 [tool.hatch.version]
 source = "vcs"
