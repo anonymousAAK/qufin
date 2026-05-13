@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
-authors = [{ name = "Adarsh", email = "adarsh@example.com" }]
+authors = [{ name = "Adarsh Keshri" }]
 maintainers = [{ name = "anonymousAAK" }]
 keywords = [
   "quantum",

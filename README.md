@@ -10,6 +10,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Tests](https://img.shields.io/badge/tests-635%20passing-brightgreen)]()
+[![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
 [![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)]()
 
 ---

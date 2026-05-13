@@ -24,7 +24,7 @@ We as members, contributors, and leaders pledge to make participation in the quf
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainer at **adarshkeshri027@gmail.com**. All complaints will be reviewed and investigated promptly and fairly. The maintainer is obligated to respect the privacy and security of the reporter.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainer via [GitHub Issues](https://github.com/anonymousAAK/qufin/issues). All complaints will be reviewed and investigated promptly and fairly. The maintainer is obligated to respect the privacy and security of the reporter.
 
 ## Attribution
 

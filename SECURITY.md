@@ -11,7 +11,7 @@
 If you discover a security vulnerability in qufin, please report it responsibly:
 
 1. **Do not** open a public GitHub issue.
-2. Email **adarshkeshri027@gmail.com** with the subject line `[qufin security]`.
+2. Open a **private security advisory** at [github.com/anonymousAAK/qufin/security/advisories/new](https://github.com/anonymousAAK/qufin/security/advisories/new).
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
