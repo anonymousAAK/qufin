@@ -25,7 +25,7 @@ jobs:
           cache: pip
       - run: pip install -e ".[dev]" mkdocs mkdocs-material "mkdocstrings[python]" pymdown-extensions
       - run: mkdocs build --strict
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
