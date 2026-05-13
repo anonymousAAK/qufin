@@ -80,6 +80,10 @@ nav:
     - Portfolio Optimization: user-guide/portfolio.md
     - Option Pricing: user-guide/options.md
     - Risk Management: user-guide/risk.md
+    - Hedging: user-guide/hedging.md
+    - Machine Learning: user-guide/ml.md
+    - Exotic Derivatives: user-guide/derivatives.md
+    - Data Sources: user-guide/data.md
     - Backends: user-guide/backends.md
     - Backtesting: user-guide/backtesting.md
   - Theory:
@@ -91,7 +95,11 @@ nav:
     - Portfolio: api/portfolio.md
     - Options: api/options.md
     - Risk: api/risk.md
+    - Hedging: api/hedging.md
+    - Machine Learning: api/ml.md
+    - Derivatives: api/derivatives.md
     - Backtesting: api/backtesting.md
     - Data: api/data.md
     - Benchmarks: api/benchmarks.md
   - Benchmarks: benchmarks.md
+  - FAQ: faq.md

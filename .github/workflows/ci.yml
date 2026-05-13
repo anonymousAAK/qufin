@@ -16,7 +16,7 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
       - run: pip install -e ".[dev]"
-      - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml
+      - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml --cov-fail-under=90
       - uses: codecov/codecov-action@v4
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         with:
@@ -73,7 +73,6 @@ jobs:
           cache: pip
       - run: pip install -e ".[dev]" mkdocs mkdocs-material "mkdocstrings[python]"
       - run: mkdocs build --strict
-        continue-on-error: true
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

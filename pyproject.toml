@@ -140,3 +140,22 @@ markers = [
   "hardware: tests that require real quantum hardware credentials",
   "regression: paper-reproduction regression tests",
 ]
+
+[tool.coverage.run]
+source = ["qufin"]
+omit = [
+  "src/qufin/_version.py",
+  "src/qufin/backends/ibm_runtime.py",
+  "src/qufin/backends/pennylane_backend.py",
+  "src/qufin/backends/cirq_backend.py",
+  "src/qufin/backends/braket_backend.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "if __name__ == .__main__.",
+]

@@ -1,0 +1,36 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    groups:
+      quantum:
+        patterns:
+          - "qiskit*"
+          - "pennylane*"
+          - "cirq*"
+          - "amazon-braket*"
+      scientific:
+        patterns:
+          - "numpy"
+          - "scipy"
+          - "pandas"
+          - "scikit-learn"
+      dev:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "mypy"
+          - "hypothesis"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - ci
