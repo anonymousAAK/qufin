@@ -1,25 +1,34 @@
 # Governance
 
-## Current model: BDFL (Year 1)
+## Current model: BDFL
 
-qufin is currently maintained by a single developer (Adarsh) with final say
-on all decisions. This is the "Benevolent Dictator For Life" model, appropriate
-for a solo project in its first year.
-
-## Transition trigger (Year 2+)
-
-When the project has 3 or more external contributors with 5+ merged PRs each,
-governance transitions to a 3-person Steering Council with rotating chair.
+qufin is maintained by [Adarsh Keshri](https://github.com/anonymousAAK) with final say on all technical and project decisions. This is appropriate for a project in its first year with a single core developer.
 
 ## Contributor ladder
 
-1. **Contributor** - Anyone with a merged PR
-2. **Triager** - Issue triage rights (after 3+ merged PRs)
-3. **Committer** - Merge rights on assigned modules (after 5+ merged PRs)
-4. **Maintainer** - Release rights (Steering Council members)
+| Role | Access | Requirements |
+|---|---|---|
+| **Contributor** | -- | 1+ merged PR |
+| **Triager** | Issue triage, label management | 3+ merged PRs |
+| **Committer** | Merge rights on assigned modules | 5+ merged PRs, demonstrated domain expertise |
+| **Maintainer** | Release rights, Steering Council | Steering Council appointment |
+
+## Transition to Steering Council
+
+When the project reaches **3+ external contributors with 5+ merged PRs each**, governance transitions to a 3-person Steering Council with rotating chair (6-month terms).
 
 ## Decision process
 
-- Minor decisions (bug fixes, docs): maintainer discretion
-- Moderate decisions (new features, API changes): RFC in GitHub Discussions
-- Major decisions (architecture, licensing): Steering Council vote (future)
+| Scope | Process |
+|---|---|
+| Bug fixes, docs, minor improvements | Maintainer discretion |
+| New features, API changes | RFC in GitHub Discussions, 7-day comment period |
+| Architecture, licensing, governance | Steering Council vote (future) |
+
+## Conflict resolution
+
+If a contributor disagrees with a decision, they can:
+
+1. Open a GitHub Discussion explaining their position
+2. Request a formal review from the maintainer (or Steering Council, when active)
+3. The maintainer's decision is final until the Steering Council is established

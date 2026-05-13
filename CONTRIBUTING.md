@@ -1,90 +1,106 @@
 # Contributing to qufin
 
-Thank you for your interest in contributing to qufin. This guide covers the workflow and standards for contributions.
+Thanks for considering a contribution to qufin. Whether it's a bug fix, new algorithm, or documentation improvement, we appreciate the help.
 
-## Getting Started
-
-1. Fork the repository on GitHub.
-2. Clone your fork and create a feature branch:
+## Setup
 
 ```bash
+# Fork and clone
 git clone https://github.com/<your-username>/qufin.git
 cd qufin
-git checkout -b feature/your-feature-name
-```
 
-3. Install the package in development mode with all extras:
+# Create a virtual environment
+python -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 
-```bash
+# Install in development mode
 pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
 ```
 
-## Development Workflow
+## Development workflow
 
-### Running Tests
+1. Create a feature branch from `master`:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
 
-Run the fast test suite (excludes hardware and slow integration tests):
+2. Make your changes. Follow the [code style](#code-style) guidelines below.
+
+3. Run the checks:
+   ```bash
+   ruff check src/ tests/        # Lint
+   ruff format --check src/ tests/  # Format check
+   mypy src/qufin/               # Type check
+   pytest -m "not hardware and not slow"  # Fast test suite
+   ```
+
+4. Push and open a PR against `master`.
+
+## Code style
+
+| Rule | Detail |
+|---|---|
+| **Formatter / linter** | ruff (config in `pyproject.toml`) |
+| **Line length** | 100 characters |
+| **Variable naming** | Finance/math conventions are fine: `S` (spot), `K` (strike), `T` (maturity), `sigma`, `mu`. Use descriptive names for everything else. |
+| **Docstrings** | Google style. Required for all public functions and classes. |
+| **Type hints** | Required for all public function signatures. |
+| **Imports** | Sorted by ruff (`I` rules). Use lazy imports for optional dependencies. |
+
+## Project structure
+
+Every quantum algorithm in qufin ships alongside a classical baseline for the same problem. When adding a new algorithm:
+
+```
+src/qufin/<module>/
+    classical/       # Classical implementation
+    quantum_algo.py  # Quantum implementation
+```
+
+- Classical and quantum implementations should solve the **same problem** with the **same interface** where possible.
+- Add tests in `tests/unit/` (fast, no simulator needed) and `tests/integration/` (Qiskit Aer required).
+- Use `MockBackend` for unit tests so they run without a simulator.
+
+## Testing
 
 ```bash
-pytest -m "not hardware and not slow"
+pytest                              # Full suite
+pytest tests/unit/                  # Unit tests only
+pytest tests/integration/           # Integration tests (needs Qiskit Aer)
+pytest tests/property/              # Property-based tests (Hypothesis)
+pytest tests/stress/                # Stress tests
+pytest -m "not hardware and not slow"  # CI-friendly fast suite
+pytest -k "test_black_scholes"      # Run specific tests
 ```
 
-Run the full suite including slow tests:
+**Test requirements:**
+- New features must include tests
+- Bug fixes should include a regression test
+- Aim for coverage on both happy paths and edge cases
+- Use `@pytest.mark.slow` for tests taking >5s
+- Use `@pytest.mark.hardware` for tests requiring IBM credentials
 
-```bash
-pytest
-```
+## Pull request checklist
 
-### Linting and Formatting
+Before submitting:
 
-Check for lint issues:
-
-```bash
-ruff check src/ tests/
-```
-
-Auto-format code:
-
-```bash
-ruff format src/ tests/
-```
-
-### Type Checking
-
-Run mypy on modules that have strict typing enabled:
-
-```bash
-mypy src/qufin/
-```
-
-## Code Style
-
-- **Formatter/linter**: ruff (configured in `pyproject.toml`)
-- **Line length**: 100 characters
-- **Variable naming**: Standard finance and mathematics conventions are acceptable for variable names (e.g., `S` for spot price, `K` for strike, `T` for time to maturity, `sigma` for volatility, `mu` for drift). Use descriptive names for everything else.
-- **Docstrings**: Google style. All public functions and classes must have docstrings.
-- **Type hints**: Required for all public function signatures.
-
-## Pull Request Requirements
-
-Before submitting a PR, verify the following:
-
-- [ ] All tests pass (`pytest -m "not hardware and not slow"`)
+- [ ] Tests pass (`pytest -m "not hardware and not slow"`)
 - [ ] No lint errors (`ruff check src/ tests/`)
 - [ ] Code is formatted (`ruff format --check src/ tests/`)
 - [ ] Type checks pass on modified modules (`mypy`)
-- [ ] New functionality includes tests
-- [ ] Docstrings are present for all public APIs
+- [ ] New code has tests
+- [ ] Public APIs have docstrings
+- [ ] `CHANGELOG.md` updated (if user-facing change)
 
-## Submitting a Pull Request
+## Reporting issues
 
-1. Push your branch to your fork.
-2. Open a pull request against the `main` branch of the upstream repository.
-3. Fill out the PR template completely.
-4. Ensure CI checks pass.
+Use the GitHub issue templates:
+- **Bug reports**: Include a minimal reproduction, Python/qufin/Qiskit versions, and full traceback
+- **Feature requests**: Describe the use case and reference relevant papers or algorithms if applicable
 
-A maintainer will review your PR and may request changes. Please respond to feedback promptly.
+## Questions?
 
-## Reporting Issues
-
-Use the GitHub issue templates for bug reports and feature requests. Provide as much detail as possible to help us reproduce and address the issue.
+Open a [GitHub Discussion](https://github.com/anonymousAAK/qufin/discussions) for questions about architecture, design decisions, or "is this a good idea?" conversations.

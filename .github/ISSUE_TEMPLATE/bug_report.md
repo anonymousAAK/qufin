@@ -8,39 +8,34 @@ assignees: ''
 
 ## Description
 
-A clear and concise description of the bug.
+<!-- A clear, concise description of the bug. -->
 
-## Steps to Reproduce
-
-1. Install qufin version X.X.X
-2. Run the following code:
+## Reproduction
 
 ```python
-# Minimal code to reproduce the issue
+# Minimal code that reproduces the issue
 ```
 
-3. Observe the error.
+**Expected**: <!-- What should happen -->
+**Actual**: <!-- What actually happens -->
 
-## Expected Behavior
-
-Describe what you expected to happen.
-
-## Actual Behavior
-
-Describe what actually happened. Include the full error traceback if applicable.
+<details>
+<summary>Full traceback</summary>
 
 ```
-Paste error output here
+Paste the complete error traceback here
 ```
+
+</details>
 
 ## Environment
 
-- **Python version**: (e.g., 3.12.0)
-- **qufin version**: (e.g., 0.1.0)
-- **OS**: (e.g., Ubuntu 24.04, Windows 11, macOS 15)
-- **Qiskit version** (if relevant): (e.g., 2.4.1)
-- **Installation method**: (e.g., pip, from source)
+- **Python**: <!-- e.g. 3.12.0 -->
+- **qufin**: <!-- e.g. 0.1.0 -->
+- **Qiskit**: <!-- e.g. 2.4.1 (if relevant) -->
+- **OS**: <!-- e.g. Ubuntu 24.04, Windows 11, macOS 15 -->
+- **Install method**: <!-- pip, from source, conda -->
 
-## Additional Context
+## Additional context
 
-Add any other relevant information, logs, or screenshots.
+<!-- Screenshots, logs, or anything else that helps. -->

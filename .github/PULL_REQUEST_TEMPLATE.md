@@ -1,29 +1,29 @@
 ## Summary
 
-Describe the changes in this PR and the motivation behind them.
+<!-- What does this PR do and why? Link related issues with "Closes #123". -->
 
-Closes #(issue number)
+Closes #
 
-## Type of Change
+## Type of change
 
-- [ ] Bug fix (non-breaking change that fixes an issue)
-- [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
 - [ ] Performance improvement
 - [ ] Refactor (no functional changes)
-- [ ] Documentation update
-- [ ] CI/CD or build configuration change
+- [ ] Documentation
+- [ ] CI/CD or build config
+
+## What to review
+
+<!-- Point reviewers to the most important changes. Mention any tricky parts. -->
 
 ## Checklist
 
-- [ ] Tests pass locally (`pytest -m "not hardware and not slow"`)
-- [ ] Lint is clean (`ruff check src/ tests/`)
-- [ ] Code is formatted (`ruff format --check src/ tests/`)
+- [ ] Tests pass (`pytest -m "not hardware and not slow"`)
+- [ ] Lint clean (`ruff check src/ tests/`)
+- [ ] Formatted (`ruff format --check src/ tests/`)
 - [ ] Type checks pass (`mypy`)
-- [ ] New code has tests with adequate coverage
+- [ ] New code has tests
 - [ ] Public APIs have docstrings
-- [ ] CHANGELOG.md updated (if applicable)
-
-## Notes for Reviewers
-
-Add any context that would help reviewers understand the changes.
+- [ ] `CHANGELOG.md` updated (if user-facing)

@@ -6,18 +6,19 @@ labels: enhancement
 assignees: ''
 ---
 
-## Description
+## Problem
 
-A clear and concise description of the feature you are requesting.
+<!-- What problem does this solve? What workflow is missing or painful? -->
 
-## Use Case
+## Proposed solution
 
-Explain the problem this feature would solve or the workflow it would enable. Include references to relevant financial models, quantum algorithms, or academic papers if applicable.
+<!-- Describe your preferred approach. If you've considered alternatives, list them with trade-offs. -->
 
-## Proposed Solution
+## References
 
-Describe your preferred approach to implementing this feature. If you have considered alternatives, list them here with trade-offs.
+<!-- Link to relevant papers, algorithms, or implementations. This is especially helpful for quantum finance algorithms. -->
 
-## Additional Context
+## Would you work on this?
 
-Add any other information, references, or examples that support this request.
+- [ ] I'd like to implement this myself (maintainer guidance welcome)
+- [ ] I'm requesting this for someone else to build
