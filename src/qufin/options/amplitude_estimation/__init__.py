@@ -23,6 +23,22 @@ from qufin.options.amplitude_estimation.mlae import (
     MLAEConfig,
     MLAEResult,
 )
+from qufin.options.amplitude_estimation.mrqae import (
+    ModifiedRealQAE,
+    direct_encode_distribution,
+    MRQAEConfig,
+    MRQAEResult,
+    price_european_mrqae,
+)
+from qufin.options.amplitude_estimation.multi_asset_qae import (
+    MultiAssetQAEResult,
+    MultiAssetSpec,
+    build_basket_payoff_oracle,
+    build_multi_asset_distribution,
+    build_multi_asset_estimation_problem,
+    price_multi_asset_mc,
+    price_multi_asset_qae,
+)
 
 __all__ = [
     "CanonicalAmplitudeEstimation",
@@ -38,4 +54,16 @@ __all__ = [
     "MLAEConfig",
     "MLAEResult",
     "MaximumLikelihoodAmplitudeEstimation",
+    "ModifiedRealQAE",
+    "MultiAssetQAEResult",
+    "MultiAssetSpec",
+    "direct_encode_distribution",
+    "build_basket_payoff_oracle",
+    "build_multi_asset_distribution",
+    "build_multi_asset_estimation_problem",
+    "MRQAEConfig",
+    "MRQAEResult",
+    "price_european_mrqae",
+    "price_multi_asset_mc",
+    "price_multi_asset_qae",
 ]
