@@ -1,4 +1,4 @@
-"""Quantum portfolio optimizers: QAOA, VQE, warm-start, hybrid, ADMM, multi-period."""
+"""Quantum portfolio optimizers: QAOA, VQE, warm-start, hybrid, ADMM, multi-period, robust, Szegedy walk."""
 
 from __future__ import annotations
 
@@ -12,6 +12,19 @@ from qufin.portfolio.optimizers.multi_period import (
     multi_period_optimize,
 )
 from qufin.portfolio.optimizers.qaoa import QAOAConfig, QAOAPortfolio, QAOAResult
+from qufin.portfolio.optimizers.quantum_walk import (
+    SzegedyWalkConfig,
+    SzegedyWalkOptimizer,
+    SzegedyWalkResult,
+    classical_random_walk,
+)
+from qufin.portfolio.optimizers.robust import (
+    EllipsoidalUncertaintySet,
+    RobustPortfolioOptimizer,
+    RobustPortfolioResult,
+    build_ellipsoidal_uncertainty,
+    robust_classical,
+)
 from qufin.portfolio.optimizers.vqe import VQEConfig, VQEPortfolio, VQEResult
 from qufin.portfolio.optimizers.warm_start import (
     WarmStartResult,
@@ -25,6 +38,7 @@ __all__ = [
     "ADMMConfig",
     "ADMMPortfolio",
     "ADMMResult",
+    "EllipsoidalUncertaintySet",
     "HybridConfig",
     "HybridOptimizer",
     "HybridResult",
@@ -33,11 +47,19 @@ __all__ = [
     "QAOAConfig",
     "QAOAPortfolio",
     "QAOAResult",
+    "RobustPortfolioOptimizer",
+    "RobustPortfolioResult",
+    "SzegedyWalkConfig",
+    "SzegedyWalkOptimizer",
+    "SzegedyWalkResult",
     "VQEConfig",
     "VQEPortfolio",
     "VQEResult",
     "WarmStartResult",
+    "build_ellipsoidal_uncertainty",
+    "classical_random_walk",
     "compute_turnover",
+    "robust_classical",
     "continuous_relaxation",
     "multi_period_backtest",
     "multi_period_optimize",

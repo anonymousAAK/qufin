@@ -44,6 +44,14 @@ from qufin.risk.quantum_risk_pipeline import (
     quantum_stress_var,
     quantum_var_pipeline,
 )
+from qufin.risk.quantum_stress import (
+    QuantumStressResult,
+    QuantumStressTester,
+    ScenarioLoss,
+    StressScenarioSpec,
+    classical_stress_test,
+    run_quantum_stress_test,
+)
 from qufin.risk.quantum_var import (
     QuantumVaRConfig,
     QuantumVaRResult,
@@ -58,10 +66,15 @@ __all__ = [
     "GARCHResult",
     "PortfolioRiskSpec",
     "QuantumRiskResult",
+    "QuantumStressResult",
+    "QuantumStressTester",
     "QuantumVaRConfig",
     "QuantumVaRResult",
+    "ScenarioLoss",
+    "StressScenarioSpec",
     "VaRResult",
     "build_loss_distribution",
+    "classical_stress_test",
     "build_loss_loading_circuit",
     "build_portfolio_loss_distribution",
     "build_tail_oracle",
@@ -84,4 +97,5 @@ __all__ = [
     "quantum_var",
     "quantum_var_pipeline",
     "rolling_garch_forecast",
+    "run_quantum_stress_test",
 ]

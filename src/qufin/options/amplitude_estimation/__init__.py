@@ -2,6 +2,17 @@
 
 from __future__ import annotations
 
+from qufin.options.amplitude_estimation.american_qae import (
+    AmericanQAEResult,
+    AmericanQAESpec,
+    BasisType,
+    QuantumLSM,
+    ResourceEstimate,
+    american_binomial,
+    estimate_resources,
+    price_american_classical,
+    price_american_qae,
+)
 from qufin.options.amplitude_estimation.canonical import (
     CanonicalAmplitudeEstimation,
     CanonicalQAEConfig,
@@ -39,8 +50,27 @@ from qufin.options.amplitude_estimation.multi_asset_qae import (
     price_multi_asset_mc,
     price_multi_asset_qae,
 )
+from qufin.options.amplitude_estimation.path_dependent_qae import (
+    PathDependentAsianSpec,
+    PathDependentQAEResult,
+    build_asian_payoff_oracle,
+    build_path_dependent_estimation_problem,
+    build_path_state_preparation,
+    compute_path_averages,
+    price_asian_mc,
+    price_asian_qae,
+)
 
 __all__ = [
+    "AmericanQAEResult",
+    "AmericanQAESpec",
+    "BasisType",
+    "QuantumLSM",
+    "ResourceEstimate",
+    "american_binomial",
+    "estimate_resources",
+    "price_american_classical",
+    "price_american_qae",
     "CanonicalAmplitudeEstimation",
     "CanonicalQAEConfig",
     "CanonicalQAEResult",
@@ -66,4 +96,12 @@ __all__ = [
     "price_european_mrqae",
     "price_multi_asset_mc",
     "price_multi_asset_qae",
+    "PathDependentAsianSpec",
+    "PathDependentQAEResult",
+    "build_asian_payoff_oracle",
+    "build_path_dependent_estimation_problem",
+    "build_path_state_preparation",
+    "compute_path_averages",
+    "price_asian_mc",
+    "price_asian_qae",
 ]
