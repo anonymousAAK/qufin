@@ -57,6 +57,7 @@ cirq = ["cirq-core>=1.3"]
 braket = ["amazon-braket-sdk>=1.80"]
 ml = ["torch>=2.2"]
 viz = ["plotly>=5.20"]
+dwave = ["dwave-ocean-sdk>=6.0"]
 api = ["fastapi>=0.110", "uvicorn>=0.29", "celery[redis]>=5.3", "redis>=5.0"]
 docs = ["sphinx>=7", "sphinx-book-theme", "myst-nb", "sphinx-copybutton"]
 dev = [
@@ -70,7 +71,10 @@ dev = [
   "pre-commit",
   "nbstripout",
 ]
-all = ["qufin[ibm,pennylane,cirq,braket,ml,viz]"]
+all = ["qufin[ibm,pennylane,cirq,braket,dwave,ml,viz]"]
+
+[project.scripts]
+qufin = "qufin.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/anonymousAAK/qufin"

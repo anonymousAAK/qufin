@@ -19,7 +19,7 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 [![PyPI](https://img.shields.io/pypi/v/qufin?color=blue)](https://pypi.org/project/qufin/)
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-1724%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-2273%20passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)]()
 [![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -27,7 +27,7 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 <br>
 
 <sub>
-129 modules &nbsp;&middot;&nbsp; 12 subpackages &nbsp;&middot;&nbsp; 1,724 tests &nbsp;&middot;&nbsp; 8 backends &nbsp;&middot;&nbsp; 5 error mitigation strategies &nbsp;&middot;&nbsp; 4 QAE variants
+146 modules &nbsp;&middot;&nbsp; 14 subpackages &nbsp;&middot;&nbsp; 2,273 tests &nbsp;&middot;&nbsp; 9 backends &nbsp;&middot;&nbsp; 5 error mitigation strategies &nbsp;&middot;&nbsp; 4 QAE variants
 </sub>
 
 <br>
@@ -60,7 +60,7 @@ Every quantum algorithm ships alongside the best classical solver for the same p
 
 **Backend-agnostic**
 
-Write your algorithm once. Run it on Qiskit Aer, IBM hardware, PennyLane, Cirq, Amazon Braket, or NVIDIA CUDA-Q. One interface, eight backends.
+Write your algorithm once. Run it on Qiskit Aer, IBM hardware, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, or D-Wave. One interface, nine backends.
 
 </td>
 <td width="33%" valign="top">
@@ -101,6 +101,7 @@ Requires Python 3.10+
 | `qufin[cirq]` | Google Cirq &mdash; Sycamore / Willow target support |
 | `qufin[braket]` | Amazon Braket &mdash; IonQ, Rigetti, IQM hardware |
 | `qufin[cudaq]` | NVIDIA CUDA-Q &mdash; GPU-accelerated simulation |
+| `qufin[dwave]` | D-Wave Ocean &mdash; quantum annealing |
 | `qufin[ml]` | PyTorch &mdash; deep hedging and quantum ML |
 | `qufin[viz]` | Plotly &mdash; interactive visualization |
 | `qufin[api]` | FastAPI, Celery, Redis &mdash; REST API and job queue |
@@ -218,7 +219,8 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 | | Methods |
 |:--|:--------|
 | **Classical** | Mean-Variance (CVXPY), Black-Litterman, Risk Parity, HRP, Multi-Period, ADMM, Factor Models |
-| **Quantum** | QAOA (4 mixers), VQE, Warm-Start, Szegedy Walk, Robust CVaR QUBO, Sector Rotation (VQC) |
+| **Quantum** | QAOA (4 mixers), VQE, Warm-Start, Szegedy Walk, Robust CVaR QUBO, Sector Rotation (VQC), Grover Search, Quantum IPM |
+| **Annealing** | D-Wave QUBO solver (Pegasus/Zephyr/Chimera topology, CQM hybrid) |
 | **Constraints** | Cardinality, sector, turnover, transaction cost, budget |
 
 ### Option Pricing
@@ -226,7 +228,7 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 | | Methods |
 |:--|:--------|
 | **Classical** | Black-Scholes (full Greeks), Monte Carlo (European/Asian/Barrier), CRR Binomial, LSM American, Implied Vol (SABR/SVI) |
-| **Quantum** | Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE (Quantum LSM) |
+| **Quantum** | Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE (Quantum LSM), QMC (Montanaro), QSP Pricing |
 | **Exotics** | Bermudan, lookback, cliquet, autocallable, basket |
 
 ### Risk Management
@@ -234,7 +236,7 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 | | Methods |
 |:--|:--------|
 | **Classical** | VaR (historical/parametric/MC), CVaR, stress testing, CVA/DVA |
-| **Quantum** | Quantum VaR, Egger credit-risk, Quantum Stress Testing |
+| **Quantum** | Quantum VaR, Egger credit-risk, Quantum Stress Testing, HHL Linear Systems |
 | **Credit** | Gaussian copula, NIG copula |
 
 </td>
@@ -245,14 +247,14 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 | | Methods |
 |:--|:--------|
 | **Classical** | Delta hedging, deep hedging (PyTorch) |
-| **Quantum** | Quantum deep hedging, RL-quantum hedging |
+| **Quantum** | Quantum deep hedging, RL-quantum hedging, Quantum RL PPO hedging |
 
 ### Machine Learning
 
 | | Methods |
 |:--|:--------|
 | **Classical** | Standard classifiers |
-| **Quantum** | Kernel methods, VQC, qGAN, reservoir computing |
+| **Quantum** | Kernel methods, VQC, qGAN, reservoir computing, Boltzmann machine, HQGAN, credit scoring, transfer learning |
 
 ### Error Mitigation
 
@@ -314,6 +316,7 @@ backend = auto_select_backend(circuit)
 | `CirqBackend` | Google QPU | Sycamore/Willow, XEB noise characterization |
 | `BraketBackend` | AWS QPU | IonQ Aria/Forte, Rigetti Ankaa, cost estimation |
 | `CudaQBackend` | GPU | NVIDIA CUDA-Q, multi-GPU for 30+ qubits |
+| `DWaveBackend` | D-Wave QPU | Pegasus/Zephyr annealing, CQM hybrid solver |
 
 <br>
 
@@ -358,21 +361,28 @@ src/qufin/
         dynamical_decoupling.py    XY4, CPMG, Uhrig DD
         m3_mitigation.py           Matrix-free measurement mitigation
         noise_aware_optimizer.py   Noise-aware variational optimization
+        dwave_backend.py           D-Wave annealing (Pegasus/Zephyr/Chimera)
     options/
         classical/                 Black-Scholes, binomial, Monte Carlo
-        amplitude_estimation/      QAE, IQAE, MLAE, FQAE, path-dep, American
+        amplitude_estimation/      QAE, IQAE, MLAE, FQAE, path-dep, American, QMC, QSP
         implied_vol_surface.py     SABR, SVI, QSVM regression
     portfolio/
         classical/                 MVO, Black-Litterman, HRP, Risk Parity, Factors
-        optimizers/                QAOA, VQE, warm-start, ADMM, hybrid, robust, walk
+        optimizers/                QAOA, VQE, warm-start, ADMM, hybrid, robust, walk, Grover, IPM
         sector_rotation.py         VQC regime detection (11 GICS sectors)
         qubo.py                    QUBO builder + constraints
         mixers.py                  X, XY-ring, XY-full, Grover mixers
     risk/                          VaR, CVaR, stress testing, CVA/DVA
         quantum_stress.py          Quantum stress testing (GFC, COVID, rate hike)
+        quantum_linear_systems.py  HHL for factor exposures, condition analysis
         credit/                    Egger, Gaussian copula, NIG copula
     hedging/                       Delta, deep hedging, quantum RL
+        quantum_rl_hedging.py      PPO with VQC policy, GBM/Heston environments
     ml/                            Kernels, VQC, qGAN, reservoir computing
+        quantum_boltzmann.py       Regime detection (risk-on/off/crisis/recovery)
+        quantum_gan_finance.py     HQGAN for synthetic market data
+        quantum_credit_scoring.py  Projected quantum kernel credit scoring
+        quantum_transfer.py        Classical-to-quantum transfer learning
     derivatives/                   Bermudan, lookback, cliquet, autocallable, basket
     data/                          Yahoo Finance, FRED, GBM/Heston/Merton synthetic
         bloomberg.py               Bloomberg Terminal connector (blpapi)
@@ -382,6 +392,12 @@ src/qufin/
         quality.py                 Data quality, lineage, scoring
     backtesting/                   Walk-forward engine, 15+ performance metrics
     benchmarks/                    Problem sets, runner, leaderboard, hardware validation
+        resource_estimation.py     Surface code overhead, break-even timeline
+    viz/                           Visualization and dashboards
+        widgets.py                 Efficient frontier, convergence, risk heatmap
+        dashboard.py               Portfolio dashboard + Dash app factory
+    cli.py                         CLI: optimize, price, risk, benchmark
+    plugins.py                     Entry-point plugin discovery
     api/                           REST API + async job queue
         server.py                  FastAPI endpoints (optimize, price, risk)
         jobs.py                    Celery job queue with priority routing
@@ -412,18 +428,20 @@ pytest -m "not hardware"           # Skip hardware-dependent tests
 
 | Component | Status | Tests |
 |:----------|:-------|:------|
-| Portfolio Optimization | **Stable** | 280+ |
-| Option Pricing (BS + 4 QAE variants) | **Stable** | 200+ |
-| Risk Management (VaR/CVaR + quantum) | **Stable** | 120+ |
-| Backends (8 targets) | **Stable** | 180+ |
+| Portfolio Optimization (QAOA, VQE, Grover, IPM, ADMM, Walk) | **Stable** | 350+ |
+| Option Pricing (BS + 4 QAE + QMC + QSP) | **Stable** | 270+ |
+| Risk Management (VaR/CVaR + HHL + quantum stress) | **Stable** | 160+ |
+| Backends (9 targets incl. D-Wave) | **Stable** | 220+ |
 | Error Mitigation (ZNE, TREX, PEC, CDR, DD, M3) | **Stable** | 150+ |
 | Backtesting Engine | **Stable** | 40+ |
-| Benchmarks & Hardware Validation | **Stable** | 50+ |
+| Benchmarks & Resource Estimation | **Stable** | 90+ |
 | Data Layer (Yahoo, FRED, Bloomberg, Refinitiv, streaming) | **Stable** | 200+ |
 | REST API & Job Queue | **Stable** | 78 |
 | Compliance & Audit | **Stable** | 109 |
-| Hedging (delta + deep + quantum) | **Beta** | 50+ |
-| ML (kernels, VQC, qGAN) | **Beta** | 70+ |
+| Hedging (delta + deep + quantum RL PPO) | **Stable** | 100+ |
+| ML (kernels, VQC, qGAN, Boltzmann, HQGAN, credit, transfer) | **Stable** | 200+ |
+| Visualization & Dashboard | **Stable** | 75+ |
+| CLI & Plugins | **Stable** | 68 |
 
 <br>
 

@@ -103,5 +103,7 @@ nav:
     - Benchmarks: api/benchmarks.md
     - REST API: api/api.md
     - Compliance: api/compliance.md
+    - Visualization: api/viz.md
+    - CLI & Plugins: api/cli.md
   - Benchmarks: benchmarks.md
   - FAQ: faq.md

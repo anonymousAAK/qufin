@@ -1,4 +1,4 @@
-"""Risk analysis: VaR, CVaR, credit risk (classical + quantum)."""
+"""Risk analysis: VaR, CVaR, credit risk, quantum linear systems (classical + quantum)."""
 
 from __future__ import annotations
 
@@ -35,6 +35,18 @@ from qufin.risk.garch import (
     forecast_evaluate,
     rolling_garch_forecast,
 )
+from qufin.risk.quantum_linear_systems import (
+    ConditionNumberReport,
+    FactorExposureResult,
+    HHLConfig,
+    LinearSystemResult,
+    analyse_condition_number,
+    cholesky_solve,
+    compute_factor_exposures,
+    condition_sensitivity_comparison,
+    generate_test_covariance,
+    solve_linear_system,
+)
 from qufin.risk.quantum_risk_pipeline import (
     PortfolioRiskSpec,
     QuantumRiskResult,
@@ -62,8 +74,12 @@ from qufin.risk.quantum_var import (
 __all__ = [
     "AscendingCVaR",
     "CVaRObjective",
+    "ConditionNumberReport",
     "CounterpartyExposure",
+    "FactorExposureResult",
     "GARCHResult",
+    "HHLConfig",
+    "LinearSystemResult",
     "PortfolioRiskSpec",
     "QuantumRiskResult",
     "QuantumStressResult",
@@ -73,19 +89,24 @@ __all__ = [
     "ScenarioLoss",
     "StressScenarioSpec",
     "VaRResult",
+    "analyse_condition_number",
     "build_loss_distribution",
     "build_loss_loading_circuit",
     "build_portfolio_loss_distribution",
     "build_tail_oracle",
+    "cholesky_solve",
     "classical_stress_test",
     "compute_cva",
     "compute_ead_sa_ccr",
+    "compute_factor_exposures",
+    "condition_sensitivity_comparison",
     "cornish_fisher_es",
     "cornish_fisher_var",
     "cvar_from_samples",
     "fit_garch",
     "forecast_evaluate",
     "fractional_kelly",
+    "generate_test_covariance",
     "historical_var",
     "kelly_criterion",
     "monte_carlo_var",
@@ -98,4 +119,5 @@ __all__ = [
     "quantum_var_pipeline",
     "rolling_garch_forecast",
     "run_quantum_stress_test",
+    "solve_linear_system",
 ]

@@ -64,3 +64,10 @@ def get_cudaq_backend(**kwargs):
     from qufin.backends.cudaq_backend import CudaQBackend
 
     return CudaQBackend(**kwargs)
+
+
+def get_dwave_backend(**kwargs):
+    """Lazy import for D-Wave annealing backend (requires dwave-ocean-sdk)."""
+    from qufin.backends.dwave_backend import DWaveBackend
+
+    return DWaveBackend(**kwargs)

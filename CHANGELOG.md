@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-05-15
+
+Production release: 146 modules, 14 subpackages, 2273 tests, 9 backends. All roadmap items complete.
+
+### Added
+
+#### Research Frontier — Quantum Algorithms
+- Quantum Monte Carlo integration (Montanaro's algorithm): O(1/epsilon) vs classical O(1/epsilon^2), resource estimation, break-even analysis
+- QSP-based amplitude estimation: Chebyshev polynomial arcsin approximation, optimal query complexity
+- Grover adaptive search: Durr-Hoyer threshold tightening, branch-and-bound comparison, 15/20/25-asset benchmarks
+- Quantum Interior Point Method: HHL-based Newton step solver, barrier method iteration, resource estimation
+- HHL for risk analysis: covariance Hamiltonian encoding, factor exposure computation, condition number sensitivity analysis
+- Quantum Boltzmann machine: restricted QBM for regime detection (risk-on/off/crisis/recovery), quantum sampling
+- HQGAN (hybrid quantum-classical GAN): WGAN-GP loss, VQC generator, synthetic market data with stylized facts
+- Quantum RL hedging: PPO with VQC policy network, GBM/Heston environments, Greeks-augmented observation
+- Projected quantum kernel credit scoring: SVM/logistic regression, fairness analysis (demographic parity, equalized odds)
+- Quantum transfer learning: classical ResNet feature extraction + VQC fine-tuning
+
+#### Backends
+- D-Wave quantum annealing backend: Pegasus/Zephyr/Chimera topology, CQM hybrid solver, simulated annealing fallback, chain break analysis, embedding info
+
+#### Production Tools
+- CLI: `qufin optimize`, `qufin price`, `qufin risk`, `qufin benchmark` with JSON/CSV/Parquet output
+- Plugin system: entry-point-based backend/strategy/data-source discovery with validation
+- Visualization widgets: efficient frontier, convergence, circuit depth comparison, risk heatmap (Plotly)
+- Dashboard factory: portfolio value, drawdown, risk decomposition, rebalancing, transaction cost charts + Dash app
+
+#### Research & Documentation
+- Surface code resource estimation: logical-to-physical qubit mapping, T-gate overhead, hardware roadmap overlay
+- JOSS paper draft with bibliography
+- 10 tutorial notebooks (classical primer through quantum advantage)
+
+### Changed
+- Source modules increased from 129 to 146
+- Test count increased from 1724 to 2273
+- Subpackages increased from 12 to 14 (added `viz`)
+- Backend count increased from 8 to 9 (added D-Wave)
+
 ## [0.4.0] - 2026-05-14
 
 Enterprise features release: 13 new modules, 2 new subpackages, 1724 total tests, 129 source files.
@@ -189,7 +227,8 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/anonymousAAK/qufin/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.2.0

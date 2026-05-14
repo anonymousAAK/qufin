@@ -18,6 +18,7 @@ from qufin import (
     options,
     portfolio,
     risk,
+    viz,
 )
 
 __all__ = [
@@ -32,4 +33,5 @@ __all__ = [
     "options",
     "portfolio",
     "risk",
+    "viz",
 ]
