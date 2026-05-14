@@ -122,9 +122,10 @@ def write_output(result: CLIResult, output_path: str | None, fmt: str = "json") 
     # If no path, write to a temp location
     import tempfile
 
-    tmp = tempfile.mktemp(suffix=".parquet")
-    df.to_parquet(tmp, index=False)
-    return tmp
+    with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as fd:
+        tmp_path = fd.name
+    df.to_parquet(tmp_path, index=False)
+    return tmp_path
 
 
 # ------------------------------------------------------------------

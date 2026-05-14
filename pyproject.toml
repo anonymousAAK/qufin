@@ -154,6 +154,10 @@ omit = [
   "src/qufin/backends/pennylane_backend.py",
   "src/qufin/backends/cirq_backend.py",
   "src/qufin/backends/braket_backend.py",
+  "src/qufin/backends/cudaq_backend.py",
+  "src/qufin/backends/dwave_backend.py",
+  "src/qufin/data/bloomberg.py",
+  "src/qufin/data/refinitiv.py",
 ]
 
 [tool.coverage.report]
@@ -163,4 +167,6 @@ exclude_lines = [
   "pragma: no cover",
   "if TYPE_CHECKING:",
   "if __name__ == .__main__.",
+  "except ImportError",
+  "pass$",
 ]
