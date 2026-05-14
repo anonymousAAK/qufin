@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-14
+
+Algorithm expansion release: 7 new modules, 1011 total tests, 109 source files.
+
+### Added
+
+#### Portfolio Optimization
+- Multi-period portfolio optimization with turnover penalties and holding costs
+- ADMM (Alternating Direction Method of Multipliers) hybrid quantum-classical optimizer
+- Hybrid optimizer combining classical warm-start with quantum refinement
+- Szegedy quantum walk portfolio optimizer with Markov chain mixing
+- Robust portfolio optimization with worst-case CVaR QUBO and ellipsoidal uncertainty sets
+- Sector rotation strategy with VQC-based regime detection (11 GICS sectors)
+- Fama-French factor model integration (OLS exposure estimation, factor covariance, risk decomposition)
+
+#### Option Pricing
+- Path-dependent QAE for Asian option pricing with quantum amplitude estimation
+- American option pricing via Quantum Least-Squares Monte Carlo (QuantumLSM)
+- Implied volatility surface construction with QSVM regression, SABR and SVI models
+
+#### Risk Management
+- Quantum stress testing framework with predefined crisis scenarios (GFC 2008, COVID 2020, Rate Hike 2022)
+
+### Changed
+- Test count increased from 635 to 1011
+- Source modules increased from 90 to 109
+- Coverage maintained at 90%
+
 ## [0.1.0] - 2026-05-11
 
 Initial public release with 90 modules, 635 tests, and 92% coverage.
@@ -101,5 +129,6 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.2.0
 [0.1.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.1.0

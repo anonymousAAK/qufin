@@ -140,3 +140,39 @@ result = solver.estimate()
 | IQAE | $n_{state}$ | Adaptive | $\epsilon$ | NISQ-friendly, no QPE |
 | MLAE | $n_{state}$ | Fixed schedule | Statistical | Multiple circuit depths |
 | FQAE | $n_{state}$ | Adaptive | $\epsilon$ | Low circuit depth |
+
+## Advanced Option Pricing (v0.2.0)
+
+### Path-Dependent QAE (Asian Options)
+
+Price Asian options using quantum amplitude estimation:
+
+```python
+from qufin.options.amplitude_estimation.path_dependent_qae import (
+    price_asian_qae, PathDependentAsianSpec,
+)
+
+spec = PathDependentAsianSpec(s0=100, k=100, r=0.05, sigma=0.2, T=1.0, n_steps=12)
+price = price_asian_qae(spec, backend=backend, n_qubits=4)
+```
+
+### American Options (Quantum LSM)
+
+Price American options with quantum least-squares Monte Carlo:
+
+```python
+from qufin.options.amplitude_estimation.american_qae import price_american_qae
+
+price = price_american_qae(s0=100, k=100, r=0.05, sigma=0.2, T=1.0, backend=backend)
+```
+
+### Implied Volatility Surface
+
+Build and evaluate implied vol surfaces with SABR/SVI models:
+
+```python
+from qufin.options.implied_vol_surface import QuantumIVSurface
+
+surface = QuantumIVSurface(market_strikes, market_expiries, market_vols)
+vol = surface.evaluate(strike=105, expiry=0.5)
+```

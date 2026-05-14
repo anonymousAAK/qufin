@@ -144,6 +144,71 @@ result = exhaustive_solve(qubo, return_all=True)
 # result.best_bitstring, result.best_objective, result.all_objectives
 ```
 
+## Advanced Portfolio Methods
+
+### Multi-Period Optimization
+
+Optimize across multiple time periods with turnover penalties:
+
+```python
+from qufin.portfolio.optimizers.multi_period import (
+    multi_period_optimize, MultiPeriodConfig,
+)
+
+config = MultiPeriodConfig(turnover_penalty=0.01, holding_cost=0.001)
+result = multi_period_optimize(mu_series, cov_series, config=config)
+# result.allocations, result.turnovers, result.total_objective
+```
+
+### Factor Models (Fama-French)
+
+Estimate factor exposures and decompose risk:
+
+```python
+from qufin.portfolio.classical.factor_models import build_factor_model, risk_decomposition
+
+model = build_factor_model(asset_returns, factor_returns, window=252)
+# model.expected_returns, model.cov, model.exposures
+
+decomp = risk_decomposition(weights, model.exposures, model.factor_cov)
+print(f"Systematic: {decomp['systematic_pct']:.1%}")
+```
+
+### Robust Portfolio (Worst-Case CVaR)
+
+Optimize under parameter uncertainty:
+
+```python
+from qufin.portfolio.optimizers.robust import RobustPortfolioOptimizer
+
+optimizer = RobustPortfolioOptimizer(backend=backend)
+result = optimizer.optimize(mu, cov, uncertainty_radius=0.1)
+```
+
+### Szegedy Quantum Walk
+
+Portfolio optimization via quantum walk on asset correlation graph:
+
+```python
+from qufin.portfolio.optimizers.quantum_walk import SzegedyWalkOptimizer, SzegedyWalkConfig
+
+config = SzegedyWalkConfig(n_steps=100, n_assets=15)
+optimizer = SzegedyWalkOptimizer(backend=backend, config=config)
+result = optimizer.optimize(mu, cov)
+```
+
+### Sector Rotation
+
+VQC-based regime detection for sector allocation:
+
+```python
+from qufin.portfolio.sector_rotation import SectorRotator, RegimeDetector
+
+detector = RegimeDetector(n_regimes=3)
+rotator = SectorRotator(detector=detector)
+allocation = rotator.allocate(market_data)
+```
+
 ## Comparison Example
 
 ```python

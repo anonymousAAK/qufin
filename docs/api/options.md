@@ -73,3 +73,33 @@
 ## Heston Model
 
 ::: qufin.options.heston
+
+### Path-Dependent QAE (Asian)
+
+::: qufin.options.amplitude_estimation.path_dependent_qae
+    options:
+      members:
+        - PathDependentAsianSpec
+        - price_asian_qae
+        - price_asian_mc
+        - build_path_state_preparation
+
+### American QAE (Quantum LSM)
+
+::: qufin.options.amplitude_estimation.american_qae
+    options:
+      members:
+        - QuantumLSM
+        - price_american_qae
+        - price_american_classical
+        - american_binomial
+        - estimate_resources
+
+### Implied Volatility Surface
+
+::: qufin.options.implied_vol_surface
+    options:
+      members:
+        - QuantumIVSurface
+        - evaluate_surface
+        - plot_surface

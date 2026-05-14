@@ -80,9 +80,9 @@ print(f"Gamma: {opt.bs_gamma():.4f}")
 
 | Module | Classical | Quantum |
 |--------|-----------|---------|
-| `portfolio` | Mean-Variance, Black-Litterman, HRP, Risk Parity | QAOA (X/XY/Grover mixers), VQE (CVaR) |
-| `options` | Black-Scholes, Monte Carlo, Binomial (CRR) | Canonical QAE, IQAE, MLAE, FQAE |
-| `risk` | Historical/Parametric VaR, CVaR, Stress Testing | Quantum VaR, Credit Risk (Egger) |
+| `portfolio` | Mean-Variance, Black-Litterman, HRP, Risk Parity, Multi-Period, Factor Models, Sector Rotation | QAOA (X/XY/Grover mixers), VQE (CVaR), Szegedy Walk, Robust CVaR QUBO, ADMM, Hybrid |
+| `options` | Black-Scholes, Monte Carlo, Binomial (CRR), American (LSM), Implied Vol Surface | Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE |
+| `risk` | Historical/Parametric VaR, CVaR, Stress Testing | Quantum VaR, Credit Risk (Egger), Quantum Stress Testing |
 | `hedging` | Delta Hedging | Deep Hedging, Quantum Deep Hedging |
 | `backends` | — | Qiskit Aer, IBM Runtime, Noise Models, Error Mitigation |
 | `backtesting` | Walk-Forward Engine, 15+ Performance Metrics | — |

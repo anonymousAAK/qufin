@@ -9,13 +9,13 @@
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Tests](https://img.shields.io/badge/tests-635%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-1011%20passing-brightgreen)]()
 [![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
-[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)]()
+[![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)]()
 
 ---
 
-**90 modules** &bull; **10 subpackages** &bull; **635 tests** &bull; **7 backends** &bull; **4 QAE variants**
+**109 modules** &bull; **10 subpackages** &bull; **1011 tests** &bull; **7 backends** &bull; **4 QAE variants**
 
 *Every quantum algorithm ships with a classical baseline. No hype -- just reproducible results.*
 
@@ -142,18 +142,18 @@ paths = heston_paths(s0=100, mu=0.08, params=params, T=1.0, n_steps=252, n_paths
 <td width="50%" valign="top">
 
 ### Portfolio Optimization
-**Classical**: Mean-Variance (CVXPY), Black-Litterman, Risk Parity, HRP<br>
-**Quantum**: QAOA (X / XY-ring / XY-full / Grover mixers), VQE, Warm-Start<br>
+**Classical**: Mean-Variance (CVXPY), Black-Litterman, Risk Parity, HRP, Multi-Period, ADMM, Hybrid, Factor Models<br>
+**Quantum**: QAOA (X / XY-ring / XY-full / Grover mixers), VQE, Warm-Start, Szegedy Quantum Walk, Robust CVaR QUBO, Sector Rotation (VQC)<br>
 **Features**: CVaR objective, Dicke state init, QUBO with cardinality + sector + turnover + transaction cost constraints
 
 ### Option Pricing
-**Classical**: Black-Scholes (full Greeks + implied vol), Monte Carlo (European / Asian / Barrier, antithetic variates), CRR Binomial (European + American)<br>
-**Quantum**: Canonical QAE, IQAE, MLAE, FQAE<br>
+**Classical**: Black-Scholes (full Greeks + implied vol), Monte Carlo (European / Asian / Barrier, antithetic variates), CRR Binomial (European + American), American (LSM), Implied Vol Surface (SABR/SVI)<br>
+**Quantum**: Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE (Quantum LSM)<br>
 **Exotics**: Bermudan (LSM), lookback, cliquet, autocallable, basket, path-dependent
 
 ### Risk Management
 **Classical**: VaR (historical / parametric / MC), CVaR, stress testing, counterparty CVA/DVA<br>
-**Quantum**: Quantum VaR, Egger credit-risk<br>
+**Quantum**: Quantum VaR, Egger credit-risk, Quantum Stress Testing<br>
 **Credit**: Gaussian copula, NIG copula models
 
 </td>
@@ -193,12 +193,23 @@ src/qufin/
     options/
         classical/             #   Black-Scholes, CRR binomial, Monte Carlo
         amplitude_estimation/  #   Canonical, MLAE, IQAE, FQAE
+            path_dependent_qae.py  #   Path-dependent QAE pricing
+            american_qae.py    #   American option QAE (Quantum LSM)
+        implied_vol_surface.py #   Implied vol surface (SABR/SVI)
     portfolio/
         classical/             #   Mean-Variance, Black-Litterman, HRP, Risk Parity
+            factor_models.py   #   Factor-based portfolio models
         optimizers/            #   QAOA, VQE, warm-start, exhaustive, hybrid
+            multi_period.py    #   Multi-period portfolio optimization
+            robust.py          #   Robust CVaR QUBO optimizer
+            quantum_walk.py    #   Szegedy quantum walk optimizer
+            admm.py            #   ADMM decomposition optimizer
+            hybrid.py          #   Hybrid classical-quantum optimizer
+        sector_rotation.py     #   VQC-based sector rotation
         qubo.py                #   QUBO builder with constraints
         mixers.py              #   X, XY-ring, XY-full, Grover mixer circuits
     risk/                      #   VaR, CVaR, stress, counterparty
+        quantum_stress.py      #   Quantum stress testing
         credit/                #   Egger quantum credit, Gaussian/NIG copula
     hedging/                   #   Delta, deep hedging, quantum RL
     ml/                        #   Quantum kernels, VQC, qGAN, reservoir
@@ -289,8 +300,8 @@ pytest -m "not hardware"        # Skip IBM hardware tests
 | Backtesting Engine | Stable |
 | Benchmarks & Leaderboard | Stable |
 | Data Layer (Yahoo, FRED, synthetic) | Stable |
-| Hedging (delta + deep) | Alpha |
-| ML (kernels, VQC, qGAN) | Alpha |
+| Hedging (delta + deep) | Beta |
+| ML (kernels, VQC, qGAN) | Beta |
 | Documentation Site | Planned |
 
 ---

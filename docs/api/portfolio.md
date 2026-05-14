@@ -70,6 +70,76 @@
         - exhaustive_solve
         - ExhaustiveResult
 
+### Multi-Period
+
+::: qufin.portfolio.optimizers.multi_period
+    options:
+      members:
+        - MultiPeriodConfig
+        - MultiPeriodResult
+        - multi_period_optimize
+        - multi_period_backtest
+        - compute_turnover
+
+### ADMM
+
+::: qufin.portfolio.optimizers.admm
+    options:
+      members:
+        - ADMMOptimizer
+        - ADMMConfig
+        - ADMMResult
+
+### Hybrid
+
+::: qufin.portfolio.optimizers.hybrid
+    options:
+      members:
+        - HybridOptimizer
+        - HybridConfig
+        - HybridResult
+
+### Robust (CVaR QUBO)
+
+::: qufin.portfolio.optimizers.robust
+    options:
+      members:
+        - RobustPortfolioOptimizer
+        - EllipsoidalUncertaintySet
+        - robust_classical
+
+### Szegedy Quantum Walk
+
+::: qufin.portfolio.optimizers.quantum_walk
+    options:
+      members:
+        - SzegedyWalkOptimizer
+        - SzegedyWalkConfig
+        - SzegedyWalkResult
+        - classical_random_walk
+
+### Factor Models
+
+::: qufin.portfolio.classical.factor_models
+    options:
+      members:
+        - build_factor_model
+        - estimate_factor_exposures
+        - factor_model_cov
+        - factor_expected_returns
+        - risk_decomposition
+        - FactorModelResult
+        - FactorExposureResult
+
+### Sector Rotation
+
+::: qufin.portfolio.sector_rotation
+    options:
+      members:
+        - SectorRotator
+        - RegimeDetector
+        - backtest_sector_rotation
+
 ## Mixers
 
 ::: qufin.portfolio.mixers

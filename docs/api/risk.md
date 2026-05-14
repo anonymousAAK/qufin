@@ -40,3 +40,11 @@
         - apply_stress
         - stress_test_suite
         - SCENARIO_LIBRARY
+
+## Quantum Stress Testing
+
+::: qufin.risk.quantum_stress
+    options:
+      members:
+        - QuantumStressTester
+        - classical_stress_test

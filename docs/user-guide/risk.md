@@ -140,3 +140,19 @@ result = vasicek_analytical(pd=0.02, rho=0.15, lgd=0.45, confidence=0.999)
 print(f"Expected Loss: {result['expected_loss']:.4f}")
 print(f"VaR 99.9%:     {result['var']:.4f}")
 ```
+
+## Quantum Stress Testing
+
+Run quantum-enhanced stress tests with predefined crisis scenarios:
+
+```python
+from qufin.risk.quantum_stress import QuantumStressTester, classical_stress_test
+
+tester = QuantumStressTester(backend=backend)
+results = tester.run_scenarios(portfolio_weights, portfolio_value=1_000_000)
+
+# Classical alternative
+results = classical_stress_test(portfolio_weights, portfolio_value=1_000_000)
+```
+
+**Predefined scenarios:** GFC 2008, COVID 2020, Rate Hike 2022.
