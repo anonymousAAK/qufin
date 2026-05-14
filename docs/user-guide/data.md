@@ -122,6 +122,78 @@ clear_cache()
 
 Cache files are stored as Parquet in `~/.cache/qufin/` and are excluded from version control.
 
+## Bloomberg (v0.4.0)
+
+!!! note "License Required"
+    Bloomberg data requires a Bloomberg Terminal license and the `blpapi` Python SDK.
+
+```python
+from qufin.data.bloomberg import BloombergDataSource, BloombergConfig
+
+source = BloombergDataSource(BloombergConfig())
+prices = source.get_prices(["AAPL US Equity", "MSFT US Equity"], start="2020-01-01")
+returns = source.get_returns(["AAPL US Equity"], start="2020-01-01")
+dividends = source.get_dividends("AAPL US Equity", start="2020-01-01")
+```
+
+## Refinitiv / LSEG (v0.4.0)
+
+```python
+from qufin.data.refinitiv import RefinitivDataSource, RefinitivConfig
+
+source = RefinitivDataSource(RefinitivConfig(app_key="YOUR_KEY"))
+prices = source.get_equity_prices(["AAPL.O", "MSFT.O"], start="2020-01-01")
+bonds = source.get_bond_data(["US10YT=RR"])
+curve = source.get_yield_curve(currency="USD")
+```
+
+## Real-Time Streaming (v0.4.0)
+
+Stream live prices from Alpaca, Polygon, or IEX via WebSocket.
+
+```python
+import asyncio
+from qufin.data.streaming import PriceStream, StreamConfig, Provider, RebalanceConfig
+
+config = StreamConfig(provider=Provider.ALPACA, api_key="YOUR_KEY")
+rebal = RebalanceConfig(drift_threshold=0.05)
+
+stream = PriceStream(
+    config,
+    rebalance_config=rebal,
+    target_weights={"AAPL": 0.5, "MSFT": 0.5},
+    holdings={"AAPL": 100, "MSFT": 100},
+)
+
+asyncio.run(stream.connect(["AAPL", "MSFT"], max_messages=1000))
+```
+
+## Parquet Data Warehouse (v0.4.0)
+
+Store and query market data locally in a partitioned Parquet warehouse.
+
+```python
+from qufin.data.warehouse import ParquetWarehouse, WarehouseConfig
+
+wh = ParquetWarehouse(WarehouseConfig(root_dir="./data_warehouse"))
+wh.write(prices_df, asset_class="equity", ticker="AAPL")
+df = wh.read(asset_class="equity", ticker="AAPL", start_date="2023-01-01")
+wh.compact(asset_class="equity", ticker="AAPL")  # merge small files
+```
+
+## Data Quality (v0.4.0)
+
+Validate and score data quality before using it in models.
+
+```python
+from qufin.data.quality import detect_gaps, detect_outliers, compute_quality_score
+
+gaps = detect_gaps(prices_series)
+outliers = detect_outliers(prices_series, sigma_threshold=5.0)
+score = compute_quality_score(prices_series)
+print(f"Quality: {score.overall:.1%}")
+```
+
 ## Preparing Data for Portfolio Optimization
 
 End-to-end example: fetch data → compute returns → optimize.

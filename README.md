@@ -19,7 +19,7 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 [![PyPI](https://img.shields.io/pypi/v/qufin?color=blue)](https://pypi.org/project/qufin/)
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-1202%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-1724%20passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)]()
 [![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -27,7 +27,7 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 <br>
 
 <sub>
-116 modules &nbsp;&middot;&nbsp; 10 subpackages &nbsp;&middot;&nbsp; 1,202 tests &nbsp;&middot;&nbsp; 8 backends &nbsp;&middot;&nbsp; 5 error mitigation strategies &nbsp;&middot;&nbsp; 4 QAE variants
+129 modules &nbsp;&middot;&nbsp; 12 subpackages &nbsp;&middot;&nbsp; 1,724 tests &nbsp;&middot;&nbsp; 8 backends &nbsp;&middot;&nbsp; 5 error mitigation strategies &nbsp;&middot;&nbsp; 4 QAE variants
 </sub>
 
 <br>
@@ -103,6 +103,7 @@ Requires Python 3.10+
 | `qufin[cudaq]` | NVIDIA CUDA-Q &mdash; GPU-accelerated simulation |
 | `qufin[ml]` | PyTorch &mdash; deep hedging and quantum ML |
 | `qufin[viz]` | Plotly &mdash; interactive visualization |
+| `qufin[api]` | FastAPI, Celery, Redis &mdash; REST API and job queue |
 | `qufin[dev]` | pytest, ruff, mypy, pre-commit |
 | `qufin[all]` | Everything above |
 
@@ -266,10 +267,25 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 
 | | |
 |:--|:--|
-| **Market Data** | Yahoo Finance, FRED macroeconomic |
+| **Market Data** | Yahoo Finance, FRED, Bloomberg, Refinitiv/LSEG |
+| **Streaming** | Alpaca, Polygon, IEX WebSocket with rebalance triggers |
 | **Synthetic** | GBM, Heston, Merton jump-diffusion |
+| **Warehouse** | Parquet partitioned storage, PyArrow, auto-compaction |
+| **Quality** | Gap detection, outlier flagging, data lineage, quality scoring |
 | **Backtesting** | Walk-forward engine, 15+ metrics |
 | **Benchmarks** | 15/25/50-asset problem sets, hardware validation, reproducibility manifests |
+
+### Enterprise
+
+| | |
+|:--|:--|
+| **REST API** | FastAPI endpoints for optimization, pricing, risk (OpenAPI, auth, rate limiting) |
+| **Job Queue** | Celery + Redis async jobs with priority routing and timeouts |
+| **Caching** | Result caching (SQLite/Redis) with TTL and invalidation |
+| **Deployment** | Docker, docker-compose, Kubernetes Helm chart with auto-scaling |
+| **Audit** | Immutable audit trail (SQLite WAL/Postgres), CSV/JSON export |
+| **Compliance** | SR 11-7 / SS1/23 checklist, champion-challenger, sensitivity analysis |
+| **Explainability** | QUBO decomposition, Shapley attribution, quantum-vs-classical comparison |
 
 </td>
 </tr>
@@ -359,8 +375,21 @@ src/qufin/
     ml/                            Kernels, VQC, qGAN, reservoir computing
     derivatives/                   Bermudan, lookback, cliquet, autocallable, basket
     data/                          Yahoo Finance, FRED, GBM/Heston/Merton synthetic
+        bloomberg.py               Bloomberg Terminal connector (blpapi)
+        refinitiv.py               Refinitiv/LSEG Eikon connector
+        streaming.py               WebSocket streaming (Alpaca, Polygon, IEX)
+        warehouse.py               Parquet data warehouse with compaction
+        quality.py                 Data quality, lineage, scoring
     backtesting/                   Walk-forward engine, 15+ performance metrics
     benchmarks/                    Problem sets, runner, leaderboard, hardware validation
+    api/                           REST API + async job queue
+        server.py                  FastAPI endpoints (optimize, price, risk)
+        jobs.py                    Celery job queue with priority routing
+        cache.py                   Result caching (SQLite/Redis)
+    compliance/                    Regulatory compliance tooling
+        audit.py                   Immutable audit trail (SQLite WAL/Postgres)
+        validation.py              SR 11-7/SS1/23, champion-challenger, sensitivity
+        explainability.py          QUBO decomposition, Shapley, comparison reports
 ```
 
 <br>
@@ -390,7 +419,9 @@ pytest -m "not hardware"           # Skip hardware-dependent tests
 | Error Mitigation (ZNE, TREX, PEC, CDR, DD, M3) | **Stable** | 150+ |
 | Backtesting Engine | **Stable** | 40+ |
 | Benchmarks & Hardware Validation | **Stable** | 50+ |
-| Data Layer (Yahoo, FRED, synthetic) | **Stable** | 60+ |
+| Data Layer (Yahoo, FRED, Bloomberg, Refinitiv, streaming) | **Stable** | 200+ |
+| REST API & Job Queue | **Stable** | 78 |
+| Compliance & Audit | **Stable** | 109 |
 | Hedging (delta + deep + quantum) | **Beta** | 50+ |
 | ML (kernels, VQC, qGAN) | **Beta** | 70+ |
 

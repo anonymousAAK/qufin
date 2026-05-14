@@ -20,6 +20,9 @@ pip install "qufin[pennylane]"  # PennyLane Lightning
 pip install "qufin[braket]"     # AWS Braket
 pip install "qufin[cirq]"       # Google Cirq
 
+# Enterprise (v0.4.0)
+pip install "qufin[api]"        # FastAPI, Celery, Redis
+
 # Development
 pip install "qufin[dev]"        # pytest, ruff, mypy
 ```

@@ -1,0 +1,72 @@
+# Default values for qufin Helm chart
+
+replicaCount: 2
+
+image:
+  repository: qufin
+  tag: "0.4.0"
+  pullPolicy: IfNotPresent
+
+# -- API server -----------------------------------------------------------
+api:
+  port: 8000
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+
+# -- Celery worker --------------------------------------------------------
+worker:
+  replicaCount: 2
+  concurrency: 2
+  maxTasksPerChild: 50
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "4"
+      memory: "8Gi"
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    # Scale based on Celery queue depth (requires KEDA or custom metrics)
+    queueDepthThreshold: 20
+
+# -- Redis ----------------------------------------------------------------
+redis:
+  enabled: true
+  host: ""  # Override if using external Redis
+  port: 6379
+
+# -- Data warehouse -------------------------------------------------------
+persistence:
+  enabled: true
+  storageClass: ""
+  size: 50Gi
+  accessMode: ReadWriteOnce
+
+# -- Config ---------------------------------------------------------------
+config:
+  logLevel: INFO
+  defaultBackend: qiskit-aer
+  defaultShots: 1024
+  cacheBackend: redis
+  # Set via secrets in production
+  fredApiKey: ""
+  ibmQuantumToken: ""
+
+# -- Service --------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: false
+  className: ""
+  host: qufin.local

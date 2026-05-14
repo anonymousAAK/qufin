@@ -101,5 +101,7 @@ nav:
     - Backtesting: api/backtesting.md
     - Data: api/data.md
     - Benchmarks: api/benchmarks.md
+    - REST API: api/api.md
+    - Compliance: api/compliance.md
   - Benchmarks: benchmarks.md
   - FAQ: faq.md

@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-14
+
+Enterprise features release: 13 new modules, 2 new subpackages, 1724 total tests, 129 source files.
+
+### Added
+
+#### Data Infrastructure
+- Bloomberg connector: historical EOD, real-time streaming, corporate actions (dividends/splits), field normalization, session management (requires blpapi + Terminal license)
+- Refinitiv/LSEG connector: Eikon Data API integration for equities, fixed income, derivatives, yield curves, option chains
+- Real-time streaming: WebSocket adapters for Alpaca, Polygon, IEX with async buffering, portfolio tracking, threshold/signal-based rebalance triggers, latency monitoring
+- Parquet data warehouse: partitioned storage (asset_class/ticker/year), PyArrow read/write with predicate pushdown, auto-compaction, deduplication, cache-first fetch
+- Data quality framework: gap detection, outlier flagging (>5σ), split/dividend adjustment, data lineage tracking, per-ticker quality scoring (completeness, freshness, consistency)
+
+#### Production Deployment
+- FastAPI REST API: `/v1/optimize`, `/v1/price`, `/v1/risk` endpoints with OpenAPI schema, API key auth, rate limiting, sync and async modes
+- Celery job queue: 4 job types, priority routing (interactive/batch), configurable timeouts, result expiration, in-memory fallback
+- Result caching: SHA-256 cache keys, SQLite (single-node) and Redis (distributed) backends, TTL policies (24h market / 7d static), hit rate monitoring
+- Docker: multi-stage Dockerfile (~500MB), GPU variant with CUDA-Q, docker-compose (API + Redis + worker)
+- Kubernetes Helm chart: deployment, service, worker with HPA auto-scaling, PVC for warehouse, ConfigMap for backend/API keys
+
+#### Compliance & Audit
+- Audit trail: immutable append-only SQLite (WAL mode) or Postgres, structured log entries, query API with filters, CSV/JSON export
+- Model validation: SR 11-7 / SS1/23 checklist generator, champion-challenger framework (paired t-test, bootstrap CI, Cohen's d), sensitivity analysis with elasticity ranking, P&L attribution
+- Explainability: QUBO coefficient decomposition, marginal contribution analysis, Shapley value attribution, quantum-vs-classical comparison reports, Plotly interaction heatmaps
+
+### Changed
+- Source modules increased from 116 to 129
+- Test count increased from 1202 to 1724
+- Subpackages increased from 10 to 12 (added `api`, `compliance`)
+
 ## [0.3.0] - 2026-05-14
 
 Backend expansion release: 7 new modules, 1149 total tests, 116 source files, 8 backends.
@@ -159,7 +189,8 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.2.0
 [0.1.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.1.0

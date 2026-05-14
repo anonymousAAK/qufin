@@ -1,0 +1,12 @@
+apiVersion: v2
+name: qufin
+description: Helm chart for qufin quantum finance platform
+version: 0.4.0
+appVersion: "0.4.0"
+type: application
+keywords:
+  - quantum
+  - finance
+  - qiskit
+maintainers:
+  - name: anonymousAAK

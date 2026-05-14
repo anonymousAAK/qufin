@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: qufin
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  QUFIN_LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  QUFIN_DEFAULT_BACKEND: {{ .Values.config.defaultBackend | quote }}
+  QUFIN_DEFAULT_SHOTS: {{ .Values.config.defaultShots | quote }}
+  QUFIN_CACHE_BACKEND: {{ .Values.config.cacheBackend | quote }}
+  {{- if .Values.redis.enabled }}
+  REDIS_URL: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/0"
+  CELERY_BROKER_URL: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/1"
+  CELERY_RESULT_BACKEND: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/1"
+  {{- else }}
+  REDIS_URL: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/0"
+  CELERY_BROKER_URL: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/1"
+  CELERY_RESULT_BACKEND: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/1"
+  {{- end }}
+  {{- if .Values.config.fredApiKey }}
+  QUFIN_FRED_API_KEY: {{ .Values.config.fredApiKey | quote }}
+  {{- end }}
+  {{- if .Values.config.ibmQuantumToken }}
+  IBM_QUANTUM_TOKEN: {{ .Values.config.ibmQuantumToken | quote }}
+  {{- end }}

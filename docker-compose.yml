@@ -1,0 +1,60 @@
+# docker-compose.yml -- qufin API + Redis + Celery worker
+# Usage: docker compose up --build
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - QUFIN_LOG_LEVEL=INFO
+      - QUFIN_CACHE_BACKEND=redis
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - data-warehouse:/app/data
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["celery", "-A", "qufin.api.jobs", "worker",
+              "--loglevel=info", "--concurrency=2", "--max-tasks-per-child=50"]
+    environment:
+      - QUFIN_LOG_LEVEL=INFO
+      - QUFIN_CACHE_BACKEND=redis
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - data-warehouse:/app/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+volumes:
+  data-warehouse:
+    driver: local
+  redis-data:
+    driver: local

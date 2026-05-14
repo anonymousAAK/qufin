@@ -23,9 +23,12 @@ qufin fills this gap with production-grade implementations that run on simulator
 ```mermaid
 graph TB
     subgraph Data["Data Layer"]
-        EQ[Equities - Yahoo Finance]
+        EQ[Equities - Yahoo/Bloomberg/Refinitiv]
         MACRO[Macro - FRED API]
         SYNTH[Synthetic - GBM/Heston/Merton]
+        STREAM[Real-Time Streaming]
+        WH[Parquet Warehouse]
+        DQ[Data Quality]
     end
 
     subgraph Classical["Classical Algorithms"]
@@ -63,11 +66,23 @@ graph TB
         METRICS[Performance Metrics]
     end
 
+    subgraph Enterprise["Enterprise (v0.4.0)"]
+        API[REST API - FastAPI]
+        JOBS[Async Job Queue]
+        CACHE[Result Caching]
+        AUDIT[Audit Trail]
+        VALID[Model Validation]
+        EXPLAIN[Explainability]
+    end
+
     Data --> Classical
     Data --> Quantum
     Quantum --> Backends
     Classical --> Analysis
     Quantum --> Analysis
+    Analysis --> Enterprise
+    Classical --> Enterprise
+    Quantum --> Enterprise
 ```
 
 ## Quick Example
@@ -90,5 +105,8 @@ print(f"Gamma: {opt.bs_gamma():.4f}")
 | `risk` | Historical/Parametric VaR, CVaR, Stress Testing | Quantum VaR, Credit Risk (Egger), Quantum Stress Testing |
 | `hedging` | Delta Hedging | Deep Hedging, Quantum Deep Hedging |
 | `backends` | — | Qiskit Aer, IBM Runtime, PennyLane, Amazon Braket, Cirq, CUDA-Q, Noise Models, Error Mitigation (ZNE, TREX, PEC, CDR), M3 Mitigation, Dynamical Decoupling, Finance Transpiler, Noise-Aware Optimizer, Auto-Selection |
+| `data` | Yahoo Finance, FRED, Bloomberg, Refinitiv, Streaming, Parquet Warehouse, Quality Scoring | — |
 | `backtesting` | Walk-Forward Engine, 15+ Performance Metrics | — |
 | `benchmarks` | Standardized Problems, Leaderboard | Scaling Analysis, Hardware Benchmarks (IonQ, IBM) |
+| `api` | REST API (FastAPI), Async Job Queue (Celery), Result Caching | — |
+| `compliance` | Audit Trail, Model Validation (SR 11-7/SS1/23), Champion-Challenger, Explainability (SHAP, QUBO decomposition) | — |
