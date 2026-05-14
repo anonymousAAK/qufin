@@ -19,7 +19,6 @@ Egger et al., "Credit Risk Analysis using Quantum Computers", IEEE TQE (2021).
 from __future__ import annotations
 
 import time
-from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -521,12 +520,12 @@ def _apply_multi_controlled_ry(
         # Decompose 2-controlled RY using standard Toffoli decomposition
         from qiskit.circuit.library import RYGate
         cry_gate = RYGate(angle).control(2)
-        qc.append(cry_gate, controls + [target])  # type: ignore[union-attr]
+        qc.append(cry_gate, [*controls, target])  # type: ignore[union-attr]
     else:
         # For 3+ controls: use Qiskit's built-in multi-controlled gate
         from qiskit.circuit.library import RYGate
         cry_gate = RYGate(angle).control(len(controls))
-        qc.append(cry_gate, controls + [target])  # type: ignore[union-attr]
+        qc.append(cry_gate, [*controls, target])  # type: ignore[union-attr]
 
 
 # ---------------------------------------------------------------------------

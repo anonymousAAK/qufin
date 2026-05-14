@@ -18,7 +18,6 @@ from qufin.portfolio.optimizers.quantum_walk import (
 )
 from qufin.portfolio.qubo import PortfolioQUBO
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -278,7 +277,7 @@ class TestClassicalRandomWalk:
         from qufin.portfolio.optimizers.exhaustive import exhaustive_solve
 
         exact = exhaustive_solve(small_qubo_3)
-        best_bs, best_energy, _ = classical_random_walk(
+        _best_bs, best_energy, _ = classical_random_walk(
             small_qubo_3, n_steps=500, temperature=0.5, seed=42,
         )
         # Should be within reasonable range of optimal
@@ -309,7 +308,7 @@ class TestClassicalRandomWalk:
         q_result = q_opt.run()
 
         # Classical walk
-        c_bs, c_energy, _ = classical_random_walk(
+        _c_bs, c_energy, _ = classical_random_walk(
             small_qubo_3, n_steps=500, temperature=0.5, seed=42,
         )
 

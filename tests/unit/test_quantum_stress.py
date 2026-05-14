@@ -14,16 +14,15 @@ from qufin.risk.quantum_stress import (
     QuantumStressTester,
     ScenarioLoss,
     StressScenarioSpec,
+    _compute_all_scenario_losses,
+    _compute_scenario_loss,
+    _n_qubits_for_scenarios,
     build_loss_oracle,
     build_scenario_superposition,
     classical_stress_test,
     run_quantum_stress_test,
-    _compute_all_scenario_losses,
-    _compute_scenario_loss,
-    _n_qubits_for_scenarios,
 )
 from qufin.risk.stress import StressScenario
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

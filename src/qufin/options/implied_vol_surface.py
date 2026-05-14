@@ -13,7 +13,7 @@ References
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Literal
 
 import numpy as np
@@ -21,7 +21,6 @@ from numpy.typing import NDArray
 from scipy.optimize import minimize
 
 from qufin.backends.base import Backend
-
 
 # ---------------------------------------------------------------------------
 # Data container
@@ -397,9 +396,9 @@ class SVIModel:
             return self._slice_params[T]
 
         exp_arr = self._sorted_expiries
-        if T <= exp_arr[0]:
+        if exp_arr[0] >= T:
             return self._slice_params[float(exp_arr[0])]
-        if T >= exp_arr[-1]:
+        if exp_arr[-1] <= T:
             return self._slice_params[float(exp_arr[-1])]
 
         # Linear interpolation between two nearest slices

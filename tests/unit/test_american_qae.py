@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from qufin.options.amplitude_estimation.american_qae import (
     AmericanQAESpec,
@@ -16,7 +15,6 @@ from qufin.options.amplitude_estimation.american_qae import (
     price_american_classical,
     price_american_qae,
 )
-
 
 # ---------------------------------------------------------------------------
 # Basis function encoding tests

@@ -137,8 +137,8 @@ def factor_model_cov(
     """
     B = exposures.betas
     D = exposures.residual_cov
-    cov = B @ factor_cov @ B.T + D
-    return cov.astype(np.float64)
+    cov: NDArray[np.float64] = (B @ factor_cov @ B.T + D).astype(np.float64)
+    return cov
 
 
 def factor_expected_returns(

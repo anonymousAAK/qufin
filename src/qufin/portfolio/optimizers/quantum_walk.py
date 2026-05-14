@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from numpy.typing import NDArray
+
 from qufin.backends.base import Backend
 from qufin.portfolio.qubo import PortfolioQUBO
 from qufin.utils.results import Result

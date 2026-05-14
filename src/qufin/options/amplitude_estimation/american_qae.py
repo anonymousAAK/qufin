@@ -32,7 +32,6 @@ from numpy.typing import NDArray
 
 from qufin.utils.results import Result
 
-
 # ---------------------------------------------------------------------------
 # Basis function types
 # ---------------------------------------------------------------------------
@@ -402,7 +401,6 @@ class QuantumLSM:
         best_params = self._rng.uniform(-np.pi, np.pi, n_params)
         best_cost = np.inf
 
-        from qiskit.circuit import QuantumCircuit
 
         n_opt_steps = 30
         lr = 0.1
@@ -420,7 +418,7 @@ class QuantumLSM:
                 qc = self._build_feature_circuit(features)
 
                 # Bind parameters
-                param_dict = dict(zip(qc.parameters, best_params))
+                param_dict = dict(zip(qc.parameters, best_params, strict=False))
                 bound_qc = qc.assign_parameters(param_dict)
 
                 # Get probability of |0...0>
@@ -436,14 +434,14 @@ class QuantumLSM:
                 for p_idx in range(n_params):
                     params_plus = best_params.copy()
                     params_plus[p_idx] += shift
-                    param_dict_plus = dict(zip(qc.parameters, params_plus))
+                    param_dict_plus = dict(zip(qc.parameters, params_plus, strict=False))
                     bound_plus = qc.assign_parameters(param_dict_plus)
                     r_plus = self.backend.run(bound_plus, shots=256)
                     p_plus = r_plus.probabilities.get(zero_key, 0.0)
 
                     params_minus = best_params.copy()
                     params_minus[p_idx] -= shift
-                    param_dict_minus = dict(zip(qc.parameters, params_minus))
+                    param_dict_minus = dict(zip(qc.parameters, params_minus, strict=False))
                     bound_minus = qc.assign_parameters(param_dict_minus)
                     r_minus = self.backend.run(bound_minus, shots=256)
                     p_minus = r_minus.probabilities.get(zero_key, 0.0)
@@ -453,8 +451,7 @@ class QuantumLSM:
             cost /= sample_size
             gradients /= sample_size
 
-            if cost < best_cost:
-                best_cost = cost
+            best_cost = min(best_cost, cost)
 
             best_params -= lr * gradients
 
@@ -463,7 +460,7 @@ class QuantumLSM:
         for i in range(len(targets)):
             features = b_norm[i]
             qc = self._build_feature_circuit(features)
-            param_dict = dict(zip(qc.parameters, best_params))
+            param_dict = dict(zip(qc.parameters, best_params, strict=False))
             bound_qc = qc.assign_parameters(param_dict)
             result = self.backend.run(bound_qc, shots=512)
             zero_key = "0" * n_q

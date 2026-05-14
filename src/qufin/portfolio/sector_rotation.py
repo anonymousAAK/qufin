@@ -22,7 +22,6 @@ from numpy.typing import NDArray
 from qufin.backends.base import Backend
 from qufin.ml.classifiers import VariationalQuantumClassifier, VQCConfig
 
-
 # --------------------------------------------------------------------------
 # Regime enum
 # --------------------------------------------------------------------------

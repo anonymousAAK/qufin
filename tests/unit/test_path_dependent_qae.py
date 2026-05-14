@@ -14,7 +14,6 @@ from qufin.options.amplitude_estimation.path_dependent_qae import (
     price_asian_mc,
 )
 
-
 # ---------------------------------------------------------------------------
 # Tests: PathDependentAsianSpec validation
 # ---------------------------------------------------------------------------
@@ -250,8 +249,7 @@ class TestBuildEstimationProblem:
         """Rescale factor should include discount."""
         spec = PathDependentAsianSpec(r=0.05, T=1.0)
         _, rescale = build_path_dependent_estimation_problem(spec)
-        discount = np.exp(-0.05 * 1.0)
-        # rescale = discount * max_payoff, so rescale >= discount * 0
+        # rescale = discount * max_payoff, so rescale >= 0
         assert rescale > 0.0
 
 

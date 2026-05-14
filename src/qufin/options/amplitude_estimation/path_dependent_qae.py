@@ -22,7 +22,6 @@ from numpy.typing import NDArray
 
 from qufin.backends.base import Backend
 from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
-from qufin.options.distributions import log_normal_distribution
 
 
 @dataclass
@@ -181,7 +180,6 @@ def build_path_state_preparation(
         registers.append(QuantumRegister(nq, name=f"S{t}"))
 
     # Build product-state circuit: independent registers
-    n_total = T * nq
     qc = QuantumCircuit(*registers)
 
     from qiskit.circuit.library import StatePreparation

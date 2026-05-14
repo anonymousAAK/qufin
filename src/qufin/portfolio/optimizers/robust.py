@@ -96,7 +96,7 @@ def build_ellipsoidal_uncertainty(
     """
     if returns.ndim != 2:
         raise ValueError(f"returns must be 2-D, got shape {returns.shape}")
-    T, N = returns.shape
+    T, _N = returns.shape
     if T < 2:
         raise ValueError(f"Need at least 2 observations, got {T}")
 

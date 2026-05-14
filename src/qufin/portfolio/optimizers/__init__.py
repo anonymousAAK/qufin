@@ -1,4 +1,4 @@
-"""Quantum portfolio optimizers: QAOA, VQE, warm-start, hybrid, ADMM, multi-period, robust, Szegedy walk."""
+"""Quantum portfolio optimizers: QAOA, VQE, warm-start, hybrid, ADMM, multi-period, robust."""
 
 from __future__ import annotations
 
@@ -59,10 +59,10 @@ __all__ = [
     "build_ellipsoidal_uncertainty",
     "classical_random_walk",
     "compute_turnover",
-    "robust_classical",
     "continuous_relaxation",
     "multi_period_backtest",
     "multi_period_optimize",
+    "robust_classical",
     "round_solution",
     "warm_start_qaoa",
     "warm_start_vqe",

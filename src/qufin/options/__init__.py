@@ -8,8 +8,8 @@ from qufin.options.implied_vol_surface import (
     QuantumIVSurface,
     QuantumIVSurfaceConfig,
     SABRModel,
-    SVIModel,
     SurfaceMetrics,
+    SVIModel,
     evaluate_surface,
     generate_synthetic_iv_surface,
 )

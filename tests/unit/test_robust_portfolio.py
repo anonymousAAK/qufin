@@ -15,7 +15,6 @@ from qufin.portfolio.optimizers.robust import (
 )
 from qufin.portfolio.qubo import PortfolioQUBO
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -68,7 +67,7 @@ class TestEllipsoidalUncertaintySet:
         eigvals = np.linalg.eigvalsh(uset.sigma_mu)
         assert np.all(eigvals >= -1e-10), "sigma_mu must be positive semi-definite"
 
-    def test_sigma_mu_scales_with_T(self) -> None:
+    def test_sigma_mu_scales_with_t(self) -> None:
         rng = np.random.default_rng(99)
         ret_short = rng.standard_normal((20, 3))
         ret_long = rng.standard_normal((200, 3))
