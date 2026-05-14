@@ -313,3 +313,183 @@ class TestComparisonHelpers:
         )
         assert result["aware"]["method"] == "noise_aware"
         assert result["agnostic"]["method"] == "noise_agnostic"
+
+
+# ---------------------------------------------------------------------------
+# DepolarizingModel.from_backend with profile (lines 117, 120-127)
+# ---------------------------------------------------------------------------
+
+
+class TestDepolarizingModelFromBackendProfile:
+    """Cover from_backend branches when backend has a noise profile."""
+
+    def test_from_backend_with_profile_attr(self) -> None:
+        """Backend with _profile attribute -> uses profile errors."""
+        from types import SimpleNamespace
+
+        backend = MockBackend()
+        backend._profile = SimpleNamespace(
+            single_gate_error=2e-4,
+            two_gate_error=5e-3,
+        )
+        model = DepolarizingModel.from_backend(backend)
+        # Should have single-qubit + two-qubit channels from profile
+        assert len(model.channels) > 2
+        assert model.gate_error("rx") == 2e-4
+        assert model.gate_error("cx") == 5e-3
+
+    def test_from_backend_with_noise_profile_attr(self) -> None:
+        """Backend with noise_profile (non-callable) -> uses profile."""
+        from types import SimpleNamespace
+
+        backend = MockBackend()
+        backend.noise_profile = SimpleNamespace(
+            single_gate_error=1e-3,
+            two_gate_error=2e-2,
+        )
+        model = DepolarizingModel.from_backend(backend)
+        assert model.gate_error("h") == 1e-3
+        assert model.gate_error("cz") == 2e-2
+
+    def test_from_backend_callable_profile_ignored(self) -> None:
+        """Backend with callable noise_profile -> falls back to default."""
+        backend = MockBackend()
+        backend.noise_profile = lambda: None
+        model = DepolarizingModel.from_backend(backend)
+        # Should fall back to default channels
+        assert model.gate_error("cx") == pytest.approx(1e-3)
+        assert model.gate_error("rx") == pytest.approx(1e-4)
+
+
+# ---------------------------------------------------------------------------
+# DepolarizingModel.noise_gradient with bind_parameters (lines 205-222)
+# ---------------------------------------------------------------------------
+
+
+class TestNoiseGradientBindParameters:
+    """Cover the finite-difference branch of noise_gradient."""
+
+    def test_noise_gradient_with_parameterized_circuit(self) -> None:
+        """Circuit with parameters -> finite-difference gradient."""
+        from qiskit.circuit import Parameter, QuantumCircuit
+
+        theta = Parameter("θ")
+        phi = Parameter("φ")
+        qc = QuantumCircuit(2)
+        qc.rx(theta, 0)
+        qc.ry(phi, 1)
+        qc.cx(0, 1)
+
+        channels = [
+            NoiseChannel("rx", 0.001, (0,)),
+            NoiseChannel("ry", 0.001, (1,)),
+            NoiseChannel("cx", 0.01, (0, 1)),
+        ]
+        model = DepolarizingModel(channels)
+        params = np.array([0.5, 1.0])
+        grad = model.noise_gradient(qc, params)
+        assert grad.shape == (2,)
+
+
+# ---------------------------------------------------------------------------
+# _count_gates fallback paths (lines 665-682)
+# ---------------------------------------------------------------------------
+
+
+class TestCountGatesFallbacks:
+    """Cover _count_gates fallback for .data and shallow-circuit paths."""
+
+    def test_count_gates_via_data_attr(self) -> None:
+        """Circuit with .data but no .count_ops -> iterate data."""
+        from types import SimpleNamespace
+
+        from qufin.backends.noise_aware_optimizer import _count_gates
+
+        instr1 = SimpleNamespace(
+            operation=SimpleNamespace(name="h"),
+        )
+        instr2 = SimpleNamespace(
+            operation=SimpleNamespace(name="cx"),
+        )
+
+        class DataCircuit:
+            data = [instr1, instr2, instr2]
+
+        counts = _count_gates(DataCircuit())
+        assert counts["h"] == 1
+        assert counts["cx"] == 2
+
+    def test_count_gates_shallow_fallback(self) -> None:
+        """Object with no .data and no .count_ops -> shallow fallback."""
+        from types import SimpleNamespace
+
+        from qufin.backends.noise_aware_optimizer import _count_gates
+
+        obj = SimpleNamespace(num_qubits=3)
+        counts = _count_gates(obj)
+        # Default depth() = 5, num_qubits=3 -> {"u": 15}
+        assert "u" in counts
+        assert counts["u"] == 15
+
+    def test_count_gates_with_depth_method(self) -> None:
+        """Object with depth() method but no .data/.count_ops."""
+        from qufin.backends.noise_aware_optimizer import _count_gates
+
+        class DepthOnly:
+            num_qubits = 4
+
+            def depth(self):
+                return 3
+
+        counts = _count_gates(DepthOnly())
+        assert counts["u"] == 12
+
+    def test_count_gates_filters_measure_barrier(self) -> None:
+        """Ensure measure/barrier are excluded from data iteration."""
+        from types import SimpleNamespace
+
+        from qufin.backends.noise_aware_optimizer import _count_gates
+
+        instrs = [
+            SimpleNamespace(operation=SimpleNamespace(name="h")),
+            SimpleNamespace(operation=SimpleNamespace(name="measure")),
+            SimpleNamespace(operation=SimpleNamespace(name="barrier")),
+        ]
+
+        class MixedCircuit:
+            data = instrs
+
+        counts = _count_gates(MixedCircuit())
+        assert "h" in counts
+        assert "measure" not in counts
+        assert "barrier" not in counts
+
+
+# ---------------------------------------------------------------------------
+# _bind_params (lines 691-694)
+# ---------------------------------------------------------------------------
+
+
+class TestBindParams:
+    """Cover _bind_params with actual parameterized circuit."""
+
+    def test_bind_params_with_parameters(self) -> None:
+        from qiskit.circuit import Parameter, QuantumCircuit
+
+        from qufin.backends.noise_aware_optimizer import _bind_params
+
+        theta = Parameter("θ")
+        qc = QuantumCircuit(1)
+        qc.rx(theta, 0)
+
+        bound = _bind_params(qc, np.array([1.5]))
+        # Should have no free parameters after binding
+        assert len(bound.parameters) == 0
+
+    def test_bind_params_no_parameters(self) -> None:
+        from qufin.backends.noise_aware_optimizer import _bind_params
+
+        circ = _FakeCircuit()
+        result = _bind_params(circ, np.array([1.0, 2.0]))
+        # Returns original circuit unchanged
+        assert result is circ

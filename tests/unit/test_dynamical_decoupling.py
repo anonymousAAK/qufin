@@ -248,3 +248,102 @@ class TestDDWithZNE:
         cfg = DDConfig(sequence_type=DDSequence.CPMG, n_pulses=2)
         result = dd_with_zne(qc, backend, dd_config=cfg, shots=512)
         assert result["dd_sequence"] == "cpmg"
+
+
+# ---------------------------------------------------------------------------
+# _get_idle_qubits  (lines 156-178)
+# ---------------------------------------------------------------------------
+
+
+class TestGetIdleQubits:
+    """Cover _get_idle_qubits helper."""
+
+    def test_idle_qubits_single_gate(self) -> None:
+        from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.dynamical_decoupling import _get_idle_qubits
+
+        qc = QuantumCircuit(3)
+        qc.h(0)  # Only qubit 0 active at moment 0
+        idle = _get_idle_qubits(qc, 0)
+        assert 1 in idle
+        assert 2 in idle
+        assert 0 not in idle
+
+    def test_idle_qubits_no_gate_at_moment(self) -> None:
+        from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.dynamical_decoupling import _get_idle_qubits
+
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        # Moment 5 has no gates at all -> all qubits idle
+        idle = _get_idle_qubits(qc, 5)
+        assert len(idle) == 2
+
+    def test_idle_qubits_two_qubit_gate(self) -> None:
+        from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.dynamical_decoupling import _get_idle_qubits
+
+        qc = QuantumCircuit(3)
+        qc.cx(0, 1)  # qubits 0,1 active; qubit 2 idle
+        idle = _get_idle_qubits(qc, 0)
+        assert 2 in idle
+        assert 0 not in idle
+        assert 1 not in idle
+
+
+# ---------------------------------------------------------------------------
+# _apply_gate unknown gate  (line 201)
+# ---------------------------------------------------------------------------
+
+
+class TestApplyGateUnknown:
+    """Cover _apply_gate ValueError for unknown gate."""
+
+    def test_unknown_gate_raises(self) -> None:
+        from qiskit.circuit import QuantumCircuit
+
+        from qufin.backends.dynamical_decoupling import _apply_gate
+
+        qc = QuantumCircuit(1)
+        with pytest.raises(ValueError, match="Unknown gate"):
+            _apply_gate(qc, "invalid_gate", 0)
+
+
+# ---------------------------------------------------------------------------
+# insert_dd_sequences — UHRIG branch (lines 304-306)
+# ---------------------------------------------------------------------------
+
+
+class TestInsertDDUhrig:
+    """Cover Uhrig branch in _insert_dd_on_qubit."""
+
+    def test_insert_uhrig_sequence(self) -> None:
+        from qiskit.circuit import QuantumCircuit
+
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+
+        cfg = DDConfig(
+            sequence_type=DDSequence.UHRIG,
+            n_pulses=4,
+        )
+        dd_qc = insert_dd_sequences(qc, cfg)
+        assert dd_qc.num_qubits == 2
+        assert dd_qc.size() >= qc.size()
+
+
+# ---------------------------------------------------------------------------
+# estimate_t2_extension — else branch (line 357)
+# ---------------------------------------------------------------------------
+
+
+class TestEstimateT2ExtensionElse:
+    """Cover the else/fallback branch in estimate_t2_extension."""
+
+    def test_zero_t2_raises(self) -> None:
+        with pytest.raises(ValueError, match="positive"):
+            estimate_t2_extension(0.0, DDSequence.XY4)

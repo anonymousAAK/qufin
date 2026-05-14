@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 import numpy as np
 
@@ -15,6 +16,7 @@ from qufin.benchmarks.hardware_benchmarks import (
     IonQBenchmarkRunner,
     _compute_confidence_interval,
     _compute_success_probability,
+    _result_to_dict,
 )
 
 # ---------------------------------------------------------------------------
@@ -272,3 +274,271 @@ class TestIonQBenchmarkRunner:
         cost = runner.cost_analysis()
         assert cost["total_cost_usd"] > 0
         assert cost["n_runs"] == 2
+
+    def test_cost_analysis_empty(self) -> None:
+        runner = IonQBenchmarkRunner()
+        cost = runner.cost_analysis()
+        assert cost["total_cost_usd"] == 0.0
+        assert cost["n_runs"] == 1  # fallback to 1 to avoid division by 0
+
+
+# ---------------------------------------------------------------------------
+# Backend exception tests (lines 188-191, 200-201, 267-270, 283-284)
+# ---------------------------------------------------------------------------
+
+
+class FailingBackend:
+    """Backend that always raises on run()."""
+
+    backend_id = "failing-backend"
+
+    def run(self, circuit: Any, shots: int = 1024) -> Any:
+        raise RuntimeError("backend unavailable")
+
+
+class NoIdBackend:
+    """Backend that raises on run() and has no backend_id attribute."""
+
+    def run(self, circuit: Any, shots: int = 1024) -> Any:
+        raise RuntimeError("no backend_id")
+
+
+class TestQAOABenchmarkErrorPaths:
+    """Cover exception handling and error-state branches in QAOA."""
+
+    def test_qaoa_backend_exception(self) -> None:
+        """Lines 188-191: backend.run raises, device_id falls back."""
+        cfg = HardwareBenchmarkConfig(
+            qubit_counts=[4],
+            qaoa_depths=[1],
+            shots=100,
+            n_runs=1,
+            seed=42,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = FailingBackend()
+        results = runner.run_qaoa_benchmark({}, backend)
+        assert len(results) == 1
+        r = results[0]
+        assert r.device_id == "failing-backend"
+        assert "__error__" in r.raw_results["counts"]
+        # Lines 200-201: error branch sets success_prob = 0
+        assert r.success_probability == 0.0
+        assert r.raw_results["best"] == ""
+
+    def test_qaoa_backend_no_backend_id_attr(self) -> None:
+        """device_id falls back to 'unknown' via getattr."""
+        cfg = HardwareBenchmarkConfig(
+            qubit_counts=[4],
+            qaoa_depths=[1],
+            shots=100,
+            n_runs=1,
+            seed=42,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = NoIdBackend()
+        results = runner.run_qaoa_benchmark({}, backend)
+        assert results[0].device_id == "unknown"
+
+    def test_qaoa_none_seed(self) -> None:
+        """Seed is None path in QAOA."""
+        cfg = HardwareBenchmarkConfig(
+            qubit_counts=[4],
+            qaoa_depths=[1],
+            shots=100,
+            n_runs=1,
+            seed=None,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        results = runner.run_qaoa_benchmark({}, backend)
+        assert results[0].metadata["seed"] is None
+
+
+class TestQAEBenchmarkErrorPaths:
+    """Cover exception handling and error-state branches in QAE."""
+
+    def test_qae_backend_exception(self) -> None:
+        """Lines 267-270: backend.run raises in QAE."""
+        cfg = HardwareBenchmarkConfig(
+            qae_precisions=[3],
+            shots=100,
+            n_runs=1,
+            seed=42,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = FailingBackend()
+        results = runner.run_qae_benchmark(backend)
+        assert len(results) == 1
+        r = results[0]
+        assert r.device_id == "failing-backend"
+        assert "__error__" in r.raw_results["counts"]
+        # Lines 283-284: error branch
+        assert r.approximation_ratio == 0.0
+        assert r.success_probability == 0.0
+
+    def test_qae_backend_no_backend_id_attr(self) -> None:
+        """device_id falls back to 'unknown' in QAE."""
+        cfg = HardwareBenchmarkConfig(
+            qae_precisions=[3],
+            shots=100,
+            n_runs=1,
+            seed=42,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = NoIdBackend()
+        results = runner.run_qae_benchmark(backend)
+        assert results[0].device_id == "unknown"
+
+
+# ---------------------------------------------------------------------------
+# run_mitigation_comparison tests (lines 337-436)
+# ---------------------------------------------------------------------------
+
+
+class TestMitigationComparison:
+    """Cover run_mitigation_comparison with various methods."""
+
+    def test_none_method(self) -> None:
+        """Test the 'none' mitigation path (raw circuit)."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["none"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 1
+        r = results[0]
+        assert r.circuit_type == "mitigation"
+        assert r.metadata["mitigation_method"] == "none"
+        assert r.n_qubits == 2
+        assert r.success_probability >= 0.0
+
+    def test_unknown_method(self) -> None:
+        """Test unknown mitigation method goes to else branch."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["bogus_method"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 1
+        r = results[0]
+        assert r.success_probability == 0.0
+        assert r.raw_results["counts"] == {}
+
+    def test_zne_method_exception(self) -> None:
+        """Test ZNE method when zne_extrapolate raises."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["zne"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+
+        # Patch zne_extrapolate to raise, hitting the except branch
+        with patch(
+            "qufin.backends.error_mitigation.zne_extrapolate",
+            side_effect=RuntimeError("zne failed"),
+        ):
+            results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 1
+        r = results[0]
+        assert r.metadata["mitigation_method"] == "zne"
+        assert "__error__" in r.raw_results["counts"]
+
+    def test_trex_method_exception(self) -> None:
+        """Test TREX method when it raises."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["trex"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        # TREX will fail on StubBackend -> exception path
+        results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 1
+        assert results[0].metadata["mitigation_method"] == "trex"
+
+    def test_readout_method_exception(self) -> None:
+        """Test readout method when calibration fails."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["readout"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        # readout calibration will fail on StubBackend
+        results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 1
+        assert results[0].metadata["mitigation_method"] == "readout"
+
+    def test_multiple_methods(self) -> None:
+        """Test running multiple mitigation methods at once."""
+        from qiskit.circuit import QuantumCircuit
+
+        cfg = HardwareBenchmarkConfig(
+            mitigation_methods=["none", "bogus_method"],
+            shots=100,
+        )
+        runner = HardwareBenchmarkRunner(cfg)
+        backend = StubBackend()
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        results = runner.run_mitigation_comparison(qc, backend)
+        assert len(results) == 2
+        # Results should be accumulated
+        assert len(runner.results) == 2
+
+
+# ---------------------------------------------------------------------------
+# Helper & edge-case tests
+# ---------------------------------------------------------------------------
+
+
+class TestResultToDict:
+    def test_converts_tuple_to_list(self) -> None:
+        r = HardwareBenchmarkResult(
+            confidence_interval=(0.1, 0.9)
+        )
+        d = _result_to_dict(r)
+        assert d["confidence_interval"] == [0.1, 0.9]
+        assert isinstance(d["confidence_interval"], list)
+
+
+class TestConfidenceIntervalEmpty:
+    def test_empty_list(self) -> None:
+        ci = _compute_confidence_interval([])
+        assert ci == (0.0, 0.0)
+
+    def test_99_confidence(self) -> None:
+        values = [0.5, 0.6, 0.55, 0.58, 0.52]
+        ci = _compute_confidence_interval(values, confidence=0.99)
+        mean = float(np.mean(values))
+        # 99% CI should be wider than 95%
+        ci95 = _compute_confidence_interval(values, confidence=0.95)
+        assert (ci[1] - ci[0]) >= (ci95[1] - ci95[0])
+        assert ci[0] < mean < ci[1]

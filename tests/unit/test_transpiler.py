@@ -269,3 +269,100 @@ class TestFinanceTranspiler:
     ) -> None:
         _, result = transpiler.optimize_qaoa_circuit(qaoa_circuit, simple_qubo)
         assert result.estimated_error_rate >= 0.0
+
+
+# ---------------------------------------------------------------------------
+# initial_layout_from_qubo: edge cases for lines 189-228
+# ---------------------------------------------------------------------------
+
+
+class TestInitialLayoutFallbacks:
+    """Cover branches where one logical qubit is placed and the other
+    is not, plus fallback paths when no adjacent physical qubit is free.
+    """
+
+    def test_li_placed_lj_not_adjacent_available(self) -> None:
+        """Lines 197-206: li already placed, lj placed on neighbor."""
+        # Q with strong (0,1) and (0,2) interactions
+        # After placing (0,1) on first edge, qubit 2 needs to be
+        # adjacent to qubit 0's physical position.
+        Q = np.zeros((3, 3))
+        Q[0, 1] = 10.0  # highest weight, placed first
+        Q[1, 0] = 10.0
+        Q[0, 2] = 5.0   # second highest, li=0 already placed
+        Q[2, 0] = 5.0
+        coupling = [(0, 1), (1, 2), (0, 2)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 3
+        # All physical qubits should be unique
+        assert len(set(layout.values())) == 3
+
+    def test_lj_placed_li_not(self) -> None:
+        """Lines 214-228: lj already placed, li needs placement."""
+        # Create a QUBO where edge (1,2) is strongest, then (0,2)
+        # After placing (1,2), for edge (0,2): lj=2 is placed, li=0 not
+        Q = np.zeros((3, 3))
+        Q[1, 2] = 10.0  # placed first
+        Q[2, 1] = 10.0
+        Q[0, 2] = 5.0   # lj=2 already placed, li=0 not
+        Q[2, 0] = 5.0
+        coupling = [(0, 1), (1, 2), (2, 3)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 3
+        assert len(set(layout.values())) == 3
+
+    def test_fallback_no_adjacent_free_li_placed(self) -> None:
+        """Lines 207-212: li placed, no adjacent free -> fallback."""
+        # Physical qubit 2 is isolated (not adjacent to 0 or 1).
+        # After placing (0,1) on edge (0,1), qubit 2's only neighbor
+        # for li=0 is physical 1, which is taken -> fallback to pq=2.
+        Q = np.zeros((3, 3))
+        Q[0, 1] = 10.0
+        Q[1, 0] = 10.0
+        Q[0, 2] = 5.0  # li=0 placed, neighbors of phys 0 all taken
+        Q[2, 0] = 5.0
+        # phys 2 exists but is not connected to anything
+        coupling = [(0, 1), (2, 3)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 3
+        assert len(set(layout.values())) == 3
+
+    def test_fallback_no_adjacent_free_lj_placed(self) -> None:
+        """Lines 223-228: lj placed, no adjacent free -> fallback."""
+        Q = np.zeros((3, 3))
+        Q[1, 2] = 10.0
+        Q[2, 1] = 10.0
+        Q[0, 2] = 5.0  # lj=2 placed, neighbors all taken
+        Q[2, 0] = 5.0
+        # phys 2 exists but isolated from 0,1
+        coupling = [(0, 1), (2, 3)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 3
+        assert len(set(layout.values())) == 3
+
+    def test_both_unplaced_no_edge_available(self) -> None:
+        """Lines 187-196: both unplaced, no free physical edge."""
+        # All coupling edges used by prior placements, forcing
+        # the fallback that assigns to any unused physical qubits.
+        Q = np.zeros((4, 4))
+        Q[0, 1] = 10.0  # highest, takes edge (0,1)
+        Q[1, 0] = 10.0
+        Q[2, 3] = 5.0   # both unplaced, edges (0,1) used
+        Q[3, 2] = 5.0
+        # Two edges but first is taken; second taken by (2,3)
+        coupling = [(0, 1), (2, 3)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 4
+        assert len(set(layout.values())) == 4
+
+    def test_remaining_unplaced_qubits(self) -> None:
+        """Lines 231-237: qubits with no interactions get assigned."""
+        Q = np.zeros((4, 4))
+        Q[0, 1] = 5.0
+        Q[1, 0] = 5.0
+        # qubits 2 and 3 have no interactions
+        coupling = [(0, 1), (1, 2), (2, 3)]
+        layout = initial_layout_from_qubo(Q, coupling)
+        assert len(layout) == 4
+        for i in range(4):
+            assert i in layout

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -242,3 +243,132 @@ class TestAutoSelectBackend:
         circ = _fake_circuit(n_qubits=20)
         backend = auto_select_backend(circ, available_backends=avail)
         assert isinstance(backend, MockBackend)
+
+
+# ---------------------------------------------------------------------------
+# Lazy import helpers from backends/__init__.py  (lines 36-66)
+# ---------------------------------------------------------------------------
+
+
+class TestLazyImportHelpers:
+    """Cover lazy-import functions in qufin.backends.__init__."""
+
+    def test_get_ibm_backend_import_error(self) -> None:
+        with pytest.raises((ImportError, ModuleNotFoundError)):
+            from qufin.backends import get_ibm_backend
+            get_ibm_backend()
+
+    def test_get_pennylane_backend_import_error(self) -> None:
+        with pytest.raises((ImportError, ModuleNotFoundError)):
+            from qufin.backends import get_pennylane_backend
+            get_pennylane_backend()
+
+    def test_get_cirq_backend_import_error(self) -> None:
+        with pytest.raises((ImportError, ModuleNotFoundError)):
+            from qufin.backends import get_cirq_backend
+            get_cirq_backend()
+
+    def test_get_braket_backend_import_error(self) -> None:
+        with pytest.raises((ImportError, ModuleNotFoundError)):
+            from qufin.backends import get_braket_backend
+            get_braket_backend()
+
+    def test_get_cudaq_backend_import_error(self) -> None:
+        with pytest.raises((ImportError, ModuleNotFoundError)):
+            from qufin.backends import get_cudaq_backend
+            get_cudaq_backend()
+
+
+# ---------------------------------------------------------------------------
+# get_available_backends — optional import branches (lines 192-223)
+# ---------------------------------------------------------------------------
+
+
+class TestGetAvailableBackendsImportBranches:
+    """Cover all try/except branches in get_available_backends."""
+
+    @patch.dict(sys.modules, {"cudaq": None})
+    def test_cudaq_unavailable(self) -> None:
+        available = get_available_backends()
+        assert available["cudaq"] is False
+
+    @patch.dict(sys.modules, {"pennylane": None})
+    def test_pennylane_unavailable(self) -> None:
+        available = get_available_backends()
+        assert available["pennylane"] is False
+
+    @patch.dict(sys.modules, {"cirq": None})
+    def test_cirq_unavailable(self) -> None:
+        available = get_available_backends()
+        assert available["cirq"] is False
+
+    @patch.dict(sys.modules, {"braket": None})
+    def test_braket_unavailable(self) -> None:
+        available = get_available_backends()
+        assert available["braket"] is False
+
+
+# ---------------------------------------------------------------------------
+# _try_create_backend — optional backend branches (lines 325-356)
+# ---------------------------------------------------------------------------
+
+
+class TestTryCreateBackendBranches:
+    """Cover _try_create_backend for optional backends."""
+
+    def test_try_create_qiskit_aer_available(self) -> None:
+        """qiskit_aer is available — should create a backend."""
+        avail = {"mock": True, "qiskit_aer": True, "cudaq": False}
+        circ = _fake_circuit(n_qubits=4)
+        backend = auto_select_backend(circ, available_backends=avail)
+        # Should pick qiskit_aer since it's available for small circuits
+        assert backend is not None
+
+    def test_try_create_pennylane_catches_import(self) -> None:
+        """pennylane marked available but import fails -> returns None."""
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=4)
+        result = _try_create_backend(
+            "pennylane", {"pennylane": True}, analysis
+        )
+        # Import will fail -> returns None
+        assert result is None
+
+    def test_try_create_cirq_catches_import(self) -> None:
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=4)
+        result = _try_create_backend("cirq", {"cirq": True}, analysis)
+        assert result is None
+
+    def test_try_create_braket_catches_import(self) -> None:
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=4)
+        result = _try_create_backend(
+            "braket", {"braket": True}, analysis
+        )
+        assert result is None
+
+    def test_try_create_cudaq_catches_import(self) -> None:
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=4)
+        result = _try_create_backend(
+            "cudaq", {"cudaq": True}, analysis
+        )
+        assert result is None
+
+    def test_try_create_cudaq_large_circuit(self) -> None:
+        """cudaq with >30 qubits should try nvidia-mgpu target."""
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=35)
+        result = _try_create_backend(
+            "cudaq", {"cudaq": True}, analysis
+        )
+        assert result is None  # import fails
+
+    def test_try_create_unknown_returns_none(self) -> None:
+        from qufin.backends.auto_select import CircuitAnalysis, _try_create_backend
+        analysis = CircuitAnalysis(qubit_count=4)
+        result = _try_create_backend(
+            "unknown_backend", {"unknown_backend": True}, analysis
+        )
+        assert result is None
