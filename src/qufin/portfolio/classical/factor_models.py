@@ -232,7 +232,7 @@ def risk_decomposition(
         - ``idiosyncratic_variance``: Variance from residuals (float).
         - ``systematic_pct``: Fraction of variance that is systematic (float).
         - ``factor_contributions``: Per-factor variance contribution,
-          shape (n_factors,).
+            shape (n_factors,).
     """
     weights = np.asarray(weights, dtype=np.float64)
     factor_cov = np.asarray(factor_cov, dtype=np.float64)
