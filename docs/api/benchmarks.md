@@ -37,3 +37,13 @@
       members:
         - Manifest
         - build_manifest
+
+## Hardware Benchmarks
+
+::: qufin.benchmarks.hardware_benchmarks
+    options:
+      members:
+        - HardwareBenchmarkConfig
+        - HardwareBenchmarkResult
+        - HardwareBenchmarkRunner
+        - IonQBenchmarkRunner

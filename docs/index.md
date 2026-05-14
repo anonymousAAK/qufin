@@ -49,7 +49,12 @@ graph TB
         MOCK[MockBackend]
         AER[Qiskit Aer]
         IBM[IBM Runtime]
+        PL[PennyLane]
+        BRAKET[Amazon Braket]
+        CIRQ[Cirq / Google]
+        CUDAQ[CUDA-Q]
         NOISE[Noisy Aer + Mitigation]
+        AUTO[Auto-Selection + Transpiler]
     end
 
     subgraph Analysis["Analysis"]
@@ -84,6 +89,6 @@ print(f"Gamma: {opt.bs_gamma():.4f}")
 | `options` | Black-Scholes, Monte Carlo, Binomial (CRR), American (LSM), Implied Vol Surface | Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE |
 | `risk` | Historical/Parametric VaR, CVaR, Stress Testing | Quantum VaR, Credit Risk (Egger), Quantum Stress Testing |
 | `hedging` | Delta Hedging | Deep Hedging, Quantum Deep Hedging |
-| `backends` | — | Qiskit Aer, IBM Runtime, Noise Models, Error Mitigation |
+| `backends` | — | Qiskit Aer, IBM Runtime, PennyLane, Amazon Braket, Cirq, CUDA-Q, Noise Models, Error Mitigation (ZNE, TREX, PEC, CDR), M3 Mitigation, Dynamical Decoupling, Finance Transpiler, Noise-Aware Optimizer, Auto-Selection |
 | `backtesting` | Walk-Forward Engine, 15+ Performance Metrics | — |
-| `benchmarks` | Standardized Problems, Leaderboard | Scaling Analysis |
+| `benchmarks` | Standardized Problems, Leaderboard | Scaling Analysis, Hardware Benchmarks (IonQ, IBM) |

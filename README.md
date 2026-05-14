@@ -9,13 +9,13 @@
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Tests](https://img.shields.io/badge/tests-1011%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-1149%20passing-brightgreen)]()
 [![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)]()
 
 ---
 
-**109 modules** &bull; **10 subpackages** &bull; **1011 tests** &bull; **7 backends** &bull; **4 QAE variants**
+**116 modules** &bull; **10 subpackages** &bull; **1149 tests** &bull; **8 backends** &bull; **4 QAE variants**
 
 *Every quantum algorithm ships with a classical baseline. No hype -- just reproducible results.*
 
@@ -188,8 +188,14 @@ src/qufin/
         mock.py                #   MockBackend (deterministic, no simulator)
         qiskit_backend.py      #   QiskitAerBackend + NoisyAerBackend
         ibm_runtime.py         #   IBM Quantum Runtime (Sampler/Estimator)
+        cudaq_backend.py        #   CUDA-Q GPU-accelerated backend
+        auto_select.py         #   Backend auto-selection + fallback chain
+        transpiler.py          #   Finance circuit transpiler (QUBO-aware)
         noise_models.py        #   Depolarizing, thermal, device-calibrated
         error_mitigation.py    #   ZNE, TREX, readout calibration
+        dynamical_decoupling.py #  XY4, CPMG, Uhrig DD sequences
+        m3_mitigation.py       #   Matrix-free measurement mitigation
+        noise_aware_optimizer.py #  Noise-aware variational optimizer
     options/
         classical/             #   Black-Scholes, CRR binomial, Monte Carlo
         amplitude_estimation/  #   Canonical, MLAE, IQAE, FQAE
@@ -249,6 +255,7 @@ backend = MockBackend()
 | `PennyLaneBackend` | PennyLane ecosystem |
 | `CirqBackend` | Google Cirq ecosystem |
 | `BraketBackend` | Amazon Braket / AWS hardware |
+| `CudaQBackend` | GPU-accelerated simulation, 30+ qubits |
 
 ---
 
@@ -260,6 +267,8 @@ qufin includes standardized benchmark suites for honest quantum-vs-classical com
 - **Metrics**: Solution quality, time-to-solution, circuit depth, approximation ratio vs exact classical optimum
 - **Reproducibility**: Every run generates a manifest recording hardware, software versions, and random seeds
 - **Leaderboard**: Track and compare results across backends and algorithm configurations
+- **Finance circuit transpiler**: QUBO-aware ZZ optimization, commuting gate parallelization, connectivity-aware routing
+- **Hardware benchmarks**: QAOA/QAE benchmark runners, error mitigation comparison, IonQ cost analysis
 
 ```python
 from qufin.benchmarks.runner import BenchmarkRunner
@@ -296,7 +305,7 @@ pytest -m "not hardware"        # Skip IBM hardware tests
 | Portfolio Optimization (classical + QAOA/VQE) | Stable |
 | Option Pricing (BS + QAE) | Stable |
 | Risk Management (VaR/CVaR + quantum) | Stable |
-| Noise Models + Error Mitigation | Stable |
+| Noise Models + Error Mitigation (ZNE, TREX, PEC, CDR, DD, M3) | Stable |
 | Backtesting Engine | Stable |
 | Benchmarks & Leaderboard | Stable |
 | Data Layer (Yahoo, FRED, synthetic) | Stable |

@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-14
+
+Backend expansion release: 7 new modules, 1149 total tests, 116 source files, 8 backends.
+
+### Added
+
+#### Backend Expansion
+- PennyLane backend: parameter-shift gradient integration, cross-framework verification, enhanced Qiskit conversion
+- Amazon Braket backend: IonQ Aria/Forte trapped-ion targets, Rigetti Ankaa target, hybrid job support, cost estimation ($/shot)
+- Cirq backend: Google Sycamore/Willow hardware config, XEB noise characterization, sqrt-iSWAP decomposition, noise model integration
+- CUDA-Q backend: GPU-accelerated state vector simulation, multi-GPU support for 30+ qubit circuits
+- Backend auto-selection: circuit analysis, backend registry, automatic fallback chain (GPU → Aer → Mock)
+
+#### Hardware Validation
+- Finance circuit transpiler: QUBO-aware ZZ optimization, commuting gate parallelization, connectivity-aware routing, transpilation benchmarking
+- Hardware benchmark framework: QAOA/QAE benchmark runners, error mitigation comparison, reproducibility manifests, statistical analysis
+- IonQ benchmark runner with cost analysis and 2Q gate comparison
+
+#### Error Mitigation v2
+- Probabilistic Error Cancellation (PEC): quasi-probability decomposition, Monte Carlo PEC estimator, overhead estimation
+- Clifford Data Regression (CDR): near-Clifford training circuit generation, linear/ridge regression correction
+- Dynamical Decoupling: XY4, CPMG, Uhrig DD sequences, compound DD+ZNE mitigation, T2 extension estimation
+- M3 matrix-free measurement mitigation: tensored calibration (linear scaling), iterative Bayesian correction
+- Noise-aware variational optimizer: noise penalty in cost function, robust optimization over calibration drift
+
+### Changed
+- Source modules increased from 109 to 116
+- Test count increased from 1011 to 1149
+- Backend count increased from 7 to 8
+
 ## [0.2.0] - 2026-05-14
 
 Algorithm expansion release: 7 new modules, 1011 total tests, 109 source files.
@@ -129,6 +159,7 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.2.0
 [0.1.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.1.0

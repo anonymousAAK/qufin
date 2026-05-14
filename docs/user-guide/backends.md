@@ -132,3 +132,85 @@ class Backend:
 - `.most_frequent` — Most common bitstring
 - `.shots` — Total number of shots
 - `.backend_id` — Backend identifier
+
+## Advanced Backend Features (v0.3.0)
+
+### Auto-Selecting a Backend
+
+The `auto_select_backend` function analyzes your circuit and picks the best
+available backend based on qubit count, gate depth, and installed packages.
+
+```python
+from qufin.backends.auto_select import auto_select_backend
+
+backend = auto_select_backend(circuit)
+result = backend.run(circuit, shots=4096)
+```
+
+### Using the Finance Transpiler to Optimize QAOA Circuits
+
+`FinanceTranspiler` exploits the structure of financial QUBO problems to
+produce better qubit layouts and commuting-gate groupings.
+
+```python
+from qufin.backends.transpiler import FinanceTranspiler
+
+transpiler = FinanceTranspiler()
+result = transpiler.transpile(circuit, qubo_matrix=Q)
+print(f"Depth reduction: {result.original_depth} -> {result.transpiled_depth}")
+optimized_circuit = result.circuit
+```
+
+### Applying Dynamical Decoupling
+
+Insert DD sequences into idle periods to suppress decoherence on real hardware.
+
+```python
+from qufin.backends.dynamical_decoupling import insert_dd_sequences, DDConfig
+
+config = DDConfig(sequence_type="XY4", t2_us=100.0)
+protected_circuit = insert_dd_sequences(circuit, config)
+```
+
+### Using M3 Measurement Mitigation
+
+M3 (Matrix-free Measurement Mitigation) scales to large qubit counts by
+using tensored calibration instead of full calibration matrices.
+
+```python
+from qufin.backends.m3_mitigation import M3Mitigator, M3Config
+
+mitigator = M3Mitigator(backend, config=M3Config(shots=8192))
+mitigator.calibrate(qubits=[0, 1, 2, 3])
+corrected_counts = mitigator.apply(raw_counts)
+```
+
+### Noise-Aware Optimization
+
+Incorporate estimated noise channels directly into the optimizer cost
+function so the variational loop learns to avoid noisy gates.
+
+```python
+from qufin.backends.noise_aware_optimizer import NoiseAwareOptimizer, NoiseAwareConfig
+
+config = NoiseAwareConfig(noise_weight=0.1, max_iterations=200)
+optimizer = NoiseAwareOptimizer(backend, config)
+opt_result = optimizer.minimize(cost_fn, initial_params)
+```
+
+### Cost Estimation for Cloud QPU
+
+Estimate the dollar cost of running a circuit on Amazon Braket or IonQ
+before submitting the job.
+
+```python
+from qufin.backends.braket_backend import estimate_cost, IonQTarget
+
+estimate = estimate_cost(
+    circuit,
+    target=IonQTarget.ARIA,
+    shots=10_000,
+)
+print(f"Estimated cost: ${estimate.total_usd:.2f}")
+print(f"SWAP overhead: {estimate.swap_gates} extra gates")
+```
