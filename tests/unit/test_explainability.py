@@ -273,20 +273,17 @@ class TestVisualization:
         data = build_interaction_heatmap_data(small_Q)
         # This will return a figure if plotly is installed, or None if not.
         # Either way it should not raise.
-        result = plot_interaction_heatmap(data)
-        assert result is None or result is not None  # no crash
+        plot_interaction_heatmap(data)  # no crash
 
     def test_plot_marginal_no_crash(self, small_Q: np.ndarray) -> None:
         sel = np.array([1.0, 1.0, 0.0])
         mc = marginal_contribution(small_Q, sel)
-        result = plot_marginal_contributions(mc)
-        assert result is None or result is not None
+        plot_marginal_contributions(mc)  # no crash
 
     def test_plot_shapley_no_crash(self, small_Q: np.ndarray) -> None:
         sel = np.array([1.0, 1.0, 0.0])
         attr = shapley_attribution(small_Q, sel, n_permutations=10, seed=0)
-        result = plot_shapley_values(attr)
-        assert result is None or result is not None
+        plot_shapley_values(attr)  # no crash
 
 
 # ---------------------------------------------------------------------------

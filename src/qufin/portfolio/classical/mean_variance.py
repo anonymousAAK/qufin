@@ -42,7 +42,6 @@ def mean_variance(
     long_only: bool = True,
     max_weight: float = 1.0,
     cardinality: int | None = None,
-    sector_upper: dict[int, float] | None = None,
 ) -> MVResult:
     """Solve a mean-variance portfolio optimization.
 
@@ -66,9 +65,6 @@ def mean_variance(
         Maximum weight per asset.
     cardinality : int | None
         Maximum number of assets (makes problem MIQP — slower).
-    sector_upper : dict | None
-        Mapping of asset index -> sector weight cap.
-
     Returns
     -------
     MVResult

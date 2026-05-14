@@ -9,6 +9,8 @@ Optional dependencies: ``pip install fastapi uvicorn celery redis``
 
 from __future__ import annotations
 
+from qufin.api.jobs import JobStatus
+
 __all__ = [
     "JobQueue",
     "JobStatus",

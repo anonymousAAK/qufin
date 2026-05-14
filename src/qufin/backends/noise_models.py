@@ -18,6 +18,8 @@ from typing import Any
 
 import numpy as np
 
+from qufin.backends.base import Backend
+
 
 @dataclass
 class NoiseProfile:
@@ -169,7 +171,7 @@ def build_noise_model(profile: NoiseProfile) -> Any:
     return noise_model
 
 
-class NoisyAerBackend:
+class NoisyAerBackend(Backend):
     """Qiskit Aer backend with a configurable noise model.
 
     Drop-in replacement for QiskitAerBackend that adds realistic noise.

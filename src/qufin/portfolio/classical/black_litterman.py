@@ -54,8 +54,6 @@ def black_litterman(
     -------
     BLResult
     """
-    len(market_caps)
-
     # Equilibrium weights from market cap
     w_eq = market_caps / market_caps.sum()
 

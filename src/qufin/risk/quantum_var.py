@@ -154,9 +154,7 @@ def _build_conditional_value_problem(
     sp_decomposed = _decomposed_state_prep(amplitudes, n_q)
     qc.compose(sp_decomposed, range(n_q), inplace=True)
 
-    # Compute tail values for rescaling
-    tail_mask = dist.values > threshold
-    dist.values[tail_mask]
+    # Compute max value for rescaling
     max_val = float(np.max(dist.values)) if len(dist.values) > 0 else 1.0
     if max_val == 0:
         max_val = 1.0

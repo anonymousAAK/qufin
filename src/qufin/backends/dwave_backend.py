@@ -815,6 +815,7 @@ def benchmark_annealing(
         config=config,
         method=f"dwave_{dwave_config.solver_type.value}",
         feasibility_fn=feasibility_fn,
+        num_reads=dwave_config.num_reads,
     )
 
 
@@ -1004,6 +1005,7 @@ def _compute_benchmark_metrics(
     config: PortfolioBenchmarkConfig,
     method: str,
     feasibility_fn: Any = None,
+    num_reads: int = 1000,
 ) -> BenchmarkMetrics:
     """Compute benchmark metrics from an annealing result."""
     n = Q.shape[0]
@@ -1028,7 +1030,7 @@ def _compute_benchmark_metrics(
         time_to_solution=result.timing.total_seconds,
         embedding_overhead=result.timing.embedding_seconds,
         cost_estimate=estimate_dwave_cost(
-            n, config.n_assets, SolverType.QPU
+            n, num_reads, SolverType.QPU
         ),
         best_bitstring=best_bits,
         n_feasible=n_feasible,

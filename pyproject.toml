@@ -21,12 +21,14 @@ keywords = [
   "option-pricing",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Financial and Insurance Industry",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Physics",
   "Topic :: Office/Business :: Financial :: Investment",
   "Operating System :: OS Independent",
@@ -59,14 +61,13 @@ ml = ["torch>=2.2"]
 viz = ["plotly>=5.20"]
 dwave = ["dwave-ocean-sdk>=6.0"]
 api = ["fastapi>=0.110", "uvicorn>=0.29", "celery[redis]>=5.3", "redis>=5.0"]
-docs = ["sphinx>=7", "sphinx-book-theme", "myst-nb", "sphinx-copybutton"]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9", "mkdocstrings[python]>=0.24", "pymdown-extensions>=10"]
 dev = [
   "pytest>=8",
   "pytest-cov",
   "pytest-benchmark",
   "hypothesis>=6.99",
   "ruff",
-  "black",
   "mypy>=1.10",
   "pre-commit",
   "nbstripout",
@@ -112,10 +113,6 @@ ignore = [
   "E741",      # ambiguous variable name (l used in Dicke state loop)
   "B023",      # function doesn't bind loop var (closure in QGAN training)
 ]
-
-[tool.black]
-line-length = 100
-target-version = ["py310", "py311", "py312"]
 
 [tool.mypy]
 python_version = "3.10"

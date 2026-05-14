@@ -340,7 +340,8 @@ class RedisCacheBackend:
             self._stats.record_miss()
             return None
         self._stats.record_hit()
-        return json.loads(raw)
+        data = json.loads(raw)
+        return data["value"]
 
     def put(
         self,

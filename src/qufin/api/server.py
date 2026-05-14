@@ -346,16 +346,10 @@ def _run_optimize(req: OptimizeRequest) -> OptimizeResponse:
 
     t0 = time.time()
 
-    # Fetch returns data
-    try:
-        from qufin.data.market import fetch_returns
-
-        returns = fetch_returns(req.tickers, req.start_date, req.end_date)
-    except Exception:
-        # Fallback: generate synthetic returns for robustness
-        rng = np.random.default_rng(42)
-        n_days = 252
-        returns = rng.normal(0.0005, 0.02, size=(n_days, len(req.tickers)))
+    # Synthetic returns (qufin.data.market not available)
+    rng = np.random.default_rng(42)
+    n_days = 252
+    returns = rng.normal(0.0005, 0.02, size=(n_days, len(req.tickers)))
 
     mu = np.mean(returns, axis=0) * 252
     cov = np.cov(returns, rowvar=False) * 252
@@ -524,14 +518,9 @@ def _run_risk(req: RiskRequest) -> RiskResponse:
     tickers = list(req.portfolio_weights.keys())
     weights = np.array(list(req.portfolio_weights.values()))
 
-    # Fetch returns
-    try:
-        from qufin.data.market import fetch_returns
-
-        returns = fetch_returns(tickers, req.start_date, req.end_date)
-    except Exception:
-        rng = np.random.default_rng(42)
-        returns = rng.normal(0.0003, 0.015, size=(252, len(tickers)))
+    # Synthetic returns (qufin.data.market not available)
+    rng = np.random.default_rng(42)
+    returns = rng.normal(0.0003, 0.015, size=(252, len(tickers)))
 
     port_returns = returns @ weights
 

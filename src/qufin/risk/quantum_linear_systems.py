@@ -179,7 +179,6 @@ def analyse_condition_number(
     ConditionNumberReport
     """
     sigma = np.asarray(sigma, dtype=np.float64)
-    sigma.shape[0]
 
     eigvals = np.linalg.eigvalsh(sigma)
     eigvals_sorted = np.sort(eigvals)[::-1]
@@ -573,7 +572,6 @@ def solve_linear_system(
     start = time.perf_counter()
     sigma = np.asarray(sigma, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
-    sigma.shape[0]
 
     if config is None:
         config = HHLConfig()

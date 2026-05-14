@@ -128,7 +128,7 @@ For 50+ asset problems:
 
 - Use sparse QUBO representations
 - Reduce simulation shot count during parameter search
-- Consider the ADMM decomposition approach (planned for v0.2.0)
+- Consider the ADMM decomposition approach (available since v0.2.0)
 
 ---
 
@@ -171,4 +171,4 @@ Qiskit Finance was deprecated in 2024. qufin fills that gap with:
 
 ### Can I use qufin in production?
 
-qufin is in alpha (v0.1.x). The classical algorithms (Black-Scholes, MVO, VaR) are production-ready. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not yet for production trading decisions.
+qufin is at v1.0.0. The classical algorithms (Black-Scholes, MVO, VaR) are production-ready. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not yet for production trading decisions.

@@ -134,7 +134,6 @@ def gaussian_copula_mc(
     # Statistics
     expected_loss = float(np.mean(losses))
     unexpected_loss = float(np.std(losses))
-    1 - confidence
     var = float(np.percentile(losses, 100 * confidence))
     tail = losses[losses >= var]
     es = float(np.mean(tail)) if len(tail) > 0 else var

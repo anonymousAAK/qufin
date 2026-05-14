@@ -325,10 +325,6 @@ def multi_period_backtest(
             new_weights = allocations[rebal_map[day]]
             total_turnover += compute_turnover(current_weights, new_weights)
             current_weights = new_weights.copy()
-        elif day == 0:
-            # Handle day 0 rebalance
-            if 0 in rebal_map:
-                current_weights = allocations[rebal_map[0]].copy()
 
         # Daily return: weighted sum of asset returns
         if np.any(current_weights > 0):

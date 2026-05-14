@@ -254,7 +254,7 @@ class TestRedisCacheBackend:
         client.get.return_value = stored
         cache = RedisCacheBackend()
         val = cache.get("k1")
-        assert val == {"value": {"x": 1}, "algorithm": "test"}
+        assert val == {"x": 1}
         assert cache.stats.hits == 1
 
     def test_get_miss(self, mock_redis_mod) -> None:

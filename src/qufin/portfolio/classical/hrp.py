@@ -42,8 +42,6 @@ def hrp(
     """
     cov = np.cov(returns, rowvar=False)
     corr = np.corrcoef(returns, rowvar=False)
-    cov.shape[0]
-
     # Step 1: Tree clustering
     dist = _correlation_distance(corr)  # type: ignore[arg-type]
     dist_condensed = squareform(dist, checks=False)
