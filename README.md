@@ -1,6 +1,6 @@
 <div align="center">
 
-# qufin
+# qufin - Quantum Finance
 
 ### Research-Grade Quantum Algorithms for Production-Grade Quant Finance
 
