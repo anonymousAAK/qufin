@@ -1,0 +1,14 @@
+{
+  "command": "benchmark",
+  "data": {
+    "problem_size": 15,
+    "algorithms": [
+      "qaoa",
+      "vqe"
+    ],
+    "output": "results.json",
+    "status": "completed",
+    "description": "Benchmark qaoa, vqe on problem size 15"
+  },
+  "errors": []
+}
