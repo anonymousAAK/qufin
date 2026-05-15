@@ -18,7 +18,7 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: python -c "import qufin; print('qufin imported OK')"
       - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml --cov-fail-under=90 --tb=short
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         with:
           file: coverage.xml
