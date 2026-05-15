@@ -146,15 +146,15 @@ markers = [
 [tool.coverage.run]
 source = ["qufin"]
 omit = [
-  "src/qufin/_version.py",
-  "src/qufin/backends/ibm_runtime.py",
-  "src/qufin/backends/pennylane_backend.py",
-  "src/qufin/backends/cirq_backend.py",
-  "src/qufin/backends/braket_backend.py",
-  "src/qufin/backends/cudaq_backend.py",
-  "src/qufin/backends/dwave_backend.py",
-  "src/qufin/data/bloomberg.py",
-  "src/qufin/data/refinitiv.py",
+  "*/_version.py",
+  "*/backends/ibm_runtime.py",
+  "*/backends/pennylane_backend.py",
+  "*/backends/cirq_backend.py",
+  "*/backends/braket_backend.py",
+  "*/backends/cudaq_backend.py",
+  "*/backends/dwave_backend.py",
+  "*/data/bloomberg.py",
+  "*/data/refinitiv.py",
 ]
 
 [tool.coverage.report]

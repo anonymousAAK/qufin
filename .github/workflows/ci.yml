@@ -16,7 +16,8 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
       - run: pip install -e ".[dev]"
-      - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml --cov-fail-under=90
+      - run: python -c "import qufin; print('qufin imported OK')"
+      - run: pytest -m "not hardware and not slow" --cov=qufin --cov-report=xml --cov-fail-under=90 --tb=short
       - uses: codecov/codecov-action@v4
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         with:
