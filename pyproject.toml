@@ -65,6 +65,7 @@ docs = ["mkdocs>=1.5", "mkdocs-material>=9", "mkdocstrings[python]>=0.24", "pymd
 dev = [
   "pytest>=8",
   "pytest-cov",
+  "pytest-asyncio>=0.23",
   "pytest-benchmark",
   "hypothesis>=6.99",
   "ruff",
@@ -141,6 +142,7 @@ markers = [
   "slow: tests that take >5s",
   "hardware: tests that require real quantum hardware credentials",
   "regression: paper-reproduction regression tests",
+  "asyncio: async tests requiring pytest-asyncio",
 ]
 
 [tool.coverage.run]
@@ -155,6 +157,8 @@ omit = [
   "*/backends/dwave_backend.py",
   "*/data/bloomberg.py",
   "*/data/refinitiv.py",
+  "*/api/server.py",
+  "*/viz/dashboard.py",
 ]
 
 [tool.coverage.report]
