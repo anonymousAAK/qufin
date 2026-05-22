@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-22
+
+Feature expansion: 159 modules, 11 backends, 2499 tests.
+
+### Added
+
+#### New Algorithms
+- Simulated Quantum Annealing for portfolio optimization (Suzuki-Trotter SQA)
+- Quantum entropy risk measures (von Neumann, relative entropy, diversification score)
+- Quantum autoencoder for financial anomaly detection (variational encoder, parameter-shift training)
+- Asian option QAE pricer (arithmetic/geometric averaging, path discretization)
+
+#### New Backends
+- IonQ backend via Amazon Braket (Aria-1, Aria-2, Forte-1)
+- Quantinuum H-Series backend via pytket (H1-1, H1-1E, H2-1, H2-1E)
+
+#### Performance Tools
+- Circuit compilation LRU cache (thread-safe, configurable, hit/miss stats)
+- Parallel and batched circuit execution (ThreadPoolExecutor)
+- Efficient QUBO-to-SparsePauliOp conversion (sparse Pauli construction)
+- CVaR-aware warm-start and multi-start QAOA
+
+#### New Features
+- Tail risk measures: Entropic VaR, tail dependence, spectral risk
+- CoinGecko cryptocurrency data connector
+- Walk-forward permutation test and CSCV backtest overfitting detection
+- QAOA warm-start from continuous relaxation (Egger heuristic)
+- Inverse volatility risk parity weights
+
+#### JOSS Paper
+- Architecture diagram and benchmark comparison figures
+- Added required sections: State of the Field, Research Impact, AI Disclosure
+
+### Changed
+- Source modules: 146 → 159
+- Test count: 2273 → 2499
+- Backend count: 9 → 11 (added IonQ, Quantinuum)
+
 ## [1.0.0] - 2026-05-15
 
 Production release: 146 modules, 14 subpackages, 2273 tests, 9 backends. All roadmap items complete.
@@ -227,7 +265,8 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/anonymousAAK/qufin/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/anonymousAAK/qufin/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...v0.3.0

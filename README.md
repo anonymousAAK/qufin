@@ -19,25 +19,22 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 [![PyPI](https://img.shields.io/pypi/v/qufin?color=blue)](https://pypi.org/project/qufin/)
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-2273%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-2499%20passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)]()
-[![Downloads](https://img.shields.io/pypi/dm/qufin)](https://pypi.org/project/qufin/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <br>
 
 <sub>
-146 modules &nbsp;&middot;&nbsp; 14 subpackages &nbsp;&middot;&nbsp; 2,273 tests &nbsp;&middot;&nbsp; 9 backends &nbsp;&middot;&nbsp; 5 error mitigation strategies &nbsp;&middot;&nbsp; 4 QAE variants
+159 modules &middot; 14 subpackages &middot; 2,499 tests &middot; 11 backends &middot; 5 error mitigation strategies &middot; 4 QAE variants
 </sub>
 
 <br>
 
-[Installation](#installation) &nbsp;&middot;&nbsp;
-[Quickstart](#quickstart) &nbsp;&middot;&nbsp;
-[Capabilities](#capabilities) &nbsp;&middot;&nbsp;
-[Backends](#backends) &nbsp;&middot;&nbsp;
-[Benchmarks](#benchmarks) &nbsp;&middot;&nbsp;
-[Architecture](#architecture) &nbsp;&middot;&nbsp;
+[Installation](#installation) &middot;
+[Quickstart](#quickstart) &middot;
+[Capabilities](#capabilities) &middot;
+[Backends](#backends) &middot;
+[Benchmarks](#benchmarks) &middot;
 [Docs](https://anonymousAAK.github.io/qufin/)
 
 </div>
@@ -50,35 +47,13 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 
 ## Why qufin
 
-Most quantum finance libraries are toy demos or locked to a single framework. qufin takes a different approach.
+Most quantum finance libraries are toy demos or locked to one framework. qufin is different.
 
-Every quantum algorithm ships alongside the best classical solver for the same problem. Results are compared head-to-head on identical inputs, with identical metrics, on standardized benchmark sets. If the quantum method doesn't win, the data shows it.
+Every quantum algorithm ships alongside the best classical solver for the same problem. Results are compared head-to-head on identical inputs, with identical metrics, on standardized benchmark sets.
 
-<table>
-<tr>
-<td width="33%" valign="top">
-
-**Backend-agnostic**
-
-Write your algorithm once. Run it on Qiskit Aer, IBM hardware, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, or D-Wave. One interface, nine backends.
-
-</td>
-<td width="33%" valign="top">
-
-**Mathematically correct**
-
-Grover operator with the correct global phase. IQAE with multi-branch theta enumeration. Canonical QPE. Details matter when you're pricing derivatives.
-
-</td>
-<td width="33%" valign="top">
-
-**Production patterns**
-
-Typed configs. Reproducibility manifests. Noise-aware simulation. Five error mitigation strategies. Finance-optimized transpilation. Not a notebook demo.
-
-</td>
-</tr>
-</table>
+- **Backend-agnostic** &mdash; Write once, run on 11 backends (Aer, IBM, PennyLane, Cirq, Braket, CUDA-Q, D-Wave, IonQ, Quantinuum, noisy sim, mock)
+- **Mathematically correct** &mdash; Grover global phase, IQAE multi-branch theta, canonical QPE. Details matter for derivative pricing.
+- **Production patterns** &mdash; Typed configs, reproducibility manifests, noise-aware simulation, 5 error mitigation strategies, finance-optimized transpilation.
 
 <br>
 
@@ -96,16 +71,18 @@ Requires Python 3.10+
 
 | Extra | What it adds |
 |:------|:-------------|
-| `qufin[ibm]` | IBM Quantum Runtime &mdash; Sampler / Estimator primitives |
-| `qufin[pennylane]` | PennyLane Lightning &mdash; parameter-shift gradients |
-| `qufin[cirq]` | Google Cirq &mdash; Sycamore / Willow target support |
-| `qufin[braket]` | Amazon Braket &mdash; IonQ, Rigetti, IQM hardware |
-| `qufin[cudaq]` | NVIDIA CUDA-Q &mdash; GPU-accelerated simulation |
-| `qufin[dwave]` | D-Wave Ocean &mdash; quantum annealing |
-| `qufin[ml]` | PyTorch &mdash; deep hedging and quantum ML |
-| `qufin[viz]` | Plotly &mdash; interactive visualization |
-| `qufin[api]` | FastAPI, Celery, Redis &mdash; REST API and job queue |
-| `qufin[dev]` | pytest, ruff, mypy, pre-commit |
+| `qufin[ibm]` | IBM Quantum Runtime |
+| `qufin[pennylane]` | PennyLane Lightning |
+| `qufin[cirq]` | Google Cirq |
+| `qufin[braket]` | Amazon Braket |
+| `qufin[cudaq]` | NVIDIA CUDA-Q |
+| `qufin[dwave]` | D-Wave Ocean |
+| `qufin[ionq]` | IonQ via Braket |
+| `qufin[quantinuum]` | Quantinuum H-Series |
+| `qufin[ml]` | PyTorch |
+| `qufin[viz]` | Plotly |
+| `qufin[api]` | FastAPI + Celery + Redis |
+| `qufin[dev]` | pytest, ruff, mypy |
 | `qufin[all]` | Everything above |
 
 </details>
@@ -149,15 +126,31 @@ Q = build_qubo(problem.mu, problem.sigma, risk_aversion=0.5, k=5)
 
 optimizer = QAOAOptimizer(
     backend=QiskitAerBackend(shots=4096),
-    p=2,
-    mixer="xy_ring",
+    p=2, mixer="xy_ring",
 )
 result = optimizer.solve(Q, n_assets=15, k=5)
 print(f"Selected assets: {result.selected}")
 print(f"Objective:       {result.objective:.6f}")
 ```
 
-### Backtesting
+<details>
+<summary><b>More examples</b></summary>
+<br>
+
+**Synthetic market data**
+
+```python
+from qufin.data.synthetic import gbm_paths, heston_paths, HestonParams
+
+paths = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0,
+                  n_steps=252, n_paths=10_000)
+
+params = HestonParams(v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7)
+paths = heston_paths(s0=100, mu=0.08, params=params, T=1.0,
+                     n_steps=252, n_paths=10_000)
+```
+
+**Backtesting**
 
 ```python
 from qufin.backtesting.engine import BacktestEngine
@@ -166,34 +159,7 @@ from qufin.backtesting.metrics import compute_metrics
 engine = BacktestEngine(rebalance_freq="monthly", window=252)
 portfolio_values = engine.run(prices_df, strategy_fn)
 metrics = compute_metrics(portfolio_values)
-print(f"Sharpe: {metrics['sharpe']:.2f}  Max DD: {metrics['max_drawdown']:.2%}")
-```
-
-<details>
-<summary><b>More examples: synthetic data, factor models, noise-aware optimization</b></summary>
-<br>
-
-**Synthetic market data generation**
-
-```python
-from qufin.data.synthetic import gbm_paths, heston_paths, HestonParams
-
-# Geometric Brownian Motion
-paths = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0, n_steps=252, n_paths=10_000)
-
-# Heston stochastic volatility
-params = HestonParams(v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7)
-paths = heston_paths(s0=100, mu=0.08, params=params, T=1.0, n_steps=252, n_paths=10_000)
-```
-
-**Factor model risk decomposition**
-
-```python
-from qufin.portfolio.classical.factor_models import build_factor_model, risk_decomposition
-
-model = build_factor_model(asset_returns, factor_returns, window=252)
-decomp = risk_decomposition(weights, model.exposures, model.factor_cov)
-print(f"Systematic: {decomp['systematic_pct']:.1%}")
+print(f"Sharpe: {metrics['sharpe']:.2f}")
 ```
 
 **Automatic backend selection**
@@ -201,7 +167,7 @@ print(f"Systematic: {decomp['systematic_pct']:.1%}")
 ```python
 from qufin.backends.auto_select import auto_select_backend
 
-backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
+backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock
 ```
 
 </details>
@@ -210,244 +176,154 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock fallback
 
 ## Capabilities
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
 ### Portfolio Optimization
 
-| | Methods |
-|:--|:--------|
-| **Classical** | Mean-Variance (CVXPY), Black-Litterman, Risk Parity, HRP, Multi-Period, ADMM, Factor Models |
-| **Quantum** | QAOA (4 mixers), VQE, Warm-Start, Szegedy Walk, Robust CVaR QUBO, Sector Rotation (VQC), Grover Search, Quantum IPM |
-| **Annealing** | D-Wave QUBO solver (Pegasus/Zephyr/Chimera topology, CQM hybrid) |
-| **Constraints** | Cardinality, sector, turnover, transaction cost, budget |
+- **Classical**: Mean-Variance, Black-Litterman, Risk Parity, HRP, Multi-Period, ADMM, Factor Models
+- **Quantum**: QAOA (4 mixers), VQE, Warm-Start, Szegedy Walk, Robust CVaR QUBO, Grover Search, Quantum IPM, Simulated Quantum Annealing
+- **Annealing**: D-Wave QUBO solver (Pegasus/Zephyr/Chimera)
+- **Constraints**: Cardinality, sector, turnover, transaction cost, budget
 
 ### Option Pricing
 
-| | Methods |
-|:--|:--------|
-| **Classical** | Black-Scholes (full Greeks), Monte Carlo (European/Asian/Barrier), CRR Binomial, LSM American, Implied Vol (SABR/SVI) |
-| **Quantum** | Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE (Quantum LSM), QMC (Montanaro), QSP Pricing |
-| **Exotics** | Bermudan, lookback, cliquet, autocallable, basket |
+- **Classical**: Black-Scholes (full Greeks), Monte Carlo, CRR Binomial, LSM American, Implied Vol (SABR/SVI)
+- **Quantum**: Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE, QMC (Montanaro), QSP, Asian QAE
+- **Exotics**: Bermudan, lookback, cliquet, autocallable, basket
 
 ### Risk Management
 
-| | Methods |
-|:--|:--------|
-| **Classical** | VaR (historical/parametric/MC), CVaR, stress testing, CVA/DVA |
-| **Quantum** | Quantum VaR, Egger credit-risk, Quantum Stress Testing, HHL Linear Systems |
-| **Credit** | Gaussian copula, NIG copula |
-
-</td>
-<td width="50%" valign="top">
+- **Classical**: VaR (historical/parametric/MC), CVaR, stress testing, CVA/DVA, tail risk (EVaR, spectral)
+- **Quantum**: Quantum VaR, Egger credit-risk, Quantum Stress Testing, HHL Linear Systems, Quantum Entropy
+- **Credit**: Gaussian copula, NIG copula
 
 ### Hedging
 
-| | Methods |
-|:--|:--------|
-| **Classical** | Delta hedging, deep hedging (PyTorch) |
-| **Quantum** | Quantum deep hedging, RL-quantum hedging, Quantum RL PPO hedging |
+- **Classical**: Delta hedging, deep hedging (PyTorch)
+- **Quantum**: Quantum deep hedging, RL-quantum hedging, PPO with VQC policy
 
 ### Machine Learning
 
-| | Methods |
-|:--|:--------|
-| **Classical** | Standard classifiers |
-| **Quantum** | Kernel methods, VQC, qGAN, reservoir computing, Boltzmann machine, HQGAN, credit scoring, transfer learning |
+- **Classical**: Standard classifiers, PCA anomaly detection
+- **Quantum**: Kernel methods, VQC, qGAN, HQGAN, reservoir computing, Boltzmann machine, credit scoring, transfer learning, quantum autoencoder
 
 ### Error Mitigation
 
-| | Methods |
-|:--|:--------|
-| **Level 1** | Readout calibration, TREX |
-| **Level 2** | ZNE (Richardson extrapolation), Dynamical Decoupling (XY4/CPMG/Uhrig) |
-| **Level 3** | PEC (unbiased), CDR (Clifford regression), M3 (matrix-free) |
-| **Adaptive** | Noise-aware variational optimization, robust to calibration drift |
+- **Level 1**: Readout calibration, TREX
+- **Level 2**: ZNE (Richardson), Dynamical Decoupling (XY4/CPMG/Uhrig)
+- **Level 3**: PEC, CDR, M3 (matrix-free)
+- **Adaptive**: Noise-aware variational optimization
 
 ### Data & Infrastructure
 
-| | |
-|:--|:--|
-| **Market Data** | Yahoo Finance, FRED, Bloomberg, Refinitiv/LSEG |
-| **Streaming** | Alpaca, Polygon, IEX WebSocket with rebalance triggers |
-| **Synthetic** | GBM, Heston, Merton jump-diffusion |
-| **Warehouse** | Parquet partitioned storage, PyArrow, auto-compaction |
-| **Quality** | Gap detection, outlier flagging, data lineage, quality scoring |
-| **Backtesting** | Walk-forward engine, 15+ metrics |
-| **Benchmarks** | 15/25/50-asset problem sets, hardware validation, reproducibility manifests |
+- **Market Data**: Yahoo Finance, FRED, Bloomberg, Refinitiv, CoinGecko crypto
+- **Streaming**: Alpaca, Polygon, IEX WebSocket
+- **Synthetic**: GBM, Heston, Merton jump-diffusion
+- **Warehouse**: Parquet storage, PyArrow, auto-compaction
+- **Backtesting**: Walk-forward engine, permutation test, CSCV overfitting detection
 
 ### Enterprise
 
-| | |
-|:--|:--|
-| **REST API** | FastAPI endpoints for optimization, pricing, risk (OpenAPI, auth, rate limiting) |
-| **Job Queue** | Celery + Redis async jobs with priority routing and timeouts |
-| **Caching** | Result caching (SQLite/Redis) with TTL and invalidation |
-| **Deployment** | Docker, docker-compose, Kubernetes Helm chart with auto-scaling |
-| **Audit** | Immutable audit trail (SQLite WAL/Postgres), CSV/JSON export |
-| **Compliance** | SR 11-7 / SS1/23 checklist, champion-challenger, sensitivity analysis |
-| **Explainability** | QUBO decomposition, Shapley attribution, quantum-vs-classical comparison |
-
-</td>
-</tr>
-</table>
+- **REST API**: FastAPI (optimize, price, risk)
+- **Job Queue**: Celery + Redis with priority routing
+- **Caching**: SQLite/Redis with TTL
+- **Deployment**: Docker, Kubernetes Helm chart
+- **Compliance**: Audit trail, SR 11-7/SS1/23, Shapley explainability
 
 <br>
 
 ## Backends
 
-All quantum algorithms accept any backend implementing the `Backend` protocol. Swap backends without changing algorithm code.
+All quantum algorithms accept any `Backend` implementation. Swap without changing algorithm code.
 
 ```python
 from qufin.backends.auto_select import auto_select_backend
-
-# Automatic: selects the best available backend for your circuit
 backend = auto_select_backend(circuit)
 ```
 
-| Backend | Target | Key Feature |
-|:--------|:-------|:------------|
-| `MockBackend` | Testing | Deterministic, zero dependencies |
-| `QiskitAerBackend` | Simulation | Statevector + QASM, local |
-| `NoisyAerBackend` | Noise R&D | 4 device profiles (Eagle, Heron) |
-| `IBMRuntimeBackend` | IBM QPU | Sampler/Estimator primitives, up to 156 qubits |
-| `PennyLaneBackend` | PennyLane | Parameter-shift gradients, Lightning |
-| `CirqBackend` | Google QPU | Sycamore/Willow, XEB noise characterization |
-| `BraketBackend` | AWS QPU | IonQ Aria/Forte, Rigetti Ankaa, cost estimation |
-| `CudaQBackend` | GPU | NVIDIA CUDA-Q, multi-GPU for 30+ qubits |
-| `DWaveBackend` | D-Wave QPU | Pegasus/Zephyr annealing, CQM hybrid solver |
+| Backend | Target |
+|:--------|:-------|
+| `MockBackend` | Deterministic testing |
+| `QiskitAerBackend` | Statevector + QASM sim |
+| `NoisyAerBackend` | Device noise profiles |
+| `IBMRuntimeBackend` | IBM QPU (156 qubits) |
+| `PennyLaneBackend` | PennyLane Lightning |
+| `CirqBackend` | Google Sycamore/Willow |
+| `BraketBackend` | AWS (IonQ, Rigetti, IQM) |
+| `CudaQBackend` | NVIDIA GPU simulation |
+| `DWaveBackend` | Quantum annealing |
+| `IonQBackend` | IonQ Aria/Forte |
+| `QuantinuumBackend` | Quantinuum H-Series |
 
 <br>
 
 ## Benchmarks
 
-Standardized benchmark suites for honest quantum-vs-classical comparison. No cherry-picked results.
+Standardized suites for honest quantum-vs-classical comparison.
 
 ```python
 from qufin.benchmarks.runner import BenchmarkRunner
 from qufin.benchmarks.problems import make_benchmark
 
 runner = BenchmarkRunner()
-results = runner.run(make_benchmark(15), algorithms=["qaoa", "vqe", "mean_variance"])
+results = runner.run(make_benchmark(15),
+                     algorithms=["qaoa", "vqe", "mean_variance"])
 runner.summary(results)
 ```
 
-- **Problem sets** &mdash; 15, 25, and 50 asset portfolios with real covariance structure
-- **Metrics** &mdash; Approximation ratio, time-to-solution, circuit depth, success probability
-- **Reproducibility** &mdash; Every run generates a manifest (hardware, versions, seeds, calibration data)
-- **Hardware validation** &mdash; QAOA/QAE runners for IBM and IonQ with statistical analysis (mean, std, 95% CI)
-- **Finance transpiler** &mdash; QUBO-aware ZZ optimization, commuting gate parallelization, 30-50% CNOT reduction
+- **Problem sets**: 15, 25, 50 asset portfolios
+- **Metrics**: Approximation ratio, time-to-solution, circuit depth
+- **Reproducibility**: Hardware, versions, seeds manifest
+- **Transpiler**: QUBO-aware ZZ optimization, 30-50% CNOT reduction
 
 <br>
 
 ## Architecture
 
+<details>
+<summary><b>Source tree (159 modules)</b></summary>
+
 ```
 src/qufin/
-    backends/
-        base.py                    Backend ABC + CircuitResult
-        mock.py                    Deterministic mock (no simulator)
-        qiskit_backend.py          QiskitAerBackend
-        ibm_runtime.py             IBM Quantum Runtime
-        pennylane_backend.py       PennyLane + parameter-shift
-        cirq_backend.py            Cirq + Sycamore/Willow
-        braket_backend.py          Braket + IonQ/Rigetti
-        cudaq_backend.py           CUDA-Q GPU simulation
-        auto_select.py             Auto-selection + registry
-        transpiler.py              Finance circuit transpiler
-        noise_models.py            Device noise profiles
-        error_mitigation.py        ZNE, TREX, PEC, CDR, readout
-        dynamical_decoupling.py    XY4, CPMG, Uhrig DD
-        m3_mitigation.py           Matrix-free measurement mitigation
-        noise_aware_optimizer.py   Noise-aware variational optimization
-        dwave_backend.py           D-Wave annealing (Pegasus/Zephyr/Chimera)
-    options/
-        classical/                 Black-Scholes, binomial, Monte Carlo
-        amplitude_estimation/      QAE, IQAE, MLAE, FQAE, path-dep, American, QMC, QSP
-        implied_vol_surface.py     SABR, SVI, QSVM regression
-    portfolio/
-        classical/                 MVO, Black-Litterman, HRP, Risk Parity, Factors
-        optimizers/                QAOA, VQE, warm-start, ADMM, hybrid, robust, walk, Grover, IPM
-        sector_rotation.py         VQC regime detection (11 GICS sectors)
-        qubo.py                    QUBO builder + constraints
-        mixers.py                  X, XY-ring, XY-full, Grover mixers
-    risk/                          VaR, CVaR, stress testing, CVA/DVA
-        quantum_stress.py          Quantum stress testing (GFC, COVID, rate hike)
-        quantum_linear_systems.py  HHL for factor exposures, condition analysis
-        credit/                    Egger, Gaussian copula, NIG copula
-    hedging/                       Delta, deep hedging, quantum RL
-        quantum_rl_hedging.py      PPO with VQC policy, GBM/Heston environments
-    ml/                            Kernels, VQC, qGAN, reservoir computing
-        quantum_boltzmann.py       Regime detection (risk-on/off/crisis/recovery)
-        quantum_gan_finance.py     HQGAN for synthetic market data
-        quantum_credit_scoring.py  Projected quantum kernel credit scoring
-        quantum_transfer.py        Classical-to-quantum transfer learning
-    derivatives/                   Bermudan, lookback, cliquet, autocallable, basket
-    data/                          Yahoo Finance, FRED, GBM/Heston/Merton synthetic
-        bloomberg.py               Bloomberg Terminal connector (blpapi)
-        refinitiv.py               Refinitiv/LSEG Eikon connector
-        streaming.py               WebSocket streaming (Alpaca, Polygon, IEX)
-        warehouse.py               Parquet data warehouse with compaction
-        quality.py                 Data quality, lineage, scoring
-    backtesting/                   Walk-forward engine, 15+ performance metrics
-    benchmarks/                    Problem sets, runner, leaderboard, hardware validation
-        resource_estimation.py     Surface code overhead, break-even timeline
-    viz/                           Visualization and dashboards
-        widgets.py                 Efficient frontier, convergence, risk heatmap
-        dashboard.py               Portfolio dashboard + Dash app factory
-    cli.py                         CLI: optimize, price, risk, benchmark
-    plugins.py                     Entry-point plugin discovery
-    api/                           REST API + async job queue
-        server.py                  FastAPI endpoints (optimize, price, risk)
-        jobs.py                    Celery job queue with priority routing
-        cache.py                   Result caching (SQLite/Redis)
-    compliance/                    Regulatory compliance tooling
-        audit.py                   Immutable audit trail (SQLite WAL/Postgres)
-        validation.py              SR 11-7/SS1/23, champion-challenger, sensitivity
-        explainability.py          QUBO decomposition, Shapley, comparison reports
+  backends/           11 backends + error mitigation + transpiler
+  options/
+    classical/        Black-Scholes, binomial, Monte Carlo
+    amplitude_estimation/  QAE, IQAE, MLAE, FQAE, Asian, QMC, QSP
+  portfolio/
+    classical/        MVO, Black-Litterman, HRP, Risk Parity
+    optimizers/       QAOA, VQE, warm-start, annealing, Grover, IPM
+  risk/               VaR, CVaR, stress, entropy, tail risk, HHL
+    credit/           Egger, Gaussian copula, NIG copula
+  hedging/            Delta, deep, quantum RL (PPO + VQC)
+  ml/                 Kernels, VQC, qGAN, Boltzmann, autoencoder
+  derivatives/        Bermudan, lookback, cliquet, autocallable
+  data/               Yahoo, FRED, Bloomberg, Refinitiv, crypto
+  backtesting/        Walk-forward, permutation test, CSCV
+  benchmarks/         Problem sets, runner, resource estimation
+  viz/                Plotly widgets, Dash dashboard
+  api/                FastAPI + Celery + Redis cache
+  compliance/         Audit trail, validation, explainability
+  utils/              Circuit cache, parallel exec, sparse Pauli
+  cli.py              CLI: optimize, price, risk, benchmark
+  plugins.py          Entry-point plugin discovery
 ```
+
+</details>
 
 <br>
 
 ## Testing
 
 ```bash
-pytest                             # Full suite
+pytest                             # Full suite (2499 tests)
 pytest tests/unit/                 # Unit tests (fast)
-pytest tests/integration/          # Integration (requires Qiskit Aer)
-pytest tests/property/             # Property-based (Hypothesis)
-pytest tests/stress/               # Stress tests
 pytest -m "not slow"               # Skip slow tests
-pytest -m "not hardware"           # Skip hardware-dependent tests
+pytest -m "not hardware"           # Skip hardware tests
 ```
-
-<br>
-
-## Project Status
-
-| Component | Status | Tests |
-|:----------|:-------|:------|
-| Portfolio Optimization (QAOA, VQE, Grover, IPM, ADMM, Walk) | **Stable** | 350+ |
-| Option Pricing (BS + 4 QAE + QMC + QSP) | **Stable** | 270+ |
-| Risk Management (VaR/CVaR + HHL + quantum stress) | **Stable** | 160+ |
-| Backends (9 targets incl. D-Wave) | **Stable** | 220+ |
-| Error Mitigation (ZNE, TREX, PEC, CDR, DD, M3) | **Stable** | 150+ |
-| Backtesting Engine | **Stable** | 40+ |
-| Benchmarks & Resource Estimation | **Stable** | 90+ |
-| Data Layer (Yahoo, FRED, Bloomberg, Refinitiv, streaming) | **Stable** | 200+ |
-| REST API & Job Queue | **Stable** | 78 |
-| Compliance & Audit | **Stable** | 109 |
-| Hedging (delta + deep + quantum RL PPO) | **Stable** | 100+ |
-| ML (kernels, VQC, qGAN, Boltzmann, HQGAN, credit, transfer) | **Stable** | 200+ |
-| Visualization & Dashboard | **Stable** | 75+ |
-| CLI & Plugins | **Stable** | 68 |
 
 <br>
 
 ## Contributing
 
-Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for code style, testing, and PR guidelines.
+Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <br>
 
@@ -462,8 +338,8 @@ Apache 2.0. See [LICENSE](LICENSE).
 ```bibtex
 @software{qufin,
   author  = {Adarsh Keshri},
-  title   = {qufin: Research-Grade Quantum Algorithms for Quant Finance},
-  year    = {2025},
+  title   = {qufin: Quantum Algorithms for Quant Finance},
+  year    = {2026},
   url     = {https://github.com/anonymousAAK/qufin},
   license = {Apache-2.0}
 }

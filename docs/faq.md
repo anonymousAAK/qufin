@@ -171,4 +171,4 @@ Qiskit Finance was deprecated in 2024. qufin fills that gap with:
 
 ### Can I use qufin in production?
 
-qufin is at v1.0.0. The classical algorithms (Black-Scholes, MVO, VaR) are production-ready. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not yet for production trading decisions.
+qufin is at v1.1.0. The classical algorithms (Black-Scholes, MVO, VaR) are production-ready. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not yet for production trading decisions.

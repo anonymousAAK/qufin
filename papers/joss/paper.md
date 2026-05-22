@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 # Summary
 
-`qufin` is an open-source Python framework that implements quantum algorithms for quantitative finance alongside their best-available classical counterparts, enabling rigorous head-to-head comparison on identical inputs with identical metrics. The library spans 146 modules across 14 subpackages, covering portfolio optimization, option pricing, risk management, hedging, machine learning, derivatives pricing, backtesting, and enterprise deployment. It provides 9 pluggable quantum backends (Qiskit Aer, IBM Runtime, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, D-Wave, noisy simulation, and a deterministic mock), 5 error mitigation strategies, and 4 variants of quantum amplitude estimation. The framework is validated by 2,273 tests with 91% code coverage.
+`qufin` is an open-source Python framework that implements quantum algorithms for quantitative finance alongside their best-available classical counterparts, enabling rigorous head-to-head comparison on identical inputs with identical metrics. The library spans 159 modules across 14 subpackages, covering portfolio optimization, option pricing, risk management, hedging, machine learning, derivatives pricing, backtesting, and enterprise deployment. It provides 11 pluggable quantum backends (Qiskit Aer, IBM Runtime, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, D-Wave, IonQ, Quantinuum, noisy simulation, and a deterministic mock), 5 error mitigation strategies, and 4 variants of quantum amplitude estimation. The framework is validated by 2,499 tests with 91% code coverage.
 
 ![Architecture overview of qufin.\label{fig:architecture}](architecture.png)
 
@@ -41,9 +41,9 @@ Qiskit Finance [@qiskit2024], the most widely used quantum finance library, was 
 
 | Feature | qufin | Qiskit Finance | PennyLane | Cirq |
 |:--------|:------|:---------------|:----------|:-----|
-| Finance modules | 146 | ~20 | 0 | 0 |
+| Finance modules | 159 | ~20 | 0 | 0 |
 | Classical baselines | Every problem | None | N/A | N/A |
-| Backend-agnostic | 9 backends | Qiskit only | PennyLane only | Cirq only |
+| Backend-agnostic | 11 backends | Qiskit only | PennyLane only | Cirq only |
 | QAE variants | 4 | 3 | 0 | 0 |
 | Error mitigation | 5 + DD + M3 | ZNE only | None | None |
 | Benchmarks | 15/25/50-asset | No | No | No |
