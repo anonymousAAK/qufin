@@ -22,6 +22,10 @@ from qufin.portfolio.optimizers.multi_period import (
     multi_period_optimize,
 )
 from qufin.portfolio.optimizers.qaoa import QAOAConfig, QAOAPortfolio, QAOAResult
+from qufin.portfolio.optimizers.qaoa_warmstart import (
+    WarmStartQAOA,
+    WarmStartQAOAResult,
+)
 from qufin.portfolio.optimizers.quantum_ipm import (
     QuantumIPMConfig,
     QuantumIPMOptimizer,
@@ -45,8 +49,11 @@ from qufin.portfolio.optimizers.robust import (
 )
 from qufin.portfolio.optimizers.vqe import VQEConfig, VQEPortfolio, VQEResult
 from qufin.portfolio.optimizers.warm_start import (
+    MultiStartResult,
     WarmStartResult,
     continuous_relaxation,
+    cvar_warm_start,
+    multi_start_qaoa,
     round_solution,
     warm_start_qaoa,
     warm_start_vqe,
@@ -65,6 +72,7 @@ __all__ = [
     "HybridResult",
     "MultiPeriodConfig",
     "MultiPeriodResult",
+    "MultiStartResult",
     "QAOAConfig",
     "QAOAPortfolio",
     "QAOAResult",
@@ -80,6 +88,8 @@ __all__ = [
     "VQEConfig",
     "VQEPortfolio",
     "VQEResult",
+    "WarmStartQAOA",
+    "WarmStartQAOAResult",
     "WarmStartResult",
     "branch_and_bound_solve",
     "build_ellipsoidal_uncertainty",
@@ -88,8 +98,10 @@ __all__ = [
     "compare_optimizers",
     "compute_turnover",
     "continuous_relaxation",
+    "cvar_warm_start",
     "multi_period_backtest",
     "multi_period_optimize",
+    "multi_start_qaoa",
     "quantum_ipm_solve",
     "robust_classical",
     "round_solution",

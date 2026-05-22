@@ -4,10 +4,14 @@ Implements the Egger et al. warm-start approach where a continuous
 relaxation (SDP / LP) is solved classically, then used to initialize
 quantum variational parameters closer to a good solution.
 
+Also provides CVaR-aware warm starting and multi-start (run from k
+different warm-start points, return the best).
+
 References
 ----------
 Egger et al., Quantum 5, 479 (2021) — Warm-starting quantum optimization.
 Goemans & Williamson, JACM 42(6), 1995 — SDP relaxation for MAX-CUT.
+Barkoutsos et al., Quantum 4, 256 (2020) — CVaR optimization.
 """
 
 from __future__ import annotations
@@ -28,6 +32,15 @@ class WarmStartResult:
     relaxed_solution: NDArray[np.float64]
     rounded_bitstring: str
     relaxed_objective: float
+
+
+@dataclass
+class MultiStartResult:
+    """Result of multi-start warm starting."""
+
+    best: WarmStartResult
+    all_results: list[WarmStartResult]
+    best_index: int
 
 
 def continuous_relaxation(qubo: PortfolioQUBO) -> NDArray[np.float64]:
@@ -206,4 +219,128 @@ def warm_start_vqe(
         relaxed_solution=x_relaxed,
         rounded_bitstring=rounded_bs,
         relaxed_objective=relaxed_obj,
+    )
+
+
+def cvar_warm_start(
+    qubo: PortfolioQUBO,
+    alpha: float = 0.2,
+    p: int = 3,
+    seed: int | None = 42,
+) -> WarmStartResult:
+    """CVaR-aware warm start: solve a CVaR-weighted continuous relaxation.
+
+    Uses the alpha-worst-case samples from a randomized rounding of the
+    continuous relaxation to bias QAOA initial parameters toward solutions
+    that minimize tail risk.
+
+    Parameters
+    ----------
+    qubo : PortfolioQUBO
+        The QUBO problem.
+    alpha : float
+        CVaR confidence level in (0, 1]. Smaller = more tail-focused.
+    p : int
+        Number of QAOA layers.
+    seed : int | None
+        Random seed.
+
+    Returns
+    -------
+    WarmStartResult
+    """
+    if not 0 < alpha <= 1:
+        raise ValueError("alpha must be in (0, 1]")
+
+    rng = np.random.default_rng(seed)
+    Q = qubo.build_matrix()
+    n = Q.shape[0]
+
+    # Solve continuous relaxation
+    x_relaxed = continuous_relaxation(qubo)
+
+    # Generate randomized roundings and keep alpha-worst (highest cost)
+    n_samples = 200
+    samples: list[tuple[float, NDArray[np.float64]]] = []
+    for _ in range(n_samples):
+        probs = np.clip(x_relaxed, 0.01, 0.99)
+        bits_f = (rng.random(n) < probs).astype(np.float64)
+        obj = float(bits_f @ Q @ bits_f)
+        samples.append((obj, bits_f))
+
+    samples.sort(key=lambda s: s[0])
+    cutoff = max(1, int(n_samples * alpha))
+    tail_samples = samples[:cutoff]
+
+    # Average the tail samples to get CVaR-biased relaxed solution
+    cvar_relaxed = np.mean([s[1] for s in tail_samples], axis=0)
+    cvar_relaxed = np.clip(cvar_relaxed, 0.0, 1.0)
+    cvar_obj = float(np.mean([s[0] for s in tail_samples]))
+
+    rounded_bs = round_solution(cvar_relaxed, qubo.cardinality)
+
+    # Map to QAOA parameters (same heuristic as warm_start_qaoa)
+    thetas = np.arcsin(np.sqrt(np.clip(cvar_relaxed, 0, 1)))
+    avg_theta = float(np.mean(thetas))
+    betas = np.full(p, avg_theta * 0.3) + rng.normal(0, 0.05, p)
+    energy_scale = float(np.max(np.abs(Q))) if np.max(np.abs(Q)) > 0 else 1.0
+    gammas = np.full(p, 0.1 / energy_scale) + rng.normal(0, 0.02 / energy_scale, p)
+
+    return WarmStartResult(
+        initial_params=np.concatenate([gammas, betas]),
+        relaxed_solution=cvar_relaxed,
+        rounded_bitstring=rounded_bs,
+        relaxed_objective=cvar_obj,
+    )
+
+
+def multi_start_qaoa(
+    qubo: PortfolioQUBO,
+    k: int = 5,
+    p: int = 3,
+    seed: int | None = 42,
+) -> MultiStartResult:
+    """Run QAOA warm-start from k different starting points.
+
+    Generates k warm-start parameter sets with different random seeds
+    and returns the one with the best (lowest) relaxed objective, along
+    with all results for analysis.
+
+    Parameters
+    ----------
+    qubo : PortfolioQUBO
+        The QUBO problem.
+    k : int
+        Number of starting points.
+    p : int
+        Number of QAOA layers.
+    seed : int | None
+        Base random seed (each start uses seed + i).
+
+    Returns
+    -------
+    MultiStartResult
+    """
+    if k < 1:
+        raise ValueError("k must be >= 1")
+
+    results: list[WarmStartResult] = []
+    for i in range(k):
+        s = (seed + i) if seed is not None else None
+        res = warm_start_qaoa(qubo, p=p, seed=s)
+        results.append(res)
+
+    # Select the start whose rounded bitstring gives the best QUBO objective
+    Q = qubo.build_matrix()
+    objectives = []
+    for res in results:
+        bits = np.array([int(c) for c in res.rounded_bitstring], dtype=float)
+        objectives.append(float(bits @ Q @ bits))
+
+    best_idx = int(np.argmin(objectives))
+
+    return MultiStartResult(
+        best=results[best_idx],
+        all_results=results,
+        best_index=best_idx,
     )

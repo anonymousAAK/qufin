@@ -70,6 +70,12 @@ from qufin.risk.quantum_var import (
     build_loss_distribution,
     quantum_var,
 )
+from qufin.risk.tail_risk import (
+    entropic_var,
+    expected_tail_loss,
+    spectral_risk_measure,
+    tail_dependence_coefficient,
+)
 
 __all__ = [
     "AscendingCVaR",
@@ -103,6 +109,8 @@ __all__ = [
     "cornish_fisher_es",
     "cornish_fisher_var",
     "cvar_from_samples",
+    "entropic_var",
+    "expected_tail_loss",
     "fit_garch",
     "forecast_evaluate",
     "fractional_kelly",
@@ -120,4 +128,6 @@ __all__ = [
     "rolling_garch_forecast",
     "run_quantum_stress_test",
     "solve_linear_system",
+    "spectral_risk_measure",
+    "tail_dependence_coefficient",
 ]

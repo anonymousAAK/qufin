@@ -60,6 +60,8 @@ braket = ["amazon-braket-sdk>=1.80"]
 ml = ["torch>=2.2"]
 viz = ["plotly>=5.20"]
 dwave = ["dwave-ocean-sdk>=6.0"]
+ionq = ["amazon-braket-sdk>=1.80"]
+quantinuum = ["pytket>=1.25", "pytket-quantinuum>=0.30"]
 api = ["fastapi>=0.110", "uvicorn>=0.29", "celery[redis]>=5.3", "redis>=5.0"]
 docs = ["mkdocs>=1.5", "mkdocs-material>=9", "mkdocstrings[python]>=0.24", "pymdown-extensions>=10"]
 dev = [
@@ -73,7 +75,7 @@ dev = [
   "pre-commit",
   "nbstripout",
 ]
-all = ["qufin[ibm,pennylane,cirq,braket,dwave,ml,viz]"]
+all = ["qufin[ibm,pennylane,cirq,braket,dwave,ionq,quantinuum,ml,viz]"]
 
 [project.scripts]
 qufin = "qufin.cli:main"
@@ -155,6 +157,8 @@ omit = [
   "*/backends/braket_backend.py",
   "*/backends/cudaq_backend.py",
   "*/backends/dwave_backend.py",
+  "*/backends/ionq_backend.py",
+  "*/backends/quantinuum_backend.py",
   "*/data/bloomberg.py",
   "*/data/refinitiv.py",
   "*/api/server.py",

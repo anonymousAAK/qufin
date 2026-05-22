@@ -71,3 +71,17 @@ def get_dwave_backend(**kwargs):
     from qufin.backends.dwave_backend import DWaveBackend
 
     return DWaveBackend(**kwargs)
+
+
+def get_ionq_backend(**kwargs):
+    """Lazy import for IonQ backend (requires qufin[ionq])."""
+    from qufin.backends.ionq_backend import IonQBackend
+
+    return IonQBackend(**kwargs)
+
+
+def get_quantinuum_backend(**kwargs):
+    """Lazy import for Quantinuum backend (requires qufin[quantinuum])."""
+    from qufin.backends.quantinuum_backend import QuantinuumBackend
+
+    return QuantinuumBackend(**kwargs)

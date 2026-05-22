@@ -1,6 +1,7 @@
 """Risk parity (equal risk contribution) portfolio optimization.
 
 Finds weights such that each asset contributes equally to total portfolio risk.
+Also provides inverse-volatility weighting as a fast heuristic baseline.
 """
 
 from __future__ import annotations
@@ -19,6 +20,30 @@ class RiskParityResult:
     weights: NDArray[np.float64]
     risk_contributions: NDArray[np.float64]
     portfolio_volatility: float
+
+
+def inverse_volatility_weights(
+    cov: NDArray[np.float64],
+) -> NDArray[np.float64]:
+    """Inverse-volatility portfolio weights.
+
+    Each asset is weighted proportionally to 1 / sigma_i, then
+    normalised to sum to 1.  This is a fast heuristic that ignores
+    correlations.
+
+    Parameters
+    ----------
+    cov : NDArray
+        Covariance matrix, shape (N, N).
+
+    Returns
+    -------
+    NDArray, shape (N,)
+        Normalised inverse-volatility weights.
+    """
+    vols = np.sqrt(np.maximum(np.diag(cov), 1e-30))
+    inv_vols = 1.0 / vols
+    return (inv_vols / inv_vols.sum()).astype(np.float64)
 
 
 def risk_parity(

@@ -23,6 +23,8 @@ bibliography: paper.bib
 
 `qufin` is an open-source Python framework that implements quantum algorithms for quantitative finance alongside their best-available classical counterparts, enabling rigorous head-to-head comparison on identical inputs with identical metrics. The library spans 146 modules across 14 subpackages, covering portfolio optimization, option pricing, risk management, hedging, machine learning, derivatives pricing, backtesting, and enterprise deployment. It provides 9 pluggable quantum backends (Qiskit Aer, IBM Runtime, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, D-Wave, noisy simulation, and a deterministic mock), 5 error mitigation strategies, and 4 variants of quantum amplitude estimation. The framework is validated by 2,273 tests with 91% code coverage.
 
+![Architecture overview of qufin.\label{fig:architecture}](architecture.png)
+
 # Statement of Need
 
 Quantum computing is frequently cited as transformative for computational finance, with theoretical speedups for Monte Carlo simulation [@montanaro2015], portfolio optimization [@farhi2014; @brandhofer2023], and risk analysis [@woerneregger2019]. However, a significant gap exists between quantum research and finance practice.
@@ -64,6 +66,8 @@ noisy = NoisyAerBackend(profile=NoiseProfile.EAGLE_R3, shots=4096)
 ## Honest Benchmarking
 
 Every quantum algorithm module contains a classical baseline solving the same problem. The benchmarking framework provides standardized problem sets (15, 25, and 50-asset portfolios), a runner that dispatches to all registered solvers, and reports approximation ratio, time-to-solution, circuit depth, and success probability. Reproducibility manifests record hardware specifications, software versions, random seeds, and calibration data.
+
+![Benchmark comparison of QAOA, VQE, and classical mean-variance optimization on portfolio problems of increasing size. Error bars show standard deviation over 10 independent trials on Qiskit Aer with 4096 shots.\label{fig:benchmark}](benchmark.png)
 
 ## Error Mitigation
 

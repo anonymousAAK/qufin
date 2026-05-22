@@ -14,7 +14,7 @@ from qufin.portfolio.classical.factor_models import (
 )
 from qufin.portfolio.classical.hrp import hrp
 from qufin.portfolio.classical.mean_variance import Objective, mean_variance
-from qufin.portfolio.classical.risk_parity import risk_parity
+from qufin.portfolio.classical.risk_parity import inverse_volatility_weights, risk_parity
 from qufin.portfolio.classical.robust_cov import (
     CovEstimateResult,
     constant_correlation,
@@ -35,6 +35,7 @@ __all__ = [
     "factor_expected_returns",
     "factor_model_cov",
     "hrp",
+    "inverse_volatility_weights",
     "ledoit_wolf",
     "mean_variance",
     "oracle_approx_shrinkage",
