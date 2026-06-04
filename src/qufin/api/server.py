@@ -15,6 +15,9 @@ Or via CLI::
 
 from __future__ import annotations
 
+import logging
+import os
+import threading
 import time
 import uuid
 from collections import defaultdict
@@ -24,11 +27,14 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+logger = logging.getLogger("qufin.api")
+
 # ---------------------------------------------------------------------------
 # Optional dependency guard
 # ---------------------------------------------------------------------------
 try:
     from fastapi import Depends, FastAPI, HTTPException, Request, Security, status
+    from fastapi.responses import JSONResponse
     from fastapi.security import APIKeyHeader
 
     _HAS_FASTAPI = True
@@ -340,17 +346,58 @@ class InMemoryJobStore:
 # ---------------------------------------------------------------------------
 
 
+class MarketDataError(RuntimeError):
+    """Raised when real market data cannot be fetched for a request.
+
+    The API surfaces this as HTTP 503 and never silently substitutes synthetic
+    data for a real computation.
+    """
+
+
+def _fetch_returns(tickers: list[str], start_date: str, end_date: str):
+    """Fetch real historical daily log-returns, aligned to ``tickers`` order.
+
+    Uses the Yahoo equity provider. Raises :class:`MarketDataError` if the data
+    cannot be retrieved or is empty — callers must not fall back to synthetic
+    data. This symbol is intentionally module-level so it can be monkeypatched
+    in tests and swapped for an internal data warehouse in production.
+    """
+    import numpy as np
+
+    try:
+        from qufin.data.equities import YahooEquityProvider
+
+        df = YahooEquityProvider(cache=False).get_returns(list(tickers), start_date, end_date)
+        df = df[list(tickers)]  # enforce requested column order
+        arr = np.asarray(df.to_numpy(), dtype=float)
+    except MarketDataError:
+        raise
+    except Exception as exc:
+        raise MarketDataError(
+            f"Could not fetch market data for {list(tickers)} "
+            f"({start_date}..{end_date}): {type(exc).__name__}"
+        ) from exc
+
+    if arr.ndim != 2 or arr.shape[0] < 2 or arr.shape[1] != len(tickers):
+        raise MarketDataError(
+            f"Insufficient market data for {list(tickers)} ({start_date}..{end_date})"
+        )
+    return arr
+
+
 def _run_optimize(req: OptimizeRequest) -> OptimizeResponse:
-    """Execute portfolio optimization synchronously."""
+    """Execute portfolio optimization synchronously.
+
+    Uses real historical returns for ``req.tickers`` (never synthetic). Method
+    failures propagate as errors rather than masquerading as an equal-weight
+    portfolio under the requested method's name.
+    """
     import numpy as np
 
     t0 = time.time()
 
-    # Synthetic returns (qufin.data.market not available)
-    rng = np.random.default_rng(42)
-    n_days = 252
-    returns = rng.normal(0.0005, 0.02, size=(n_days, len(req.tickers)))
-
+    # Real historical returns; annualise mean and covariance from daily logs.
+    returns = _fetch_returns(req.tickers, req.start_date, req.end_date)
     mu = np.mean(returns, axis=0) * 252
     cov = np.cov(returns, rowvar=False) * 252
     n = len(req.tickers)
@@ -358,39 +405,37 @@ def _run_optimize(req: OptimizeRequest) -> OptimizeResponse:
     circuit_info = None
 
     if req.method == OptimizationMethod.MVO:
-        try:
-            from qufin.portfolio.classical.mean_variance import mean_variance
+        from qufin.portfolio.classical.mean_variance import mean_variance
 
-            result = mean_variance(mu, cov)
-            w = np.array(result.weights)
-        except Exception:
-            # Simple equal-weight fallback
-            w = np.ones(n) / n
+        w = np.array(mean_variance(mu, cov).weights, dtype=float)
     elif req.method == OptimizationMethod.HRP:
-        try:
-            from qufin.portfolio.classical.hrp import hrp
+        from qufin.portfolio.classical.hrp import hrp
 
-            result = hrp(cov)
-            w = np.array(result.weights)
-        except Exception:
-            w = np.ones(n) / n
+        w = np.array(hrp(cov).weights, dtype=float)
     elif req.method == OptimizationMethod.QAOA:
-        try:
-            from qufin.portfolio.qubo import PortfolioQUBO
-
-            qubo = PortfolioQUBO(mu, cov, budget_penalty=10.0)
-            result = qubo.solve_qaoa(p=1)
-            w = np.array(result.weights)
-            circuit_info = CircuitInfo(
-                n_qubits=n,
-                depth=result.circuit_depth if hasattr(result, "circuit_depth") else 2 * n,
-                gate_count=result.gate_count if hasattr(result, "gate_count") else 4 * n,
-                method="QAOA",
+        if n > 18:
+            raise ValueError(
+                f"QAOA portfolio optimization is limited to 18 assets in simulation; "
+                f"got {n}. Use MVO/HRP for larger universes."
             )
-        except Exception:
-            w = np.ones(n) / n
-    else:
-        w = np.ones(n) / n
+        from qufin.backends.qiskit_backend import QiskitAerBackend
+        from qufin.portfolio.optimizers.qaoa import QAOAConfig, QAOAPortfolio
+        from qufin.portfolio.qubo import PortfolioQUBO
+
+        k = req.constraints.cardinality or max(1, n // 2)
+        qubo = PortfolioQUBO(mu=mu, cov=cov, cardinality=k, budget_penalty=10.0)
+        qaoa_result = QAOAPortfolio(
+            qubo,
+            QAOAConfig(p=2, mixer="xy_ring", cardinality=k, shots=2048, maxiter=100, seed=42),
+            QiskitAerBackend(seed=42),
+        ).run()
+        w = np.array(qaoa_result.weights, dtype=float)
+        circuit_info = CircuitInfo(
+            n_qubits=qubo.n_qubits, depth=2 * qubo.n_qubits,
+            gate_count=4 * qubo.n_qubits, method="QAOA",
+        )
+    else:  # pragma: no cover - guarded by the OptimizationMethod enum
+        raise ValueError(f"Unsupported optimization method: {req.method}")
 
     # Enforce constraints
     w = np.clip(w, req.constraints.min_weight, req.constraints.max_weight)
@@ -451,42 +496,54 @@ def _run_price(req: PriceRequest) -> PriceResponse:
     if req.method == PricingMethod.BS:
         price = opt.bs_price()
     elif req.method == PricingMethod.MC:
-        try:
-            from qufin.options.classical.monte_carlo import european_mc
+        from qufin.options.classical.monte_carlo import european_mc
 
-            mc_result = european_mc(
-                req.spot,
-                req.strike,
-                req.rate,
-                req.volatility,
-                req.expiry,
-                req.n_simulations,
-                "call" if req.is_call else "put",
-            )
-            price = mc_result if isinstance(mc_result, (int, float)) else mc_result.price
-            std_err = getattr(mc_result, "std_error", abs(price) * 0.01)
-            ci = [price - 1.96 * std_err, price + 1.96 * std_err]
-        except Exception:
-            price = opt.bs_price()
-            ci = [price * 0.98, price * 1.02]
+        mc_result = european_mc(
+            req.spot,
+            req.strike,
+            req.rate,
+            req.volatility,
+            req.expiry,
+            req.n_simulations,
+            "call" if req.is_call else "put",
+        )
+        price = mc_result if isinstance(mc_result, (int, float)) else mc_result.price
+        std_err = getattr(mc_result, "std_error", abs(price) * 0.01)
+        ci = [price - 1.96 * std_err, price + 1.96 * std_err]
     elif req.method == PricingMethod.QAE:
-        try:
-            from qufin.options.amplitude_estimation.canonical_qae import canonical_qae_price
+        # Real QAE pricing via the European-QAE estimation problem + IQAE.
+        from qufin.backends.qiskit_backend import QiskitAerBackend
+        from qufin.options.amplitude_estimation.european_qae import (
+            EuropeanQAESpec,
+            build_european_estimation_problem,
+        )
+        from qufin.options.amplitude_estimation.iqae import (
+            IQAEConfig,
+            IterativeAmplitudeEstimation,
+        )
 
-            qae_result = canonical_qae_price(opt, n_qubits=req.n_qubits)
-            price = qae_result.price if hasattr(qae_result, "price") else qae_result
-            ci_hw = getattr(qae_result, "confidence_interval", None)
-            ci = list(ci_hw) if ci_hw is not None else [price * 0.95, price * 1.05]
-            circuit_info = CircuitInfo(
-                n_qubits=req.n_qubits,
-                depth=getattr(qae_result, "circuit_depth", 4 * req.n_qubits),
-                gate_count=getattr(qae_result, "gate_count", 8 * req.n_qubits),
-                method="QAE",
-            )
-        except Exception:
-            price = opt.bs_price()
-            ci = [price * 0.95, price * 1.05]
-    else:
+        n_q = min(req.n_qubits, 6)  # keep statevector simulation tractable
+        spec = EuropeanQAESpec(
+            s0=req.spot, k=req.strike, r=req.rate, sigma=req.volatility,
+            T=req.expiry, is_call=req.is_call, n_qubits=n_q,
+        )
+        problem, rescale = build_european_estimation_problem(spec)
+        iqae_result = IterativeAmplitudeEstimation(
+            problem,
+            IQAEConfig(epsilon_target=0.01, shots_per_round=2048, seed=42),
+            QiskitAerBackend(seed=42),
+        ).estimate()
+        price = float(iqae_result.estimate * rescale)
+        ci_obj = getattr(iqae_result, "confidence_interval", None)
+        ci = (
+            [float(ci_obj[0]) * rescale, float(ci_obj[1]) * rescale]
+            if ci_obj is not None
+            else None
+        )
+        circuit_info = CircuitInfo(
+            n_qubits=n_q + 1, depth=4 * n_q, gate_count=8 * n_q, method="QAE",
+        )
+    else:  # pragma: no cover - guarded by the PricingMethod enum
         price = opt.bs_price()
 
     greeks = Greeks(
@@ -516,69 +573,51 @@ def _run_risk(req: RiskRequest) -> RiskResponse:
     t0 = time.time()
 
     tickers = list(req.portfolio_weights.keys())
-    weights = np.array(list(req.portfolio_weights.values()))
+    weights = np.array(list(req.portfolio_weights.values()), dtype=float)
 
-    # Synthetic returns (qufin.data.market not available)
-    rng = np.random.default_rng(42)
-    returns = rng.normal(0.0003, 0.015, size=(252, len(tickers)))
-
+    # Real historical returns for the held tickers (never silently synthetic).
+    returns = _fetch_returns(tickers, req.start_date, req.end_date)
     port_returns = returns @ weights
 
     if req.method == RiskMethod.HISTORICAL:
-        try:
-            from qufin.risk.classical_var import historical_var
+        from qufin.risk.classical_var import historical_var
 
-            result = historical_var(
-                port_returns,
-                confidence=req.confidence_level,
-                portfolio_value=req.portfolio_value,
-            )
-            var_pct = result.var
-            cvar_pct = result.expected_shortfall
-        except Exception:
-            alpha = 1 - req.confidence_level
-            var_pct = float(-np.percentile(port_returns, alpha * 100))
-            tail = port_returns[port_returns <= -var_pct]
-            cvar_pct = float(-np.mean(tail)) if len(tail) > 0 else var_pct * 1.2
-
+        result = historical_var(
+            port_returns, confidence=req.confidence_level,
+            portfolio_value=req.portfolio_value,
+        )
+        var_pct = result.var
+        cvar_pct = result.expected_shortfall
     elif req.method == RiskMethod.PARAMETRIC:
-        try:
-            from qufin.risk.classical_var import parametric_var
+        from qufin.risk.classical_var import parametric_var
 
-            result = parametric_var(
-                port_returns,
-                confidence=req.confidence_level,
-                portfolio_value=req.portfolio_value,
-            )
-            var_pct = result.var
-            cvar_pct = result.expected_shortfall
-        except Exception:
-            from scipy.stats import norm as _norm
-
-            mu = float(np.mean(port_returns))
-            sigma = float(np.std(port_returns))
-            z = _norm.ppf(req.confidence_level)
-            var_pct = -(mu - z * sigma)
-            cvar_pct = var_pct * 1.2
-
+        result = parametric_var(
+            port_returns, confidence=req.confidence_level,
+            portfolio_value=req.portfolio_value,
+        )
+        var_pct = result.var
+        cvar_pct = result.expected_shortfall
     elif req.method == RiskMethod.QUANTUM:
-        try:
-            from qufin.risk.quantum_var import quantum_var
+        from qufin.backends.qiskit_backend import QiskitAerBackend
+        from qufin.risk.quantum_var import (
+            QuantumVaRConfig,
+            build_loss_distribution,
+            quantum_var,
+        )
 
-            result = quantum_var(port_returns, confidence=req.confidence_level)
-            var_pct = result.var if hasattr(result, "var") else float(result)
-            cvar_pct = (
-                result.expected_shortfall
-                if hasattr(result, "expected_shortfall")
-                else var_pct * 1.2
-            )
-        except Exception:
-            alpha = 1 - req.confidence_level
-            var_pct = float(-np.percentile(port_returns, alpha * 100))
-            cvar_pct = var_pct * 1.2
-    else:
-        var_pct = 0.0
-        cvar_pct = 0.0
+        loss_dist = build_loss_distribution(port_returns, n_qubits=4)
+        qresult = quantum_var(
+            loss_dist,
+            QiskitAerBackend(seed=42),
+            QuantumVaRConfig(
+                confidence_level=req.confidence_level, n_qubits_loss=4,
+                qae_shots=2048, seed=42,
+            ),
+        )
+        var_pct = float(qresult.var_estimate)
+        cvar_pct = float(qresult.es_estimate)
+    else:  # pragma: no cover - guarded by the RiskMethod enum
+        raise ValueError(f"Unsupported risk method: {req.method}")
 
     var_dollar = var_pct * req.portfolio_value
     cvar_dollar = cvar_pct * req.portfolio_value
@@ -616,6 +655,56 @@ def _run_risk(req: RiskRequest) -> RiskResponse:
 
 
 # ---------------------------------------------------------------------------
+# Async job execution
+# ---------------------------------------------------------------------------
+
+_JOB_RUNNERS = {
+    "optimization": (OptimizeRequest, "_run_optimize"),
+    "pricing": (PriceRequest, "_run_price"),
+    "risk": (RiskRequest, "_run_risk"),
+}
+
+
+def _execute_job(
+    store: InMemoryJobStore, job_id: str, job_type: str, params: dict[str, Any]
+) -> None:
+    """Run a submitted job in-process and record its result.
+
+    This makes ``async_mode`` actually execute (PENDING -> RUNNING ->
+    COMPLETED/FAILED) without requiring the Celery worker. It is single-process
+    only — the in-memory store is not shared across workers; distributed
+    execution uses ``qufin.api.jobs`` with Celery + Redis.
+    """
+    runner = _JOB_RUNNERS.get(job_type)
+    if runner is None:  # pragma: no cover - job_type is set internally
+        store.update(job_id, status=JobStatus.FAILED, error=f"Unknown job type: {job_type}")
+        return
+    model_cls, fn_name = runner
+    fn = globals()[fn_name]  # resolved at call time so patching/monkeypatch is honored
+    try:
+        store.update(job_id, status=JobStatus.RUNNING)
+        result = fn(model_cls(**params))
+        payload = result.model_dump() if hasattr(result, "model_dump") else None
+        store.update(
+            job_id,
+            status=JobStatus.COMPLETED,
+            result=payload if isinstance(payload, dict) else None,
+        )
+    except Exception as exc:
+        logger.exception("async job %s (%s) failed", job_id, job_type)
+        store.update(job_id, status=JobStatus.FAILED, error=f"{type(exc).__name__}: {exc}")
+
+
+def _submit_async(store: InMemoryJobStore, job_type: str, params: dict[str, Any]) -> str:
+    """Create a job record and start its background execution thread."""
+    job_id = store.create(job_type, params)
+    threading.Thread(
+        target=_execute_job, args=(store, job_id, job_type, params), daemon=True
+    ).start()
+    return job_id
+
+
+# ---------------------------------------------------------------------------
 # App factory
 # ---------------------------------------------------------------------------
 
@@ -628,25 +717,35 @@ _api_keys: set[str] | None = None
 def create_app(
     *,
     api_keys: list[str] | None = None,
+    allow_no_auth: bool = False,
     rate_limit: int = 60,
     rate_window: int = 60,
     title: str = "qufin API",
-    version: str = "1.0.0",
+    version: str | None = None,
 ) -> FastAPI:
     """Create and configure the FastAPI application.
+
+    Authentication is **on by default and fail-closed**: if ``api_keys`` is not
+    given, keys are read from the ``QUFIN_API_KEYS`` environment variable
+    (comma-separated). If no keys can be resolved, the app refuses to start
+    unless ``allow_no_auth=True`` (or ``QUFIN_ALLOW_NO_AUTH=1``) is set
+    explicitly — so an open, unauthenticated API is never the accidental
+    default.
 
     Parameters
     ----------
     api_keys : list[str] | None
-        Valid API keys. If ``None``, authentication is disabled.
+        Valid API keys. Falls back to ``QUFIN_API_KEYS`` env if ``None``.
+    allow_no_auth : bool
+        Explicitly run without authentication (dev/trusted networks only).
     rate_limit : int
         Maximum requests per window per client.
     rate_window : int
         Rate-limit window in seconds.
     title : str
         OpenAPI title.
-    version : str
-        API version string.
+    version : str | None
+        API version string; defaults to the installed ``qufin`` version.
 
     Returns
     -------
@@ -657,12 +756,33 @@ def create_app(
     ------
     ImportError
         If ``fastapi`` is not installed.
+    RuntimeError
+        If no API keys are configured and authentication was not explicitly
+        disabled.
     """
     if not _HAS_FASTAPI:
         raise ImportError(
             "fastapi is required for the qufin REST API. "
             "Install it with: pip install fastapi uvicorn"
         )
+
+    if api_keys is None:
+        env_keys = os.environ.get("QUFIN_API_KEYS", "")
+        api_keys = [k.strip() for k in env_keys.split(",") if k.strip()] or None
+
+    allow_no_auth = allow_no_auth or os.environ.get("QUFIN_ALLOW_NO_AUTH") == "1"
+    if not api_keys and not allow_no_auth:
+        raise RuntimeError(
+            "Refusing to start the qufin API without authentication. Set "
+            "QUFIN_API_KEYS=\"key1,key2\" (or pass api_keys=[...]), or set "
+            "QUFIN_ALLOW_NO_AUTH=1 / allow_no_auth=True for trusted dev only."
+        )
+
+    if version is None:
+        try:
+            from qufin import __version__ as version
+        except Exception:  # pragma: no cover
+            version = "0.0.0"
 
     global _rate_limiter, _job_store, _api_keys
     _rate_limiter = RateLimiter(max_requests=rate_limit, window_seconds=rate_window)
@@ -676,6 +796,16 @@ def create_app(
         docs_url="/docs",
         openapi_url="/v1/openapi.json",
     )
+
+    @app.exception_handler(MarketDataError)
+    async def _market_data_error_handler(request: Request, exc: MarketDataError):
+        """Surface market-data failures as 503 instead of fabricating data."""
+        return JSONResponse(status_code=503, content={"detail": str(exc)})
+
+    @app.exception_handler(ValueError)
+    async def _value_error_handler(request: Request, exc: ValueError):
+        """Map request/compute validation errors to 400."""
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
 
     # --- Auth dependency ---
 
@@ -739,7 +869,7 @@ def create_app(
         and QAOA (quantum approximate optimization).
         """
         if req.async_mode:
-            job_id = _job_store.create("optimization", req.model_dump())
+            job_id = _submit_async(_job_store, "optimization", req.model_dump())
             return JobResponse(job_id=job_id, status=JobStatus.PENDING)
         return _run_optimize(req)
 
@@ -761,7 +891,7 @@ def create_app(
         and Quantum Amplitude Estimation (QAE).
         """
         if req.async_mode:
-            job_id = _job_store.create("pricing", req.model_dump())
+            job_id = _submit_async(_job_store, "pricing", req.model_dump())
             return JobResponse(job_id=job_id, status=JobStatus.PENDING)
         return _run_price(req)
 
@@ -782,7 +912,7 @@ def create_app(
         Supports historical, parametric, and quantum VaR/CVaR computation.
         """
         if req.async_mode:
-            job_id = _job_store.create("risk", req.model_dump())
+            job_id = _submit_async(_job_store, "risk", req.model_dump())
             return JobResponse(job_id=job_id, status=JobStatus.PENDING)
         return _run_risk(req)
 
@@ -863,8 +993,15 @@ def create_app(
     return app
 
 
-# Module-level app for ``uvicorn qufin.api.server:app``
-try:
-    app = create_app()
-except ImportError:
-    app = None  # type: ignore[assignment]
+def __getattr__(name: str):
+    """Lazily build the module-level ``app`` for ``uvicorn qufin.api.server:app``.
+
+    Building lazily means importing this module never has side effects and never
+    fails on the fail-closed auth check; the app (which reads ``QUFIN_API_KEYS``
+    from the environment) is only constructed when ``app`` is actually accessed,
+    e.g. by the ASGI server. Prefer the factory form for explicit config:
+    ``uvicorn --factory qufin.api.server:create_app``.
+    """
+    if name == "app":
+        return create_app()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
