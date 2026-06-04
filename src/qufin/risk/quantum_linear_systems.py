@@ -440,11 +440,18 @@ def hhl_solve(
     backend: Backend,
     config: HHLConfig | None = None,
 ) -> NDArray[np.float64]:
-    """Solve Sigma * x = b using the HHL algorithm.
+    """Solve ``Sigma * x = b`` (classical solve; HHL circuit for accounting only).
 
-    Constructs the HHL circuit and simulates classically for small
-    dimensions (exact matrix inversion augmented with circuit
-    construction for verification).
+    .. warning::
+       The returned solution is computed **classically** via
+       ``numpy.linalg.solve``. This function constructs the HHL circuit
+       (Harrow-Hassidim-Lloyd, 2009) purely for *resource accounting* — it is
+       **not executed on** ``backend``, no quantum phase estimation is run, and
+       the result does not depend on ``config.n_clock_qubits``. It therefore
+       provides **no quantum speed-up** and must not be presented as a quantum
+       linear-system solver; treat it as a classical reference with an HHL
+       resource estimate attached. A real measurement-based HHL pipeline is
+       tracked separately.
 
     Parameters
     ----------
@@ -453,7 +460,8 @@ def hhl_solve(
     b : NDArray, shape (n,)
         Right-hand side vector (e.g. factor loadings).
     backend : Backend
-        Quantum backend.
+        Accepted for interface compatibility and resource accounting; the
+        circuit is **not** run on it.
     config : HHLConfig | None
         HHL configuration. Defaults to HHLConfig().
 

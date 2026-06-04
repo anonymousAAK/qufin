@@ -179,11 +179,52 @@ def uniform_distribution(
     )
 
 
+def state_prep_circuit(amplitudes: NDArray[np.float64], n_qubits: int) -> object:
+    """Build an invertible, Aer-safe amplitude state-preparation circuit.
+
+    Uses ``StatePreparation`` (a unitary instruction) decomposed to basic
+    gates, rather than ``QuantumCircuit.initialize`` (which inserts resets and
+    is therefore non-unitary). This matters for amplitude estimation: the
+    Grover operator ``Q = A S_0 A^dagger S_chi`` needs ``A^dagger``, so the
+    state-preparation operator ``A`` must be invertible. ``initialize`` raises
+    when its inverse is requested under qiskit >= 1.0, which previously crashed
+    every QAE estimator built on top of these circuits.
+
+    The amplitudes are renormalised for numerical safety before loading.
+
+    Parameters
+    ----------
+    amplitudes : NDArray
+        Real amplitude vector of length ``2 ** n_qubits``.
+    n_qubits : int
+        Number of qubits to prepare.
+
+    Returns
+    -------
+    QuantumCircuit
+        Basis-gate (``cx``/``u3``/``id``) circuit preparing
+        ``sum_i amplitudes[i] |i>`` in qiskit's little-endian convention.
+    """
+    from qiskit import transpile
+    from qiskit.circuit import QuantumCircuit
+    from qiskit.circuit.library import StatePreparation
+
+    amps = np.asarray(amplitudes, dtype=np.float64)
+    norm = np.linalg.norm(amps)
+    if norm > 0:
+        amps = amps / norm
+
+    qc = QuantumCircuit(n_qubits)
+    qc.append(StatePreparation(amps), range(n_qubits))
+    return transpile(qc, basis_gates=["cx", "u3", "id"], optimization_level=0)
+
+
 def build_loading_circuit(dist: DistributionSpec) -> object:
     """Build a quantum circuit that loads a distribution into amplitudes.
 
-    Uses Qiskit's Initialize instruction to prepare the state
-    |psi> = sum_i sqrt(p_i) |i>.
+    Prepares the state ``|psi> = sum_i sqrt(p_i) |i>`` using an invertible
+    ``StatePreparation`` (see :func:`state_prep_circuit`), so the resulting
+    circuit can be used inside amplitude-estimation Grover operators.
 
     Parameters
     ----------
@@ -195,15 +236,4 @@ def build_loading_circuit(dist: DistributionSpec) -> object:
     QuantumCircuit
         Circuit that prepares the distribution state.
     """
-    from qiskit.circuit import QuantumCircuit
-
-    amplitudes = dist.amplitudes()
-
-    # Ensure normalization (numerical safety)
-    norm = np.linalg.norm(amplitudes)
-    if norm > 0:
-        amplitudes = amplitudes / norm
-
-    qc = QuantumCircuit(dist.n_qubits)
-    qc.initialize(amplitudes, range(dist.n_qubits))
-    return qc
+    return state_prep_circuit(dist.amplitudes(), dist.n_qubits)

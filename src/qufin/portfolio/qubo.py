@@ -241,7 +241,11 @@ class PortfolioQUBO:
             weights = np.zeros(self._n_assets, dtype=np.float64)
             for i in range(self._n_assets):
                 bits = bitstring[i * B : (i + 1) * B]
-                level = int(bits, 2)
+                # Bit b of asset i sits at offset b with significance 2**b, to
+                # match _build_binary's weight factor 2**b / max_level. Parsing
+                # the slice as MSB-first (int(bits, 2)) reverses bit significance
+                # and decodes the wrong weight level.
+                level = sum(int(bits[b]) << b for b in range(len(bits)))
                 weights[i] = level / max_level
             total = weights.sum()
             if total > 0:

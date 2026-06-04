@@ -24,7 +24,11 @@ from numpy.typing import NDArray
 
 from qufin.backends.base import Backend
 from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
-from qufin.options.distributions import DistributionSpec, normal_distribution
+from qufin.options.distributions import (
+    DistributionSpec,
+    normal_distribution,
+    state_prep_circuit,
+)
 from qufin.utils.results import Result
 
 
@@ -54,18 +58,8 @@ class QuantumVaRResult(Result):
 
 
 def _decomposed_state_prep(amplitudes: NDArray[np.float64], n_qubits: int) -> object:
-    """Build a decomposed state preparation circuit (basic gates only).
-
-    Avoids Aer segfault with StatePreparation.inverse() by decomposing
-    to basic gates first.
-    """
-    from qiskit import transpile
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.circuit.library import StatePreparation
-
-    sp_qc = QuantumCircuit(n_qubits)
-    sp_qc.append(StatePreparation(amplitudes), range(n_qubits))
-    return transpile(sp_qc, basis_gates=["cx", "u3", "id"], optimization_level=0)
+    """Build an invertible, Aer-safe decomposed state-preparation circuit."""
+    return state_prep_circuit(amplitudes, n_qubits)
 
 
 def _build_tail_probability_problem(
@@ -100,23 +94,25 @@ def _build_tail_probability_problem(
     sp_decomposed = _decomposed_state_prep(amplitudes, n_q)
     qc.compose(sp_decomposed, range(n_q), inplace=True)
 
-    # Comparator: rotate ancilla based on whether value > threshold
+    # Comparator: flip the ancilla to |1> for every basis state whose value
+    # exceeds the threshold. Basis integer i lives on the qubits in qiskit's
+    # little-endian order (qubit q = bit (i >> q) & 1), matching the
+    # StatePreparation above. X the zero-bit qubits so the all-ones control
+    # fires exactly on |i>. (Using an MSB-first string here silently marks the
+    # bit-reversed states and corrupts the tail probability.)
     for i in range(2**n_q):
         if dist.values[i] > threshold:
-            # Rotate ancilla to |1> for states above threshold
-            bits = format(i, f"0{n_q}b")
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
+            zero_qubits = [q for q in range(n_q) if not ((i >> q) & 1)]
+            for q in zero_qubits:
+                qc.x(q)
 
             if n_q == 1:
                 qc.cx(0, n_q)
             else:
                 qc.mcx(list(range(n_q)), n_q)
 
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
+            for q in zero_qubits:
+                qc.x(q)
 
     problem = EstimationProblem(
         state_preparation=qc,
@@ -163,11 +159,11 @@ def _build_conditional_value_problem(
     for i in range(2**n_q):
         val = dist.values[i]
         if val > threshold:
-            # Mark comparator ancilla
-            bits = format(i, f"0{n_q}b")
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
+            # Mark comparator ancilla for basis state |i> (little-endian:
+            # qubit q = bit (i >> q) & 1, matching the StatePreparation).
+            zero_qubits = [q for q in range(n_q) if not ((i >> q) & 1)]
+            for q in zero_qubits:
+                qc.x(q)
 
             if n_q == 1:
                 qc.cx(0, n_q)
@@ -181,15 +177,14 @@ def _build_conditional_value_problem(
             # Controlled rotation on value ancilla, conditioned on comparator
             qc.cry(angle, n_q, n_q + 1)
 
-            # Undo comparator marking (not needed since we want combined state)
+            # Uncompute the comparator marking
             if n_q == 1:
                 qc.cx(0, n_q)
             else:
                 qc.mcx(list(range(n_q)), n_q)
 
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
+            for q in zero_qubits:
+                qc.x(q)
 
     problem = EstimationProblem(
         state_preparation=qc,

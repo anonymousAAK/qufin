@@ -16,7 +16,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
-from qufin.options.distributions import log_normal_distribution
+from qufin.options.distributions import log_normal_distribution, state_prep_circuit
 
 
 @dataclass
@@ -85,13 +85,9 @@ def build_european_estimation_problem(
     # where f(S_i) encodes whether payoff > 0 and its magnitude
     qc = QuantumCircuit(n_total)
 
-    # Load distribution into price register
-    amplitudes = dist.amplitudes()
-    norm = np.linalg.norm(amplitudes)
-    if norm > 0:
-        amplitudes = amplitudes / norm
-
-    qc.initialize(amplitudes, range(n_price))
+    # Load distribution into price register using an invertible state
+    # preparation so the Grover operator (which needs A^dagger) can be built.
+    qc.compose(state_prep_circuit(dist.amplitudes(), n_price), range(n_price), inplace=True)
 
     # Step 3: Payoff comparator + rotation
     # For each price state |i>, if S_i > K (call) or S_i < K (put),
@@ -117,16 +113,15 @@ def build_european_estimation_problem(
             normalized_payoff = payoffs[i] / max_payoff
             angle = 2 * np.arcsin(np.sqrt(min(normalized_payoff, 1.0)))
 
-            # Create controlled rotation for state |i>
-            # Binary representation of i
-            bits = format(i, f"0{n_price}b")
+            # Control on basis state |i> in qiskit's little-endian convention:
+            # qubit q holds bit (i >> q) & 1, matching the StatePreparation that
+            # loaded amplitude sqrt(p_i) onto basis integer i. X the zero-bit
+            # qubits so the all-ones multi-control fires exactly on |i>.
+            zero_qubits = [q for q in range(n_price) if not ((i >> q) & 1)]
+            for q in zero_qubits:
+                qc.x(q)
 
-            # Apply X gates to control on |i>
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
-
-            # Multi-controlled Ry
+            # Multi-controlled Ry onto the payoff ancilla
             if n_price == 1:
                 qc.cry(angle, 0, n_price)
             else:
@@ -136,10 +131,8 @@ def build_european_estimation_problem(
                     [*list(range(n_price)), n_price],
                 )
 
-            # Undo X gates
-            for b_idx, b in enumerate(bits):
-                if b == "0":
-                    qc.x(b_idx)
+            for q in zero_qubits:
+                qc.x(q)
 
     # The ancilla qubit is the objective
     # Measuring |1> on ancilla occurs with probability

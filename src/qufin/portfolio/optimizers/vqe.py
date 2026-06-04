@@ -114,7 +114,10 @@ class VQEPortfolio:
         """Compute CVaR-alpha objective from measurement counts."""
         objectives = []
         for bitstring, count in result.counts.items():
-            obj = self.qubo.evaluate(bitstring)
+            # Backend keys are in qiskit display order (qubit n-1 leftmost);
+            # reverse to QUBO variable order (position k == variable k) so the
+            # objective matches the QUBO the circuit actually encodes.
+            obj = self.qubo.evaluate(bitstring[::-1])
             objectives.extend([obj] * count)
 
         objectives.sort()
@@ -151,11 +154,20 @@ class VQEPortfolio:
 
         opt_params = opt_result.x
 
-        # Final evaluation to get best bitstring
+        # Final evaluation to get best bitstring. Return the lowest-energy
+        # sampled state (not the modal one), converting qiskit display-order
+        # keys (qubit n-1 leftmost) into QUBO variable order (position k ==
+        # variable k) so capital maps to the correct assets.
         circuit = self._build_circuit(opt_params)
         final_result = self.backend.run(circuit, shots=self.config.shots)
-        best_bs = final_result.most_frequent
-        best_obj = self.qubo.evaluate(best_bs)
+        if final_result.counts:
+            best_bs = min(
+                (key[::-1] for key in final_result.counts),
+                key=self.qubo.evaluate,
+            )
+        else:
+            best_bs = ""
+        best_obj = self.qubo.evaluate(best_bs) if best_bs else float("inf")
 
         # Decode weights and check feasibility
         weights = self.qubo.decode_weights(best_bs)
