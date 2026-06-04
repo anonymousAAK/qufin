@@ -76,22 +76,16 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 
 # Fail-closed auth wiring:
 #   * QUFIN_API_KEYS must be set (comma-separated) OR QUFIN_ALLOW_NO_AUTH=1.
-#   * The keys are passed into the gunicorn app factory create_app(api_keys=[...]),
-#     so the container never launches key-less by default. No secret is baked
-#     into any image layer — keys arrive only at runtime via env.
+#   * create_app() reads QUFIN_API_KEYS from the environment and fails closed
+#     when it is absent, so the container never launches key-less by default.
+#     Keys are never passed on the command line (avoids leaking them via `ps`).
 CMD ["sh", "-c", "\
 if [ -z \"$QUFIN_API_KEYS\" ] && [ \"$QUFIN_ALLOW_NO_AUTH\" != \"1\" ]; then \
   echo 'FATAL: QUFIN_API_KEYS is not set. Refusing to start with auth disabled.' >&2; \
   echo '       Set QUFIN_API_KEYS=\"key1,key2\" (recommended) or QUFIN_ALLOW_NO_AUTH=1 for trusted/isolated dev only.' >&2; \
   exit 1; \
 fi; \
-if [ -n \"$QUFIN_API_KEYS\" ]; then \
-  KEYS=$(python -c \"import os;print(repr([k.strip() for k in os.environ['QUFIN_API_KEYS'].split(',') if k.strip()]))\"); \
-  APP=\"qufin.api.server:create_app(api_keys=$KEYS)\"; \
-else \
-  APP='qufin.api.server:create_app()'; \
-fi; \
-exec gunicorn \"$APP\" \
+exec gunicorn 'qufin.api.server:create_app()' \
   --worker-class uvicorn.workers.UvicornWorker \
   --bind 0.0.0.0:8000 \
   --workers \"${GUNICORN_WORKERS:-4}\" \

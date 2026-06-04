@@ -508,7 +508,10 @@ def _run_price(req: PriceRequest) -> PriceResponse:
             "call" if req.is_call else "put",
         )
         price = mc_result if isinstance(mc_result, (int, float)) else mc_result.price
-        std_err = getattr(mc_result, "std_error", abs(price) * 0.01)
+        # MCResult exposes std_err (keep std_error as a backward-compat fallback).
+        std_err = getattr(mc_result, "std_err", None)
+        if std_err is None:
+            std_err = getattr(mc_result, "std_error", abs(price) * 0.01)
         ci = [price - 1.96 * std_err, price + 1.96 * std_err]
     elif req.method == PricingMethod.QAE:
         # Real QAE pricing via the European-QAE estimation problem + IQAE.
@@ -1003,5 +1006,9 @@ def __getattr__(name: str):
     ``uvicorn --factory qufin.api.server:create_app``.
     """
     if name == "app":
-        return create_app()
+        app = globals().get("_app")
+        if app is None:
+            app = create_app()
+            globals()["_app"] = app
+        return app
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

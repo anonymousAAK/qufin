@@ -93,7 +93,9 @@ persistence:
 # -- Config (non-secret) --------------------------------------------------
 config:
   logLevel: INFO
-  defaultBackend: qiskit-aer
+  # Canonical underscore backend ID (matches qufin.backends.auto_select and the
+  # Settings.default_backend default).
+  defaultBackend: qiskit_aer
   defaultShots: 1024
   cacheBackend: redis
 

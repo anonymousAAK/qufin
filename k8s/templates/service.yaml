@@ -64,7 +64,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "qufin.secretName" . }}
                   key: REDIS_PASSWORD
-                  optional: true
+                  # Required: with --requirepass set, a missing key would leave
+                  # the env var undefined and Kubernetes would pass the literal
+                  # "$(REDIS_PASSWORD)" as the password. Fail fast instead.
+                  optional: false
           ports:
             - containerPort: 6379
           resources:

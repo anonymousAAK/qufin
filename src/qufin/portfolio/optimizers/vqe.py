@@ -165,9 +165,13 @@ class VQEPortfolio:
                 (key[::-1] for key in final_result.counts),
                 key=self.qubo.evaluate,
             )
+            best_obj = self.qubo.evaluate(best_bs)
         else:
-            best_bs = ""
-        best_obj = self.qubo.evaluate(best_bs) if best_bs else float("inf")
+            # No samples returned: emit a length-correct all-zero assignment so
+            # decode_weights yields a correctly shaped vector; the inf objective
+            # signals the sampling failure to downstream consumers.
+            best_bs = "0" * self.qubo.n_qubits
+            best_obj = float("inf")
 
         # Decode weights and check feasibility
         weights = self.qubo.decode_weights(best_bs)
