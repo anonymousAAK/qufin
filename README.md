@@ -19,13 +19,13 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 [![PyPI](https://img.shields.io/pypi/v/qufin?color=blue)](https://pypi.org/project/qufin/)
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-2499%20passing-brightgreen)]()
-[![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)]()
+[![codecov](https://codecov.io/gh/anonymousAAK/qufin/branch/main/graph/badge.svg)](https://codecov.io/gh/anonymousAAK/qufin)
+[![Status](https://img.shields.io/badge/status-0.x%20in--development-orange)]()
 
 <br>
 
 <sub>
-159 modules &middot; 14 subpackages &middot; 2,499 tests &middot; 11 backends &middot; 5 error mitigation strategies &middot; 4 QAE variants
+159 modules &middot; 14 subpackages &middot; 11 backends &middot; 8 error-mitigation strategies &middot; 6 QAE algorithms
 </sub>
 
 <br>
@@ -53,7 +53,14 @@ Every quantum algorithm ships alongside the best classical solver for the same p
 
 - **Backend-agnostic** &mdash; Write once, run on 11 backends (Aer, IBM, PennyLane, Cirq, Braket, CUDA-Q, D-Wave, IonQ, Quantinuum, noisy sim, mock)
 - **Mathematically correct** &mdash; Grover global phase, IQAE multi-branch theta, canonical QPE. Details matter for derivative pricing.
-- **Production patterns** &mdash; Typed configs, reproducibility manifests, noise-aware simulation, 5 error mitigation strategies, finance-optimized transpilation.
+- **Production patterns** &mdash; Typed configs, reproducibility manifests, noise-aware simulation, 8 error-mitigation strategies, finance-optimized transpilation.
+
+> **Project status: 0.x, in active development.** The classical quant core
+> (Black-Scholes/Greeks, Monte Carlo, VaR/CVaR, mean-variance, HRP, GARCH,
+> backtesting) is well-tested and matches textbook values. Several quantum
+> paths are research-stage and evolving. APIs may change before 1.0. The
+> Quickstart below is exercised end-to-end by
+> [`examples/quickstart.py`](examples/quickstart.py).
 
 <br>
 
@@ -94,43 +101,54 @@ Requires Python 3.10+
 ### Option pricing: classical vs. quantum
 
 ```python
-from qufin.options.classical.black_scholes import bs_price
-from qufin.options.amplitude_estimation.european_qae import european_qae_price
-from qufin.options.amplitude_estimation.iqae import IQAEConfig
+import numpy as np
+from qiskit.circuit import QuantumCircuit
+
+from qufin.options.classical.black_scholes import call_price
+from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
+from qufin.options.amplitude_estimation.iqae import (
+    IterativeAmplitudeEstimation, IQAEConfig,
+)
 from qufin.backends.qiskit_backend import QiskitAerBackend
 
-# Classical: Black-Scholes
-classical = bs_price(s=100, k=105, sigma=0.2, r=0.05, T=1.0)
+# Classical: Black-Scholes closed form
+classical = call_price(s=100, k=105, r=0.05, sigma=0.2, T=1.0)
 
-# Quantum: Iterative Quantum Amplitude Estimation
-backend = QiskitAerBackend(shots=4096)
-quantum = european_qae_price(
-    s=100, k=105, sigma=0.2, r=0.05, T=1.0,
-    backend=backend, config=IQAEConfig(epsilon_target=0.01)
-)
+# Quantum: Iterative Quantum Amplitude Estimation of a = sin^2(theta)
+theta = np.pi / 5
+oracle = QuantumCircuit(1)
+oracle.ry(2 * theta, 0)  # A|0> = cos(theta)|0> + sin(theta)|1>
+problem = EstimationProblem(state_preparation=oracle, objective_qubits=[0], n_qubits=1)
 
-print(f"Black-Scholes: {classical:.4f}")
-print(f"IQAE:          {quantum:.4f}")
+backend = QiskitAerBackend(method="automatic", seed=42)
+result = IterativeAmplitudeEstimation(
+    problem, IQAEConfig(epsilon_target=0.01, shots_per_round=2048), backend,
+).estimate()
+
+print(f"Black-Scholes call: {classical:.4f}")
+print(f"IQAE estimate:      {result.estimate:.4f}  (true {np.sin(theta) ** 2:.4f})")
 ```
 
 ### Portfolio optimization with QAOA
 
 ```python
-from qufin.benchmarks.problems import make_benchmark
-from qufin.portfolio.qubo import build_qubo
-from qufin.portfolio.optimizers.qaoa import QAOAOptimizer
+import numpy as np
+from qufin.portfolio.qubo import PortfolioQUBO
+from qufin.portfolio.optimizers.qaoa import QAOAPortfolio, QAOAConfig
 from qufin.backends.qiskit_backend import QiskitAerBackend
 
-problem = make_benchmark(15)
-Q = build_qubo(problem.mu, problem.sigma, risk_aversion=0.5, k=5)
+rng = np.random.default_rng(42)
+n_assets = 6
+mu = rng.uniform(0.05, 0.15, n_assets)
+factor = rng.standard_normal((n_assets, n_assets))
+cov = (factor @ factor.T) / n_assets
 
-optimizer = QAOAOptimizer(
-    backend=QiskitAerBackend(shots=4096),
-    p=2, mixer="xy_ring",
-)
-result = optimizer.solve(Q, n_assets=15, k=5)
-print(f"Selected assets: {result.selected}")
-print(f"Objective:       {result.objective:.6f}")
+qubo = PortfolioQUBO(mu=mu, cov=cov, gamma=0.5, cardinality=3, encoding="one_hot")
+config = QAOAConfig(p=2, mixer="xy_ring", cardinality=3, shots=2048, seed=42)
+
+result = QAOAPortfolio(qubo, config, QiskitAerBackend(seed=42)).run()
+print(f"Selected (bitstring): {result.best_bitstring}")
+print(f"Objective:            {result.best_objective:.6f}")
 ```
 
 <details>
@@ -140,26 +158,33 @@ print(f"Objective:       {result.objective:.6f}")
 **Synthetic market data**
 
 ```python
-from qufin.data.synthetic import gbm_paths, heston_paths, HestonParams
+from qufin.data.synthetic import gbm_paths, heston_paths
 
-paths = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0,
-                  n_steps=252, n_paths=10_000)
+# GBM: shape (n_paths, n_steps + 1)
+gbm = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0,
+                n_steps=252, n_paths=10_000, seed=42)
 
-params = HestonParams(v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7)
-paths = heston_paths(s0=100, mu=0.08, params=params, T=1.0,
-                     n_steps=252, n_paths=10_000)
+# Heston returns (prices, variances), each (n_paths, n_steps + 1)
+prices, variances = heston_paths(
+    s0=100, v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7,
+    mu=0.08, T=1.0, n_steps=252, n_paths=10_000, seed=42,
+)
 ```
 
 **Backtesting**
 
 ```python
+import numpy as np
 from qufin.backtesting.engine import BacktestEngine
-from qufin.backtesting.metrics import compute_metrics
 
-engine = BacktestEngine(rebalance_freq="monthly", window=252)
-portfolio_values = engine.run(prices_df, strategy_fn)
-metrics = compute_metrics(portfolio_values)
-print(f"Sharpe: {metrics['sharpe']:.2f}")
+returns = np.random.default_rng(0).normal(0.0004, 0.01, size=(800, 5))
+
+def equal_weight(mu, cov):           # strategy: (mu, cov) -> weights
+    return np.ones(len(mu)) / len(mu)
+
+engine = BacktestEngine(returns, train_window=252, test_window=21)
+result = engine.run(equal_weight, strategy_name="equal_weight")
+print(f"Sharpe: {result.summary.sharpe_ratio:.2f}")
 ```
 
 **Automatic backend selection**
@@ -186,7 +211,8 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock
 ### Option Pricing
 
 - **Classical**: Black-Scholes (full Greeks), Monte Carlo, CRR Binomial, LSM American, Implied Vol (SABR/SVI)
-- **Quantum**: Canonical QAE, IQAE, MLAE, FQAE, Path-Dependent QAE, American QAE, QMC (Montanaro), QSP, Asian QAE
+- **Quantum (6 QAE algorithms)**: Canonical QAE, IQAE, MLAE, FQAE, MRQAE, QMC (Montanaro)
+- **Option wrappers**: European, Asian, American, Path-Dependent, Multi-Asset, QSP pricing
 - **Exotics**: Bermudan, lookback, cliquet, autocallable, basket
 
 ### Risk Management
@@ -205,7 +231,7 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock
 - **Classical**: Standard classifiers, PCA anomaly detection
 - **Quantum**: Kernel methods, VQC, qGAN, HQGAN, reservoir computing, Boltzmann machine, credit scoring, transfer learning, quantum autoencoder
 
-### Error Mitigation
+### Error Mitigation (8 strategies)
 
 - **Level 1**: Readout calibration, TREX
 - **Level 2**: ZNE (Richardson), Dynamical Decoupling (XY4/CPMG/Uhrig)
@@ -244,7 +270,7 @@ backend = auto_select_backend(circuit)
 | `MockBackend` | Deterministic testing |
 | `QiskitAerBackend` | Statevector + QASM sim |
 | `NoisyAerBackend` | Device noise profiles |
-| `IBMRuntimeBackend` | IBM QPU (156 qubits) |
+| `IBMRuntimeBackend` | IBM QPU (default `ibm_brisbane`, 127q; Heron r2 up to 156q) |
 | `PennyLaneBackend` | PennyLane Lightning |
 | `CirqBackend` | Google Sycamore/Willow |
 | `BraketBackend` | AWS (IonQ, Rigetti, IQM) |
@@ -260,19 +286,30 @@ backend = auto_select_backend(circuit)
 Standardized suites for honest quantum-vs-classical comparison.
 
 ```python
-from qufin.benchmarks.runner import BenchmarkRunner
-from qufin.benchmarks.problems import make_benchmark
+from qufin.benchmarks.runner import BenchmarkRunner, SolverEntry
+from qufin.benchmarks.problems import portfolio_small
 
 runner = BenchmarkRunner()
-results = runner.run(make_benchmark(15),
-                     algorithms=["qaoa", "vqe", "mean_variance"])
-runner.summary(results)
+runner.register(SolverEntry(name="mean_variance", family="classical",
+                            solve_fn=my_mean_variance_fn))
+runner.register(SolverEntry(name="qaoa-p2", family="quantum",
+                            solve_fn=my_qaoa_fn))
+
+rows = runner.run_problem(portfolio_small())   # 15-asset benchmark
+for row in rows:
+    print(row.solver_name, row.family, row.objective, row.wall_seconds)
 ```
 
-- **Problem sets**: 15, 25, 50 asset portfolios
-- **Metrics**: Approximation ratio, time-to-solution, circuit depth
+Each registered solver is a callable `problem -> {"objective": ..., ...}`; the
+runner returns a list of `BenchmarkRow` records.
+
+- **Problem sets**: 15, 25, 50 asset portfolios (`portfolio_small/medium/large`)
+- **Metrics**: objective, relative error vs. reference, wall time, circuit depth
 - **Reproducibility**: Hardware, versions, seeds manifest
-- **Transpiler**: QUBO-aware ZZ optimization, 30-50% CNOT reduction
+- **Transpiler**: QUBO-aware ZZ optimization via Qiskit `optimization_level=3`
+  (gate cancellation, commutation, template matching). CNOT reduction depends
+  on circuit structure; dense QAOA cost layers see little reduction (see the
+  measured benchmark in [`docs/`](https://anonymousAAK.github.io/qufin/)).
 
 <br>
 
@@ -313,7 +350,7 @@ src/qufin/
 ## Testing
 
 ```bash
-pytest                             # Full suite (2499 tests)
+pytest                             # Full suite (2,507 tests collected)
 pytest tests/unit/                 # Unit tests (fast)
 pytest -m "not slow"               # Skip slow tests
 pytest -m "not hardware"           # Skip hardware tests
@@ -340,6 +377,7 @@ Apache 2.0. See [LICENSE](LICENSE).
   author  = {Adarsh Keshri},
   title   = {qufin: Quantum Algorithms for Quant Finance},
   year    = {2026},
+  version = {0.1.dev},
   url     = {https://github.com/anonymousAAK/qufin},
   license = {Apache-2.0}
 }

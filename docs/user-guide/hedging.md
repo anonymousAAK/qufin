@@ -8,36 +8,34 @@ The simplest hedging strategy: maintain a position in the underlying that offset
 
 ```python
 from qufin.hedging.delta import DeltaHedger
-from qufin.options.classical.black_scholes import bs_greeks
+from qufin.options.classical.black_scholes import price_and_greeks
 
-# Hedge a short call position
-hedger = DeltaHedger(rebalance_freq="daily")
-greeks = bs_greeks(s=100, k=105, sigma=0.2, r=0.05, T=1.0)
-hedge_ratio = greeks["delta"]  # Buy this many shares per option sold
+# Current hedge ratio for a call position
+greeks = price_and_greeks(s=100, k=105, sigma=0.2, r=0.05, T=1.0, option_type="call")
+hedge_ratio = greeks.delta  # Buy this many shares per option sold
+
+# Single-path discrete delta-hedging simulation
+hedger = DeltaHedger(is_call=True)
+result = hedger.hedge(spot=100, strike=105, r=0.05, sigma=0.2, T=1.0, n_rebalances=252)
+print(f"P&L: {result.pnl:.4f}  hedging error: {result.hedging_error:.4f}")
 ```
 
 ### Discrete Delta Hedging Backtest
 
 ```python
 import numpy as np
-from qufin.hedging.delta import delta_hedge_backtest
-from qufin.data.synthetic import gbm_paths
+from qufin.hedging.delta import DeltaHedger
 
-# Simulate underlying price paths
-paths = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0, n_steps=252, n_paths=1000)
-
-# Backtest delta hedging with transaction costs
-results = delta_hedge_backtest(
-    paths=paths,
-    strike=105,
-    sigma=0.2,
-    r=0.05,
-    T=1.0,
-    rebalance_freq=1,  # daily
-    tx_cost=0.001,     # 10 bps per trade
-)
-print(f"Mean P&L: {results['mean_pnl']:.4f}")
-print(f"P&L Std:  {results['std_pnl']:.4f}")
+# Aggregate P&L over many independent hedging paths.
+hedger = DeltaHedger(is_call=True)
+pnls = [
+    hedger.hedge(spot=100, strike=105, r=0.05, sigma=0.2, T=1.0,
+                 n_rebalances=252, seed=s).pnl
+    for s in range(1000)
+]
+pnls = np.array(pnls)
+print(f"Mean P&L: {pnls.mean():.4f}")
+print(f"P&L Std:  {pnls.std():.4f}")
 ```
 
 ## Deep Hedging
@@ -75,7 +73,7 @@ Replaces the classical neural network with a variational quantum circuit (VQC) a
 from qufin.hedging.quantum_deep_hedging import QuantumDeepHedger
 from qufin.backends.qiskit_backend import QiskitAerBackend
 
-backend = QiskitAerBackend(shots=1024)
+backend = QiskitAerBackend(method="automatic", seed=42)  # shots are passed to run()
 hedger = QuantumDeepHedger(
     n_qubits=4,
     n_layers=3,
@@ -91,18 +89,17 @@ hedger.fit(paths_train, strike=105, epochs=100)
 Reinforcement learning agent with a quantum policy network for dynamic hedging decisions.
 
 ```python
-from qufin.hedging.rl_quantum import QuantumRLHedger
+import numpy as np
+from qufin.hedging.rl_quantum import QuantumPolicy, QuantumPolicyConfig
 
-agent = QuantumRLHedger(
-    n_qubits=4,
-    n_layers=2,
-    learning_rate=0.001,
-    gamma=0.99,         # discount factor
-    risk_aversion=0.5,
-)
+# A variational quantum circuit acts as a discrete-action policy network.
+policy = QuantumPolicy(QuantumPolicyConfig(n_qubits=4, n_layers=2, n_actions=3))
 
-# Train with PPO
-agent.train(env="heston", n_episodes=5000, n_steps=252)
+# Initialise trainable parameters and evaluate action probabilities for a state.
+params = np.random.default_rng(42).uniform(0, 2 * np.pi, policy.n_params)
+state = np.array([0.1, -0.2, 0.05, 0.0])  # e.g. [moneyness, delta, time, inventory]
+action_probs = policy.select_action(state, params)
+print("Action probabilities:", action_probs.round(4))
 ```
 
 ## Comparison

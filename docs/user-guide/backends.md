@@ -98,11 +98,11 @@ print(f"Mitigated counts: {mitigated.mitigated_counts}")
 ```python
 from qufin.backends.error_mitigation import calibrate_readout, mitigate_readout
 
-# Calibrate (run 2^n basis states)
-cal_matrix = calibrate_readout(backend, n_qubits=4, shots=8192)
+# Calibrate (signature: calibrate_readout(n_qubits, backend, shots)).
+cal_matrix = calibrate_readout(4, backend, shots=8192)
 
-# Apply correction
-corrected = mitigate_readout(raw_counts, cal_matrix)
+# Apply correction; returns a MitigationResult (use .mitigated_counts).
+corrected = mitigate_readout(raw_counts, cal_matrix, shots=8192)
 ```
 
 ### TREX (Twirled Readout Error eXtinction)
@@ -110,7 +110,8 @@ corrected = mitigate_readout(raw_counts, cal_matrix)
 ```python
 from qufin.backends.error_mitigation import trex_mitigate
 
-result = trex_mitigate(circuit, backend, shots=8192, n_randomizations=10)
+# circuit must NOT include measurements (added internally).
+result = trex_mitigate(circuit, backend, n_twirls=16, shots_per_twirl=1024)
 ```
 
 ## Backend Interface
@@ -155,20 +156,34 @@ produce better qubit layouts and commuting-gate groupings.
 ```python
 from qufin.backends.transpiler import FinanceTranspiler
 
-transpiler = FinanceTranspiler()
-result = transpiler.transpile(circuit, qubo_matrix=Q)
-print(f"Depth reduction: {result.original_depth} -> {result.transpiled_depth}")
-optimized_circuit = result.circuit
+transpiler = FinanceTranspiler(optimization_level=3, seed=42)
+
+# QUBO-structure-aware optimization; returns (optimized_circuit, report).
+optimized_circuit, report = transpiler.optimize_qaoa_circuit(circuit, qubo_matrix=Q)
+print(f"Depth:  {report.original_depth} -> {report.optimized_depth}")
+print(f"CNOTs:  {report.original_cx_count} -> {report.optimized_cx_count}")
+
+# A CNOT-focused pass is also available:
+optimized_circuit, report = transpiler.reduce_cnot_count(circuit)
 ```
+
+The transpiler applies Qiskit's `optimization_level=3` passes (gate cancellation,
+commutation, template matching). CNOT reduction depends on circuit structure:
+dense QAOA cost layers (`cx`-`rz`-`cx` on distinct control/target pairs) contain
+little cancellable redundancy, so they often see no reduction; circuits with
+redundant entanglers benefit more.
 
 ### Applying Dynamical Decoupling
 
 Insert DD sequences into idle periods to suppress decoherence on real hardware.
 
 ```python
-from qufin.backends.dynamical_decoupling import insert_dd_sequences, DDConfig
+from qufin.backends.dynamical_decoupling import (
+    insert_dd_sequences, DDConfig, DDSequence,
+)
 
-config = DDConfig(sequence_type="XY4", t2_us=100.0)
+# circuit must NOT include measurements.
+config = DDConfig(sequence_type=DDSequence.XY4)
 protected_circuit = insert_dd_sequences(circuit, config)
 ```
 
@@ -180,8 +195,8 @@ using tensored calibration instead of full calibration matrices.
 ```python
 from qufin.backends.m3_mitigation import M3Mitigator, M3Config
 
-mitigator = M3Mitigator(backend, config=M3Config(shots=8192))
-mitigator.calibrate(qubits=[0, 1, 2, 3])
+mitigator = M3Mitigator(config=M3Config(n_calibration_shots=8192))
+mitigator.calibrate(backend, qubit_list=[0, 1, 2, 3])
 corrected_counts = mitigator.apply(raw_counts)
 ```
 
@@ -204,13 +219,11 @@ Estimate the dollar cost of running a circuit on Amazon Braket or IonQ
 before submitting the job.
 
 ```python
-from qufin.backends.braket_backend import estimate_cost, IonQTarget
+from qufin.backends.braket_backend import estimate_cost, IONQ_ARIA
 
 estimate = estimate_cost(
-    circuit,
-    target=IonQTarget.ARIA,
+    target=IONQ_ARIA,
     shots=10_000,
 )
 print(f"Estimated cost: ${estimate.total_usd:.2f}")
-print(f"SWAP overhead: {estimate.swap_gates} extra gates")
 ```

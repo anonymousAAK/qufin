@@ -85,7 +85,7 @@ from qufin.options.classical.monte_carlo import european_mc
 
 result = european_mc(s=100, k=105, r=0.05, sigma=0.2, T=1.0, n_paths=1_000_000)
 print(f"MC Price: ${result.price:.4f}")
-print(f"Std Error: {result.std_error:.6f}")
+print(f"Std Error: {result.std_err:.6f}")
 ```
 
 ## Stress Testing

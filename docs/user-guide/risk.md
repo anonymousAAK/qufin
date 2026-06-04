@@ -146,13 +146,17 @@ print(f"VaR 99.9%:     {result['var']:.4f}")
 Run quantum-enhanced stress tests with predefined crisis scenarios:
 
 ```python
+import numpy as np
 from qufin.risk.quantum_stress import QuantumStressTester, classical_stress_test
 
-tester = QuantumStressTester(backend=backend)
-results = tester.run_scenarios(portfolio_weights, portfolio_value=1_000_000)
+# Sensitivity weights to [equity, rates, volatility, spreads].
+factor_weights = np.array([0.70, 0.20, 0.05, 0.05])
 
-# Classical alternative
-results = classical_stress_test(portfolio_weights, portfolio_value=1_000_000)
+tester = QuantumStressTester(backend=backend)
+results = tester.run_scenarios(1_000_000, factor_weights)
+
+# Classical alternative (same (portfolio_value, weights) signature)
+results = classical_stress_test(1_000_000, factor_weights)
 ```
 
 **Predefined scenarios:** GFC 2008, COVID 2020, Rate Hike 2022.
