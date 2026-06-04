@@ -10,18 +10,12 @@ data:
   QUFIN_DEFAULT_BACKEND: {{ .Values.config.defaultBackend | quote }}
   QUFIN_DEFAULT_SHOTS: {{ .Values.config.defaultShots | quote }}
   QUFIN_CACHE_BACKEND: {{ .Values.config.cacheBackend | quote }}
+  # Redis host/port only — the password is injected from the Secret at the pod
+  # level and the credentialed URLs are assembled there via $(REDIS_PASSWORD).
+  # Secrets are NEVER stored in this ConfigMap.
   {{- if .Values.redis.enabled }}
-  REDIS_URL: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/0"
-  CELERY_BROKER_URL: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/1"
-  CELERY_RESULT_BACKEND: "redis://{{ .Release.Name }}-redis:{{ .Values.redis.port }}/1"
+  REDIS_HOST: "{{ .Release.Name }}-redis"
   {{- else }}
-  REDIS_URL: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/0"
-  CELERY_BROKER_URL: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/1"
-  CELERY_RESULT_BACKEND: "redis://{{ .Values.redis.host }}:{{ .Values.redis.port }}/1"
+  REDIS_HOST: {{ .Values.redis.host | quote }}
   {{- end }}
-  {{- if .Values.config.fredApiKey }}
-  QUFIN_FRED_API_KEY: {{ .Values.config.fredApiKey | quote }}
-  {{- end }}
-  {{- if .Values.config.ibmQuantumToken }}
-  IBM_QUANTUM_TOKEN: {{ .Values.config.ibmQuantumToken | quote }}
-  {{- end }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}

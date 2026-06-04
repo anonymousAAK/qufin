@@ -1,0 +1,46 @@
+# qufin — pinned, reproducible dependency set (known-good)
+# -----------------------------------------------------------------------------
+# This is the exact set of direct runtime dependency versions that qufin is
+# tested against (Python 3.11). Use it to make builds reproducible:
+#
+#     pip install -e . -c constraints.txt
+#     # or, for the API runtime image:
+#     pip install . -c constraints.txt
+#
+# These pins sit INSIDE the ranges declared in pyproject.toml. The pyproject
+# ranges define what is *allowed*; this file records what is *tested*.
+#
+# NOTE: hashes are intentionally omitted because this set was captured from an
+# offline environment (no network to fetch per-artifact hashes). For a fully
+# hash-locked build, regenerate with:
+#     pip-compile --generate-hashes --output-file constraints.txt pyproject.toml
+# and install Docker deps with `pip install --require-hashes`.
+# -----------------------------------------------------------------------------
+
+# Core numerics / data
+numpy==2.4.6
+scipy==1.17.1
+pandas==3.0.3
+pyarrow==24.0.0
+
+# Validation / settings
+pydantic==2.13.4
+pydantic-settings==2.14.1
+
+# Quantum
+qiskit==2.4.1
+qiskit-aer==0.17.2
+
+# Optimization / ML / stats
+cvxpy==1.9.1
+scikit-learn==1.9.0
+statsmodels==0.14.6
+arch==8.0.0
+
+# Market data
+yfinance==1.4.1
+fredapi==0.5.2
+
+# Graphs / plotting
+networkx==3.6.1
+matplotlib==3.10.9

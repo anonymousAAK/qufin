@@ -1,5 +1,22 @@
 # docker-compose.yml -- qufin API + Redis + Celery worker
-# Usage: docker compose up --build
+#
+# Usage:
+#   1. Create a .env file next to this compose file (NEVER commit it) with:
+#        REDIS_PASSWORD=<a long random password>
+#        QUFIN_API_KEYS=<comma-separated API keys>
+#   2. docker compose up --build
+#
+# Security notes:
+#   * Redis is password-protected (--requirepass) and is NOT published to the
+#     host — it is only reachable on the internal compose network.
+#   * The API refuses to start unless QUFIN_API_KEYS is set (auth on by default).
+#   * No secrets are hardcoded here; everything comes from the environment.
+
+x-redis-env: &redis-env
+  # Credentialed broker/result URLs (password injected from the environment).
+  REDIS_URL: "redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/0"
+  CELERY_BROKER_URL: "redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/1"
+  CELERY_RESULT_BACKEND: "redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/2"
 
 services:
   api:
@@ -9,49 +26,79 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - QUFIN_LOG_LEVEL=INFO
-      - QUFIN_CACHE_BACKEND=redis
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/1
-      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      <<: *redis-env
+      QUFIN_LOG_LEVEL: INFO
+      QUFIN_CACHE_BACKEND: redis
+      # Auth is required; the container exits if this is unset.
+      QUFIN_API_KEYS: "${QUFIN_API_KEYS:?set QUFIN_API_KEYS in .env}"
     depends_on:
       redis:
         condition: service_healthy
     restart: unless-stopped
     volumes:
       - data-warehouse:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile
+    # Override the API entrypoint to run the Celery worker instead.
+    entrypoint: []
     command: ["celery", "-A", "qufin.api.jobs", "worker",
               "--loglevel=info", "--concurrency=2", "--max-tasks-per-child=50"]
     environment:
-      - QUFIN_LOG_LEVEL=INFO
-      - QUFIN_CACHE_BACKEND=redis
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/1
-      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      <<: *redis-env
+      QUFIN_LOG_LEVEL: INFO
+      QUFIN_CACHE_BACKEND: redis
     depends_on:
       redis:
         condition: service_healthy
     restart: unless-stopped
     volumes:
       - data-warehouse:/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G
+        reservations:
+          cpus: "1"
+          memory: 2G
 
   redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    # Pinned by digest. Tag at pin time: redis:7-alpine (resolved 2026-06-04).
+    image: redis:7-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
+    # Password-protected; only reachable on the internal network (no host port).
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}", "--appendonly", "yes"]
+    expose:
+      - "6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      # Authenticated PING so the healthcheck reflects a usable, authed broker.
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
       interval: 10s
       timeout: 3s
       retries: 5
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}"
     volumes:
       - redis-data:/data
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
 
 volumes:
   data-warehouse:

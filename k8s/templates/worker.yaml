@@ -20,10 +20,14 @@ spec:
         app.kubernetes.io/component: worker
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: worker
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ include "qufin.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           command:
             - celery
             - -A
@@ -35,19 +39,39 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-config
+          env:
+            {{- include "qufin.secretEnv" . | nindent 12 }}
+            {{- include "qufin.redisEnv" . | nindent 12 }}
           resources:
             {{- toYaml .Values.worker.resources | nindent 12 }}
-          {{- if .Values.persistence.enabled }}
+          livenessProbe:
+            # Restart the worker if it can no longer reach the broker / answer ping.
+            # $$(hostname) escapes Helm; the shell (not k8s) resolves the hostname.
+            exec:
+              command:
+                - sh
+                - -c
+                - celery -A qufin.api.jobs inspect ping -d "celery@$$(hostname)" --timeout 10
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 15
           volumeMounts:
+            # Writable scratch required because readOnlyRootFilesystem is true.
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.enabled }}
             - name: data-warehouse
               mountPath: /app/data
-          {{- end }}
-      {{- if .Values.persistence.enabled }}
+            {{- end }}
+      terminationGracePeriodSeconds: 60
       volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.persistence.enabled }}
         - name: data-warehouse
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-data
-      {{- end }}
+        {{- end }}
 ---
 {{- if .Values.worker.autoscaling.enabled }}
 apiVersion: autoscaling/v2

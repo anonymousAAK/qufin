@@ -32,5 +32,15 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: monday
     labels:
       - ci
+
+  # Keep the digest-pinned base images (Dockerfile) fresh.
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - docker
