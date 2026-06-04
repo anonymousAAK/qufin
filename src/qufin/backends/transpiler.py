@@ -365,11 +365,16 @@ class FinanceTranspiler:
         return optimized, result
 
     def reduce_cnot_count(self, circuit: Any) -> tuple[Any, TranspilationResult]:
-        """Reduce CNOT count via aggressive transpilation.
+        """Reduce CNOT count via aggressive (level-3) transpilation.
 
-        Targets 30-50% CNOT reduction for portfolio QAOA circuits using
-        Qiskit's optimization passes (gate cancellation, commutation,
-        template matching).
+        Runs Qiskit's optimization passes (gate cancellation, commutation,
+        template matching) at ``optimization_level=3``. The achievable reduction
+        depends entirely on the input circuit's redundancy: circuits with
+        cancellable structure (e.g. back-to-back entanglers) can shrink
+        substantially, while a dense QAOA cost layer typically has no
+        cancellable CNOTs and sees ~0% reduction. Inspect the returned
+        ``TranspilationResult`` for the actual measured counts rather than
+        assuming a fixed percentage.
 
         Parameters
         ----------
