@@ -1,0 +1,62 @@
+# Shrink the build context and keep secrets / dev cruft out of image layers.
+
+# VCS
+.git
+.gitignore
+.github
+
+# Tests, notebooks, papers, examples, docs — not needed at runtime
+tests/
+notebooks/
+papers/
+examples/
+docs/
+site/
+reviews/
+benchmarks/
+.benchmarks/
+
+# CI / tooling configs
+.pre-commit-config.yaml
+.editorconfig
+mkdocs.yml
+k8s/
+docker-compose.yml
+
+# Caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+coverage.xml
+htmlcov/
+*.so
+
+# Local data / results that must never be baked into an image
+data/
+results.json
+*.parquet
+*.sqlite
+*.db
+
+# Secrets / local env — never copy these into a layer
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+*.secret
+
+# Editor / OS noise
+.idea/
+.vscode/
+.DS_Store

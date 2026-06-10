@@ -3,13 +3,19 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project intends to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+> **Versioning note.** This project has **not yet cut a tagged release**. The
+> current development line is **0.1.x** (build version derived from VCS, e.g.
+> `0.1.devN`). The version headings below record development milestones during
+> the build-out; none of them correspond to a published git tag or PyPI
+> release yet. All recent work is grouped under **Unreleased** until the first
+> tag is created.
 
 ## [Unreleased]
 
-## [1.1.0] - 2026-05-22
-
-Feature expansion: 159 modules, 11 backends, 2499 tests.
+Latest development line (0.1.x). Feature expansion: 159 modules, 11 backends,
+~2,507 tests collected.
 
 ### Added
 
@@ -42,12 +48,12 @@ Feature expansion: 159 modules, 11 backends, 2499 tests.
 
 ### Changed
 - Source modules: 146 → 159
-- Test count: 2273 → 2499
+- Test count: 2273 → ~2,507 collected
 - Backend count: 9 → 11 (added IonQ, Quantinuum)
 
-## [1.0.0] - 2026-05-15
+## [0.x milestone] - earlier development
 
-Production release: 146 modules, 14 subpackages, 2273 tests, 9 backends. All roadmap items complete.
+Earlier development milestone: 146 modules, 14 subpackages, 9 backends.
 
 ### Added
 
@@ -265,10 +271,4 @@ Initial public release with 90 modules, 635 tests, and 92% coverage.
 - Pre-commit hooks
 - Apache 2.0 license
 
-[Unreleased]: https://github.com/anonymousAAK/qufin/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/anonymousAAK/qufin/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/anonymousAAK/qufin/compare/v0.4.0...v1.0.0
-[0.4.0]: https://github.com/anonymousAAK/qufin/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/anonymousAAK/qufin/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.2.0
-[0.1.0]: https://github.com/anonymousAAK/qufin/releases/tag/v0.1.0
+[Unreleased]: https://github.com/anonymousAAK/qufin/commits/main

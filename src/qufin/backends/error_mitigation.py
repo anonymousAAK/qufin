@@ -597,13 +597,20 @@ def pec_mitigate(
     observable_fn: Any = None,
     noise_params: dict[str, float] | None = None,
 ) -> dict[str, Any]:
-    """Probabilistic Error Cancellation via Monte Carlo sampling.
+    """Approximate Probabilistic Error Cancellation (heuristic sign sampling).
 
-    Implements the PEC protocol from Temme et al. (2017):
-    1. Characterize the noise channel for each gate
-    2. Compute quasi-probability decomposition (QPD)
-    3. Sample noisy circuit instances according to quasi-probabilities
-    4. Compute weighted average for unbiased expectation value
+    .. warning::
+       This is an *approximate, heuristic* routine, **not** a faithful
+       implementation of the Temme et al. (2017) PEC protocol. A correct PEC
+       implementation requires (a) gate-set tomography to characterise each
+       gate's noise channel, and (b) a per-gate quasi-probability decomposition
+       whose basis operations are *actually inserted* into sampled circuits.
+       This function instead re-executes the same noisy circuit and applies a
+       random global sign weighted by the overhead ``gamma``; it reproduces the
+       PEC sampling *overhead* and variance behaviour but does **not** invert
+       the noise channel, so its estimates are biased. Use it for overhead
+       studies and pedagogy, not for production error cancellation. Tracked for
+       a real QPD-based implementation.
 
     Parameters
     ----------
@@ -624,6 +631,15 @@ def pec_mitigate(
     Dict with keys: mitigated_value, raw_value, gamma, n_samples,
                      sample_values, overhead_estimate.
     """
+    import warnings
+
+    warnings.warn(
+        "pec_mitigate is an approximate heuristic (random sign weighting), not a "
+        "faithful Temme et al. quasi-probability PEC implementation; its estimates "
+        "are biased. See the function docstring.",
+        UserWarning,
+        stacklevel=2,
+    )
     if config is None:
         config = PECConfig()
     if noise_params is None:

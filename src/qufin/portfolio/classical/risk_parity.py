@@ -43,7 +43,8 @@ def inverse_volatility_weights(
     """
     vols = np.sqrt(np.maximum(np.diag(cov), 1e-30))
     inv_vols = 1.0 / vols
-    return (inv_vols / inv_vols.sum()).astype(np.float64)
+    weights: NDArray[np.float64] = (inv_vols / inv_vols.sum()).astype(np.float64)
+    return weights
 
 
 def risk_parity(

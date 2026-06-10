@@ -7,14 +7,16 @@ qufin provides three data sources for market data, plus a local caching layer. N
 Fetch historical price data for any ticker available on Yahoo Finance.
 
 ```python
-from qufin.data.equities import fetch_prices, fetch_returns
+from qufin.data.equities import YahooEquityProvider
+
+provider = YahooEquityProvider()
 
 # Daily closing prices
-prices = fetch_prices(["AAPL", "MSFT", "GOOGL"], start="2020-01-01", end="2024-12-31")
+prices = provider.get_prices(["AAPL", "MSFT", "GOOGL"], start="2020-01-01", end="2024-12-31")
 print(prices.head())
 
-# Log returns
-returns = fetch_returns(["AAPL", "MSFT", "GOOGL"], start="2020-01-01", end="2024-12-31")
+# Returns
+returns = provider.get_returns(["AAPL", "MSFT", "GOOGL"], start="2020-01-01", end="2024-12-31")
 
 # Covariance matrix for portfolio optimization
 cov = returns.cov() * 252  # annualized
@@ -29,13 +31,15 @@ Access Federal Reserve Economic Data for interest rates, inflation, and macro in
     Set the `FRED_API_KEY` environment variable. Get a free key at [fred.stlouisfed.org](https://fred.stlouisfed.org/docs/api/api_key.html).
 
 ```python
-from qufin.data.macro import fetch_fred
+from qufin.data.macro import FREDProvider
+
+fred = FREDProvider()
 
 # 10-year Treasury yield
-rates = fetch_fred("GS10", start="2020-01-01")
+rates = fred.get_series("GS10", start="2020-01-01")
 
-# Multiple series
-data = fetch_fred(["GS10", "GS2", "CPIAUCSL"], start="2020-01-01")
+# Risk-free rate / yield curve helpers
+rf = fred.get_risk_free_rate()
 ```
 
 ## Synthetic Data Generators
@@ -61,19 +65,19 @@ paths = gbm_paths(
 ### Heston Stochastic Volatility
 
 ```python
-from qufin.data.synthetic import heston_paths, HestonParams
+from qufin.data.synthetic import heston_paths
 
-params = HestonParams(
-    v0=0.04,      # initial variance
-    kappa=2.0,    # mean reversion speed
-    theta=0.04,   # long-run variance
-    xi=0.3,       # vol of vol
-    rho=-0.7,     # correlation (price-vol)
-)
-
-paths = heston_paths(
-    s0=100, mu=0.08, params=params,
-    T=1.0, n_steps=252, n_paths=10_000,
+# heston_paths takes individual keyword args and returns (prices, variances),
+# each of shape (n_paths, n_steps + 1).
+prices, variances = heston_paths(
+    s0=100,
+    v0=0.04,       # initial variance
+    kappa=2.0,     # mean reversion speed
+    theta=0.04,    # long-run variance
+    xi=0.3,        # vol of vol
+    rho=-0.7,      # correlation (price-vol)
+    mu=0.08,
+    T=1.0, n_steps=252, n_paths=10_000, seed=42,
 )
 ```
 
@@ -100,10 +104,11 @@ paths = merton_jump_paths(
 Pre-built asset lists for benchmarks and quick experimentation.
 
 ```python
-from qufin.data.universes import get_universe
+from qufin.data.universes import SP500_SECTOR_ETFS, DOW_JONES_30, NIFTY50_SAMPLE
 
-sp500_tech = get_universe("sp500_tech")      # Tech sector of S&P 500
-sp500_health = get_universe("sp500_health")  # Healthcare sector
+sectors = SP500_SECTOR_ETFS   # S&P 500 sector ETFs
+dow = DOW_JONES_30            # Dow Jones 30 tickers
+nifty = NIFTY50_SAMPLE       # NIFTY 50 sample
 ```
 
 ## Caching
@@ -111,12 +116,12 @@ sp500_health = get_universe("sp500_health")  # Healthcare sector
 Data fetched from Yahoo Finance and FRED is cached locally to avoid redundant API calls.
 
 ```python
-from qufin.data.cache import get_cache_dir, clear_cache
+from qufin.data.cache import get_cached, put_cache, clear_cache
 
-# Cache location
-print(get_cache_dir())  # ~/.cache/qufin/
+# Look up a cached DataFrame (returns None on a miss)
+cached = get_cached("prices", "AAPL", "2020-01-01")
 
-# Clear cached data
+# Clear cached data (optionally filtered by prefix); returns count removed
 clear_cache()
 ```
 
@@ -199,18 +204,19 @@ print(f"Quality: {score.overall:.1%}")
 End-to-end example: fetch data → compute returns → optimize.
 
 ```python
-from qufin.data.equities import fetch_returns
-from qufin.portfolio.classical.mean_variance import mean_variance_optimize
+from qufin.data.equities import YahooEquityProvider
+from qufin.portfolio.classical.mean_variance import mean_variance, Objective
 
 # Fetch 3 years of data
 tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
-returns = fetch_returns(tickers, start="2022-01-01", end="2024-12-31")
+returns = YahooEquityProvider().get_returns(tickers, start="2022-01-01", end="2024-12-31")
 
 # Annualize
 mu = returns.mean() * 252
 cov = returns.cov() * 252
 
-# Optimize
-weights = mean_variance_optimize(mu.values, cov.values, target_return=0.15)
-print(dict(zip(tickers, weights.round(4))))
+# Optimize (target an annualized return floor)
+result = mean_variance(mu.values, cov.values,
+                       objective=Objective.MIN_VARIANCE, min_return=0.15)
+print(dict(zip(tickers, result.weights.round(4))))
 ```

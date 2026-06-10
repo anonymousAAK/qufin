@@ -43,8 +43,25 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def app():
-    """Create a test app with no auth."""
-    return create_app(api_keys=None, rate_limit=1000, rate_window=60)
+    """Create a test app with auth explicitly disabled (dev mode)."""
+    return create_app(api_keys=None, allow_no_auth=True, rate_limit=1000, rate_window=60)
+
+
+@pytest.fixture
+def mock_returns(monkeypatch):
+    """Patch the market-data boundary with deterministic returns.
+
+    The API never fabricates data itself; tests inject it here so the compute
+    helpers run offline without hitting yfinance.
+    """
+    import numpy as np
+
+    def _fake(tickers, start, end):
+        rng = np.random.default_rng(0)
+        return rng.normal(0.0005, 0.02, size=(252, len(tickers)))
+
+    monkeypatch.setattr("qufin.api.server._fetch_returns", _fake)
+    return _fake
 
 
 @pytest.fixture
@@ -63,6 +80,21 @@ def auth_app():
 def auth_client(auth_app):
     """TestClient with auth enabled."""
     return TestClient(auth_app)
+
+
+def _poll_job(client, job_id, headers=None, timeout=15.0):
+    """Poll a job to a terminal state (async now actually executes)."""
+    import time as _t
+
+    deadline = _t.time() + timeout
+    while _t.time() < deadline:
+        resp = client.get(f"/v1/jobs/{job_id}", headers=headers or {})
+        assert resp.status_code == 200, resp.text
+        data = resp.json()
+        if data["status"] in ("completed", "failed"):
+            return data
+        _t.sleep(0.05)
+    raise AssertionError(f"job {job_id} did not finish within {timeout}s")
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +179,14 @@ class TestOptimizeEndpoint:
 
     @patch("qufin.api.server._run_optimize")
     def test_optimize_async_returns_job(self, mock_opt, client):
+        mock_opt.return_value = OptimizeResponse(
+            weights={"AAPL": 0.5, "MSFT": 0.5},
+            expected_return=0.10,
+            volatility=0.15,
+            sharpe_ratio=0.5,
+            method="mvo",
+            computation_time_s=0.0,
+        )
         resp = client.post(
             "/v1/optimize",
             json={
@@ -161,7 +201,10 @@ class TestOptimizeEndpoint:
         data = resp.json()
         assert "job_id" in data
         assert data["status"] == "pending"
-        mock_opt.assert_not_called()
+        # async now actually executes in the background (no longer a no-op).
+        final = _poll_job(client, data["job_id"])
+        assert final["status"] == "completed"
+        assert final["result"]["method"] == "mvo"
 
     def test_optimize_bad_tickers(self, client):
         """Tickers list too short should fail validation."""
@@ -247,6 +290,12 @@ class TestPriceEndpoint:
 
     @patch("qufin.api.server._run_price")
     def test_price_async(self, mock_price, client):
+        mock_price.return_value = PriceResponse(
+            price=5.0,
+            greeks=Greeks(delta=0.5, gamma=0.02, vega=0.3, theta=-0.01, rho=0.1),
+            method="bs",
+            computation_time_s=0.0,
+        )
         resp = client.post(
             "/v1/price",
             json={
@@ -261,7 +310,9 @@ class TestPriceEndpoint:
         assert resp.status_code == 200
         data = resp.json()
         assert "job_id" in data
-        mock_price.assert_not_called()
+        final = _poll_job(client, data["job_id"])
+        assert final["status"] == "completed"
+        assert final["result"]["price"] == 5.0
 
     def test_price_invalid_spot(self, client):
         resp = client.post(
@@ -345,6 +396,10 @@ class TestRiskEndpoint:
 
     @patch("qufin.api.server._run_risk")
     def test_risk_async(self, mock_risk, client):
+        mock_risk.return_value = RiskResponse(
+            var=0.02, var_dollar=20000.0, cvar=0.03, cvar_dollar=30000.0,
+            confidence_level=0.95, method="historical", computation_time_s=0.0,
+        )
         resp = client.post(
             "/v1/risk",
             json={
@@ -355,8 +410,11 @@ class TestRiskEndpoint:
             },
         )
         assert resp.status_code == 200
-        assert "job_id" in resp.json()
-        mock_risk.assert_not_called()
+        data = resp.json()
+        assert "job_id" in data
+        final = _poll_job(client, data["job_id"])
+        assert final["status"] == "completed"
+        assert final["result"]["var"] == 0.02
 
 
 # ---------------------------------------------------------------------------
@@ -465,6 +523,14 @@ class TestJobEndpoints:
 
     @patch("qufin.api.server._run_optimize")
     def test_create_and_get_job(self, mock_opt, client):
+        mock_opt.return_value = OptimizeResponse(
+            weights={"AAPL": 0.5, "MSFT": 0.5},
+            expected_return=0.10,
+            volatility=0.15,
+            sharpe_ratio=0.5,
+            method="mvo",
+            computation_time_s=0.0,
+        )
         # Submit async job
         resp = client.post(
             "/v1/optimize",
@@ -477,12 +543,11 @@ class TestJobEndpoints:
         )
         job_id = resp.json()["job_id"]
 
-        # Poll for status
-        resp = client.get(f"/v1/jobs/{job_id}")
-        assert resp.status_code == 200
-        data = resp.json()
-        assert data["job_id"] == job_id
-        assert data["status"] == "pending"
+        # The job is retrievable and runs to completion.
+        final = _poll_job(client, job_id)
+        assert final["job_id"] == job_id
+        assert final["status"] == "completed"
+        assert final["result"]["method"] == "mvo"
 
     def test_get_nonexistent_job(self, client):
         resp = client.get("/v1/jobs/nonexistent-id")
@@ -585,19 +650,36 @@ class TestInMemoryJobStore:
 class TestComputationHelpers:
     """Tests for _run_optimize, _run_price, _run_risk with mocked data."""
 
-    def test_run_optimize_fallback(self):
-        """Optimize falls back to synthetic data when fetch fails."""
+    def test_run_optimize_uses_real_returns(self, mock_returns):
+        """Optimize computes from fetched returns (never synthetic fallback)."""
         req = OptimizeRequest(
             tickers=["AAPL", "MSFT", "GOOG"],
             start_date="2023-01-01",
             end_date="2024-01-01",
             method=OptimizationMethod.MVO,
         )
-        # The function handles the import error internally (synthetic data)
         result = _run_optimize(req)
         assert isinstance(result, OptimizeResponse)
         assert len(result.weights) == 3
         assert sum(result.weights.values()) == pytest.approx(1.0, abs=0.01)
+
+    def test_run_optimize_raises_on_data_failure(self, monkeypatch):
+        """When market data is unavailable the API errors out instead of
+        silently fabricating synthetic data."""
+        from qufin.api.server import MarketDataError
+
+        def _boom(tickers, start, end):
+            raise MarketDataError("provider unavailable")
+
+        monkeypatch.setattr("qufin.api.server._fetch_returns", _boom)
+        req = OptimizeRequest(
+            tickers=["AAPL", "MSFT"],
+            start_date="2023-01-01",
+            end_date="2024-01-01",
+            method=OptimizationMethod.MVO,
+        )
+        with pytest.raises(MarketDataError):
+            _run_optimize(req)
 
     def test_run_price_bs(self):
         """BS pricing uses EuropeanOption."""
@@ -615,8 +697,8 @@ class TestComputationHelpers:
         assert result.price > 0
         assert result.greeks.delta > 0
 
-    def test_run_risk_historical_fallback(self):
-        """Risk computation with synthetic data fallback."""
+    def test_run_risk_historical(self, mock_returns):
+        """Historical risk computes from fetched returns."""
         req = RiskRequest(
             portfolio_weights={"AAPL": 0.5, "MSFT": 0.5},
             start_date="2023-01-01",
@@ -631,7 +713,7 @@ class TestComputationHelpers:
         assert result.cvar > 0
         assert result.confidence_level == 0.95
 
-    def test_run_risk_with_stress_test(self):
+    def test_run_risk_with_stress_test(self, mock_returns):
         """Risk computation with stress test."""
         req = RiskRequest(
             portfolio_weights={"AAPL": 0.5, "MSFT": 0.5},

@@ -7,19 +7,21 @@ qufin supports pricing and analysis of exotic derivatives beyond vanilla Europea
 Bermudan options can be exercised at specific dates before expiration. Priced via Least-Squares Monte Carlo (LSM).
 
 ```python
-from qufin.derivatives.bermudan_lsm import price_bermudan_put
+from qufin.derivatives.bermudan_lsm import lsm_price
 
-price = price_bermudan_put(
+# lsm_price returns a dict with a "price" key.
+result = lsm_price(
     s0=100,
-    strike=105,
+    k=105,
     r=0.05,
     sigma=0.2,
     T=1.0,
-    n_steps=12,          # monthly exercise dates
+    n_steps=12,          # monthly exercise opportunities
     n_paths=100_000,
-    basis_functions=3,   # polynomial degree for continuation value
+    exercise_dates=[i / 12 for i in range(1, 13)],
+    is_call=False,
 )
-print(f"Bermudan put price: {price:.4f}")
+print(f"Bermudan put price: {result['price']:.4f}")
 ```
 
 ## Basket Options
@@ -27,19 +29,22 @@ print(f"Bermudan put price: {price:.4f}")
 Options on a weighted basket of multiple underlying assets.
 
 ```python
-from qufin.derivatives.basket import price_basket_option
+import numpy as np
+from qufin.derivatives.basket import basket_mc, BasketOptionSpec
 
-price = price_basket_option(
-    spots=[100, 110, 95],
-    weights=[0.4, 0.35, 0.25],
-    strike=100,
+corr = np.eye(3)  # 3x3 correlation matrix
+spec = BasketOptionSpec(
+    s0=np.array([100.0, 110.0, 95.0]),
+    k=100.0,
     r=0.05,
-    sigma=[0.2, 0.25, 0.18],
-    corr_matrix=corr,    # 3x3 correlation matrix
+    sigma=np.array([0.2, 0.25, 0.18]),
+    corr=corr,
     T=1.0,
-    n_paths=100_000,
-    option_type="call",
+    weights=np.array([0.4, 0.35, 0.25]),
+    is_call=True,
 )
+result = basket_mc(spec, n_paths=100_000, seed=42)
+print(f"Basket price: {result.price:.4f}")
 ```
 
 ## Autocallable Notes
@@ -47,19 +52,20 @@ price = price_basket_option(
 Structured products that automatically redeem if the underlying exceeds a barrier on observation dates.
 
 ```python
-from qufin.derivatives.autocallable import price_autocallable
+from qufin.derivatives.autocallable import autocallable_mc, AutocallableSpec
 
-price = price_autocallable(
+spec = AutocallableSpec(
     s0=100,
-    autocall_barrier=1.05,    # 105% of initial
-    coupon_rate=0.08,         # 8% annual coupon
-    ki_barrier=0.70,          # 70% knock-in barrier
+    k=100,
+    barrier=105,              # autocall barrier (absolute level)
+    coupon=0.08,              # 8% coupon
     observation_dates=[0.25, 0.5, 0.75, 1.0],  # quarterly
     r=0.05,
     sigma=0.25,
     T=1.0,
-    n_paths=100_000,
 )
+result = autocallable_mc(spec, seed=42)
+print(f"Autocallable price: {result['price']:.4f}")
 ```
 
 ## Path-Dependent Options
@@ -69,18 +75,11 @@ price = price_autocallable(
 The payoff depends on the maximum or minimum price during the option's life.
 
 ```python
-from qufin.derivatives.path_dependent import price_lookback
+from qufin.derivatives.path_dependent import lookback_mc, LookbackOptionSpec
 
-price = price_lookback(
-    s0=100,
-    r=0.05,
-    sigma=0.2,
-    T=1.0,
-    n_steps=252,
-    n_paths=100_000,
-    lookback_type="floating_strike",  # or "fixed_strike"
-    option_type="call",
-)
+spec = LookbackOptionSpec(s0=100, r=0.05, sigma=0.2, T=1.0, is_call=True, n_steps=252)
+price = lookback_mc(spec, n_paths=100_000, seed=42)
+print(f"Lookback price: {price:.4f}")
 ```
 
 ### Cliquet Options
@@ -88,19 +87,20 @@ price = price_lookback(
 Options with periodic resets that lock in gains at each observation date.
 
 ```python
-from qufin.derivatives.path_dependent import price_cliquet
+from qufin.derivatives.path_dependent import cliquet_mc
 
-price = price_cliquet(
+price = cliquet_mc(
     s0=100,
     r=0.05,
     sigma=0.2,
     T=1.0,
-    reset_dates=[0.25, 0.5, 0.75, 1.0],
-    local_cap=0.05,      # 5% cap per period
-    local_floor=0.0,     # 0% floor per period
-    global_floor=0.0,
+    n_periods=4,         # quarterly resets
+    cap=0.05,            # 5% cap per period
+    floor=0.0,           # 0% floor per period
     n_paths=100_000,
+    seed=42,
 )
+print(f"Cliquet price: {price:.4f}")
 ```
 
 ## Pricing Methods Comparison

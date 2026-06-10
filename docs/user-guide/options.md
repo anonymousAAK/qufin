@@ -37,9 +37,11 @@ result = barrier_mc(s=100, k=100, r=0.05, sigma=0.2, T=1.0,
 ### Binomial Tree (CRR)
 
 ```python
-from qufin.options.classical.binomial import crr_price
+from qufin.options.classical.binomial import crr_tree
 
-price = crr_price(s=100, k=105, r=0.05, sigma=0.2, T=1.0, n_steps=500)
+# crr_tree returns a BinomialResult; use .price.
+result = crr_tree(s=100, k=105, r=0.05, sigma=0.2, T=1.0, n_steps=500)
+price = result.price
 ```
 
 ## Exotic Options
@@ -161,9 +163,13 @@ price = price_asian_qae(spec, backend=backend, n_qubits=4)
 Price American options with quantum least-squares Monte Carlo:
 
 ```python
-from qufin.options.amplitude_estimation.american_qae import price_american_qae
+from qufin.options.amplitude_estimation.american_qae import (
+    QuantumLSM, AmericanQAESpec,
+)
 
-price = price_american_qae(s0=100, k=100, r=0.05, sigma=0.2, T=1.0, backend=backend)
+spec = AmericanQAESpec(s0=100, k=100, r=0.05, sigma=0.2, T=1.0, is_call=False)
+result = QuantumLSM(spec, backend=backend).price()
+price = result.price
 ```
 
 ### Implied Volatility Surface

@@ -2,8 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "qufin: Research-grade quantum algorithms for quant finance"
-version: "1.1.0"
-date-released: "2026-05-22"
+version: "0.1.dev"
 license: Apache-2.0
 repository-code: "https://github.com/anonymousAAK/qufin"
 url: "https://anonymousAAK.github.io/qufin"

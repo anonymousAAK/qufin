@@ -5,11 +5,40 @@ replicaCount: 2
 image:
   repository: qufin
   tag: "1.1.0"
+  # Pin by digest in production for supply-chain integrity. When set, the digest
+  # takes precedence over the tag (image is referenced as repo@sha256:...).
+  # Example: digest: "sha256:<qufin-image-digest>"
+  digest: ""
+  # With an immutable tag/digest, IfNotPresent avoids needless re-pulls.
   pullPolicy: IfNotPresent
+
+# -- Pod security ---------------------------------------------------------
+# Hardened defaults applied to every workload (api, worker, redis).
+# Matches the non-root UID/GID baked into the qufin Docker image.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
 
 # -- API server -----------------------------------------------------------
 api:
   port: 8000
+  # Optional dedicated readiness path (set to /ready once the app exposes it;
+  # defaults to /health so probes work today).
+  readinessPath: /health
   resources:
     requests:
       cpu: "500m"
@@ -42,23 +71,56 @@ redis:
   enabled: true
   host: ""  # Override if using external Redis
   port: 6379
+  # Pinned by digest. Tag at pin time: redis:7-alpine (resolved 2026-06-04).
+  image: "redis:7-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
 
 # -- Data warehouse -------------------------------------------------------
 persistence:
   enabled: true
   storageClass: ""
   size: 50Gi
+  # ReadWriteOnce only supports a single node mount. Use ReadWriteMany
+  # (EFS/Azure Files/NFS) if replicaCount > 1 needs shared scratch.
   accessMode: ReadWriteOnce
 
-# -- Config ---------------------------------------------------------------
+# -- Config (non-secret) --------------------------------------------------
 config:
   logLevel: INFO
-  defaultBackend: qiskit-aer
+  # Canonical underscore backend ID (matches qufin.backends.auto_select and the
+  # Settings.default_backend default).
+  defaultBackend: qiskit_aer
   defaultShots: 1024
   cacheBackend: redis
-  # Set via secrets in production
+
+# -- Secrets --------------------------------------------------------------
+# Credentials are rendered into a Kubernetes Secret (templates/secret.yaml),
+# NEVER into the ConfigMap. For production prefer an external secret manager
+# (Vault / External Secrets Operator / Sealed Secrets) and set
+# secrets.create=false, pointing secrets.existingSecret at the managed Secret.
+secrets:
+  # When true, the chart creates a Secret from the values below.
+  create: true
+  # Name of a pre-existing Secret to use instead of creating one.
+  existingSecret: ""
+  # API keys for the REST API (comma-separated). Auth is REQUIRED: leave empty
+  # only if you knowingly run with auth disabled (allowNoAuth=true).
+  apiKeys: ""
+  # Redis AUTH password (used in the broker/result URLs and --requirepass).
+  redisPassword: ""
+  # Quantum-hardware / data-provider credentials.
   fredApiKey: ""
   ibmQuantumToken: ""
+
+# Fail-closed auth: when false (default) the API requires QUFIN_API_KEYS.
+# Set true ONLY for trusted/isolated clusters.
+allowNoAuth: false
 
 # -- Service --------------------------------------------------------------
 service:
@@ -70,3 +132,12 @@ ingress:
   enabled: false
   className: ""
   host: qufin.local
+
+# -- NetworkPolicy --------------------------------------------------------
+networkPolicy:
+  # Default-deny ingress; explicitly allow api<->worker->redis and
+  # ingress-controller -> api. Disable if your CNI does not enforce policies.
+  enabled: true
+  # Namespace label selector for the ingress controller allowed to reach the API.
+  # Empty {} allows any namespace (still restricted to the API port).
+  ingressControllerNamespaceSelector: {}

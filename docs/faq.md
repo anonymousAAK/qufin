@@ -65,13 +65,20 @@ Common causes:
 
 ```python
 # Recommended settings for reliable QAOA
-optimizer = QAOAOptimizer(
-    backend=QiskitAerBackend(shots=4096),
+from qufin.portfolio.optimizers.qaoa import QAOAPortfolio, QAOAConfig
+from qufin.backends.qiskit_backend import QiskitAerBackend
+
+config = QAOAConfig(
     p=2,
-    mixer="xy_ring",
-    optimizer="cobyla",
-    max_iter=200,
+    mixer="xy_ring",      # for cardinality-constrained problems
+    cardinality=5,
+    optimizer="COBYLA",
+    maxiter=200,
+    shots=4096,           # shots live on the config, not the backend
+    seed=42,
 )
+solver = QAOAPortfolio(qubo, config, QiskitAerBackend(method="automatic", seed=42))
+result = solver.run()
 ```
 
 ### QAE option pricing gives wrong results
@@ -171,4 +178,4 @@ Qiskit Finance was deprecated in 2024. qufin fills that gap with:
 
 ### Can I use qufin in production?
 
-qufin is at v1.1.0. The classical algorithms (Black-Scholes, MVO, VaR) are production-ready. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not yet for production trading decisions.
+qufin is in active **0.x development** (no tagged release yet; APIs may change before 1.0). The classical algorithms (Black-Scholes, MVO, VaR) are well-tested and match textbook values. Quantum algorithms are research-grade — suitable for experimentation and benchmarking, not for production trading decisions.

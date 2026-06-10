@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [{ name = "Adarsh Keshri" }]
-maintainers = [{ name = "anonymousAAK" }]
+maintainers = [{ name = "Adarsh Keshri" }]
 keywords = [
   "quantum",
   "finance",
@@ -21,7 +21,7 @@ keywords = [
   "option-pricing",
 ]
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Financial and Insurance Industry",
   "Programming Language :: Python :: 3.10",
@@ -33,23 +33,36 @@ classifiers = [
   "Topic :: Office/Business :: Financial :: Investment",
   "Operating System :: OS Independent",
 ]
+# Dependency supply chain: every runtime dep carries a tested lower bound AND a
+# conservative upper bound (next major for >=1.0 projects, next minor for 0.x).
+# The lower bound is the oldest version the API targets; the upper bound is one
+# major (or minor for 0.x) above the version this repo is actively tested on so a
+# breaking transitive release cannot be pulled silently. Known-good versions used
+# for testing are pinned in constraints.txt (see [pip] install --require-hashes is
+# NOT used here because no hashes are generated offline; constraints.txt documents
+# the reproducible set). Tested env (Python 3.11): numpy 2.4.6, scipy 1.17.1,
+# pandas 3.0.3, pyarrow 24.0.0, pydantic 2.13.4, pydantic-settings 2.14.1,
+# qiskit 2.4.1, qiskit-aer 0.17.2, cvxpy 1.9.1, scikit-learn 1.9.0,
+# statsmodels 0.14.6, arch 8.0.0, yfinance 1.4.1, fredapi 0.5.2, networkx 3.6.1,
+# matplotlib 3.10.9.
 dependencies = [
   "numpy>=1.26,<3.0",
-  "scipy>=1.11",
-  "pandas>=2.1",
-  "pyarrow>=15.0",
-  "pydantic>=2.6",
-  "pydantic-settings>=2.2",
-  "qiskit>=1.0,<3.0",
-  "qiskit-aer>=0.14",
-  "cvxpy>=1.4",
-  "scikit-learn>=1.4",
-  "statsmodels>=0.14",
-  "arch>=6.3",
-  "yfinance>=0.2.40",
-  "fredapi>=0.5",
-  "networkx>=3.2",
-  "matplotlib>=3.8",
+  "scipy>=1.11,<2.0",
+  "pandas>=2.1,<4.0",
+  "pyarrow>=15.0,<25.0",
+  "pydantic>=2.6,<3.0",
+  "pydantic-settings>=2.2,<3.0",
+  # qiskit 1.x -> 2.x is a breaking MAJOR; this repo is tested on qiskit 2.x only.
+  "qiskit>=2.0,<3.0",
+  "qiskit-aer>=0.14,<0.18",
+  "cvxpy>=1.4,<2.0",
+  "scikit-learn>=1.4,<2.0",
+  "statsmodels>=0.14,<0.16",
+  "arch>=6.3,<9.0",
+  "yfinance>=0.2.40,<2.0",
+  "fredapi>=0.5,<0.6",
+  "networkx>=3.2,<4.0",
+  "matplotlib>=3.8,<4.0",
 ]
 
 [project.optional-dependencies]

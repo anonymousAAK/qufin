@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 # Summary
 
-`qufin` is an open-source Python framework that implements quantum algorithms for quantitative finance alongside their best-available classical counterparts, enabling rigorous head-to-head comparison on identical inputs with identical metrics. The library spans 159 modules across 14 subpackages, covering portfolio optimization, option pricing, risk management, hedging, machine learning, derivatives pricing, backtesting, and enterprise deployment. It provides 11 pluggable quantum backends (Qiskit Aer, IBM Runtime, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, D-Wave, IonQ, Quantinuum, noisy simulation, and a deterministic mock), 5 error mitigation strategies, and 4 variants of quantum amplitude estimation. The framework is validated by 2,499 tests with 91% code coverage.
+`qufin` is an open-source Python framework that implements quantum algorithms for quantitative finance alongside their best-available classical counterparts, enabling rigorous head-to-head comparison on identical inputs with identical metrics. The library spans 159 modules across 14 subpackages, covering portfolio optimization, option pricing, risk management, hedging, machine learning, derivatives pricing, backtesting, and enterprise deployment. It provides 11 pluggable quantum backends (Qiskit Aer, IBM Runtime, PennyLane, Cirq, Amazon Braket, NVIDIA CUDA-Q, D-Wave, IonQ, Quantinuum, noisy simulation, and a deterministic mock), 8 error-mitigation strategies, and 6 quantum amplitude estimation algorithms. The framework is in active 0.x development and is exercised by a suite of over 2,500 tests.
 
 ![Architecture overview of qufin.\label{fig:architecture}](architecture.png)
 
@@ -44,8 +44,8 @@ Qiskit Finance [@qiskit2024], the most widely used quantum finance library, was 
 | Finance modules | 159 | ~20 | 0 | 0 |
 | Classical baselines | Every problem | None | N/A | N/A |
 | Backend-agnostic | 11 backends | Qiskit only | PennyLane only | Cirq only |
-| QAE variants | 4 | 3 | 0 | 0 |
-| Error mitigation | 5 + DD + M3 | ZNE only | None | None |
+| QAE algorithms | 6 | 3 | 0 | 0 |
+| Error mitigation | 8 strategies | ZNE only | None | None |
 | Benchmarks | 15/25/50-asset | No | No | No |
 | Status | Active | Deprecated | Active (no finance) | Active (no finance) |
 
@@ -57,10 +57,13 @@ All quantum algorithms accept any object implementing the `Backend` abstract bas
 
 ```python
 from qufin.backends.qiskit_backend import QiskitAerBackend
-from qufin.backends.noise_models import NoisyAerBackend, NoiseProfile
+from qufin.backends.noise_models import NoisyAerBackend, IBM_EAGLE_R3
 
-ideal = QiskitAerBackend(shots=4096)
-noisy = NoisyAerBackend(profile=NoiseProfile.EAGLE_R3, shots=4096)
+ideal = QiskitAerBackend(method="automatic", seed=42)
+noisy = NoisyAerBackend(profile=IBM_EAGLE_R3, seed=42)
+
+# Shots are passed at call time, not to the constructor:
+result = ideal.run(circuit, shots=4096)
 ```
 
 ## Honest Benchmarking
@@ -71,7 +74,7 @@ Every quantum algorithm module contains a classical baseline solving the same pr
 
 ## Error Mitigation
 
-`qufin` implements five strategies for near-term hardware: Zero-Noise Extrapolation [@temme2017], TREX, readout calibration, Probabilistic Error Cancellation [@temme2017], and Clifford Data Regression [@czarnik2021]. Dynamical decoupling sequences (XY4, CPMG, Uhrig) suppress idle-time decoherence, and matrix-free measurement mitigation (M3) [@bravyi2021] handles multi-qubit readout errors.
+`qufin` implements eight error-mitigation strategies for near-term hardware: Zero-Noise Extrapolation [@temme2017], TREX, readout calibration, Probabilistic Error Cancellation [@temme2017], Clifford Data Regression [@czarnik2021], dynamical decoupling (XY4, CPMG, Uhrig sequences) to suppress idle-time decoherence, matrix-free measurement mitigation (M3) [@bravyi2021] for multi-qubit readout errors, and a noise-aware variational optimizer.
 
 ## Correctness
 
@@ -79,23 +82,35 @@ Several subtle details are critical for correct quantum finance algorithms. The 
 
 # Functionality Overview
 
-`qufin` implements four QAE variants for derivative pricing: canonical [@brassard2002], Iterative [@grinko2021], Maximum Likelihood [@suzuki2020], and Fourier [@giurgicatiron2022]. Supported contract types include European, Asian, barrier, lookback, cliquet, autocallable, basket, and Bermudan options [@chakrabarti2021]:
+`qufin` implements six QAE algorithms for derivative pricing: canonical [@brassard2002], Iterative [@grinko2021], Maximum Likelihood [@suzuki2020], Fourier [@giurgicatiron2022], Maximally-Refined (MRQAE), and Quantum Monte Carlo integration [@montanaro2015]. Supported contract types include European, Asian, barrier, lookback, cliquet, autocallable, basket, and Bermudan options [@chakrabarti2021]. The Iterative QAE estimator (correct on qiskit 2.x) is used here on a known amplitude $a = \sin^2\theta$, alongside construction of the European option estimation problem:
 
 ```python
+import numpy as np
+from qiskit.circuit import QuantumCircuit
+
 from qufin.options.amplitude_estimation.european_qae import (
     EuropeanQAESpec, build_european_estimation_problem,
 )
+from qufin.options.amplitude_estimation.estimation_problem import EstimationProblem
 from qufin.options.amplitude_estimation.iqae import (
     IQAEConfig, IterativeAmplitudeEstimation,
 )
 from qufin.backends.qiskit_backend import QiskitAerBackend
 
-spec = EuropeanQAESpec(s=100, k=105, sigma=0.2, r=0.05, T=1.0,
-                       n_qubits=5, option_type="call")
-problem = build_european_estimation_problem(spec)
+# Build the European option estimation problem (log-normal load + payoff).
+spec = EuropeanQAESpec(s0=100, k=105, sigma=0.2, r=0.05, T=1.0,
+                       n_qubits=5, is_call=True)
+problem, rescale = build_european_estimation_problem(spec)
+
+# Run IQAE on a known amplitude a = sin^2(theta).
+theta = np.pi / 5
+oracle = QuantumCircuit(1)
+oracle.ry(2 * theta, 0)
+bernoulli = EstimationProblem(state_preparation=oracle,
+                              objective_qubits=[0], n_qubits=1)
 result = IterativeAmplitudeEstimation(
-    problem=problem, backend=QiskitAerBackend(shots=4096),
-    config=IQAEConfig(epsilon_target=0.01),
+    bernoulli, IQAEConfig(epsilon_target=0.01, shots_per_round=2048),
+    QiskitAerBackend(method="automatic", seed=42),
 ).estimate()
 ```
 

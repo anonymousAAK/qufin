@@ -88,6 +88,30 @@ Key finding: **XY-ring mixer consistently finds better solutions** than X mixer,
 | 12 | 5 | 93 | 145 |
 | 16 | 5 | 121 | 193 |
 
+### Transpiler CNOT Reduction (measured)
+
+`FinanceTranspiler.reduce_cnot_count` applies Qiskit `optimization_level=3`
+(gate cancellation, commutation, template matching). Measured on QAOA portfolio
+cost+mixer circuits (`p=2`, one-hot encoding, `cx`-`rz`-`cx` couplers) built from
+the standard benchmark QUBOs:
+
+| Assets | Original CNOTs | Optimized CNOTs | Reduction |
+|--------|----------------|-----------------|-----------|
+| 6 | 60 | 60 | 0% |
+| 8 | 112 | 112 | 0% |
+| 10 | 180 | 180 | 0% |
+| 12 | 264 | 264 | 0% |
+
+!!! warning "Honest result"
+    Dense QAOA cost layers, where each `cx`-`rz`-`cx` block acts on a distinct
+    control/target pair, contain essentially no cancellable CNOT redundancy, so
+    standard transpiler passes yield **no CNOT reduction** on these circuits. The
+    transpiler does cancel redundant entanglers when they exist (e.g. back-to-back
+    `cx` pairs reduce 100%), but the headline "30–50% CNOT reduction" figure is
+    **not** supported for representative portfolio-QAOA circuits and should not be
+    relied upon. Reproduce with `FinanceTranspiler(optimization_level=3)` and
+    compare `report.original_cx_count` vs `report.optimized_cx_count`.
+
 ## Quantum Advantage Assessment
 
 !!! info "Honest Assessment"

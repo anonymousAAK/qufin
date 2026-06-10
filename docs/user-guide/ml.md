@@ -7,48 +7,32 @@ qufin includes quantum machine learning modules for financial applications inclu
 Quantum kernels compute inner products in a quantum feature space that may capture complex correlations classical kernels miss.
 
 ```python
-from qufin.ml.kernels import QuantumKernel
+from qufin.ml.kernels import QuantumKernelClassifier, quantum_kernel_matrix
+from qufin.backends.qiskit_backend import QiskitAerBackend
 
-kernel = QuantumKernel(
-    n_qubits=4,
-    feature_map="zz",     # ZZFeatureMap encoding
-    n_layers=2,
-)
+backend = QiskitAerBackend(method="automatic", seed=42)
 
-# Compute kernel matrix for training data
-K_train = kernel.compute(X_train)
+# End-to-end SVM-style classifier backed by a quantum (ZZFeatureMap) kernel.
+clf = QuantumKernelClassifier(n_qubits=4, backend=backend, reps=2)
+clf.fit(X_train, y_train)        # X_train shape: (n_samples, n_qubits)
+predictions = clf.predict(X_test)
 
-# Use with scikit-learn SVM
-from sklearn.svm import SVC
-clf = SVC(kernel="precomputed")
-clf.fit(K_train, y_train)
-
-K_test = kernel.compute(X_test, X_train)
-accuracy = clf.score(K_test, y_test)
+# Or compute the kernel (Gram) matrix directly:
+K_train = quantum_kernel_matrix(X_train, n_qubits=4, backend=backend, reps=2)
 ```
 
-### Feature Maps
-
-| Feature Map | Description | Best For |
-|---|---|---|
-| `"zz"` | ZZFeatureMap with entangling gates | Correlated features |
-| `"pauli"` | PauliFeatureMap (customizable Pauli terms) | General purpose |
-| `"iqp"` | Instantaneous Quantum Polynomial | High-dimensional data |
+The kernel uses a `ZZFeatureMap` encoding with `reps` entangling layers.
 
 ## Variational Quantum Classifier (VQC)
 
 A parameterized quantum circuit trained end-to-end for classification tasks.
 
 ```python
-from qufin.ml.classifiers import VQClassifier
+from qufin.ml.classifiers import VariationalQuantumClassifier, VQCConfig
+from qufin.backends.qiskit_backend import QiskitAerBackend
 
-clf = VQClassifier(
-    n_qubits=4,
-    n_layers=3,
-    ansatz="hardware_efficient",
-    optimizer="cobyla",
-    max_iter=200,
-)
+config = VQCConfig(n_qubits=4, n_layers=3, optimizer="COBYLA")
+clf = VariationalQuantumClassifier(config, QiskitAerBackend(method="automatic", seed=42))
 
 clf.fit(X_train, y_train)
 predictions = clf.predict(X_test)
