@@ -1,0 +1,23 @@
+{
+  "title": "qufin: Research-grade quantum algorithms for quant finance",
+  "description": "An open-source Python framework for quantum-enhanced quantitative finance: amplitude estimation for option pricing, QAOA/VQE/annealing portfolio optimization, quantum risk measures, hedging, and quantum machine learning. Backend-agnostic across 11 quantum backends, with classical baselines and honest benchmarks alongside every quantum algorithm.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "creators": [
+    {
+      "name": "Keshri, Adarsh",
+      "orcid": "0009-0001-8020-9378"
+    }
+  ],
+  "keywords": [
+    "quantum computing",
+    "finance",
+    "portfolio optimization",
+    "option pricing",
+    "amplitude estimation",
+    "QAOA",
+    "risk analysis",
+    "Python"
+  ]
+}

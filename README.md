@@ -91,46 +91,47 @@ Requires Python 3.10+
 
 ## Quickstart
 
-### Option pricing: classical vs. quantum
+### Option pricing: Black-Scholes price and Greeks
 
 ```python
-from qufin.options.classical.black_scholes import bs_price
-from qufin.options.amplitude_estimation.european_qae import european_qae_price
-from qufin.options.amplitude_estimation.iqae import IQAEConfig
-from qufin.backends.qiskit_backend import QiskitAerBackend
+from qufin.options.classical.black_scholes import call_price, delta, vega
 
-# Classical: Black-Scholes
-classical = bs_price(s=100, k=105, sigma=0.2, r=0.05, T=1.0)
+price = call_price(s=100, k=105, sigma=0.2, r=0.05, T=1.0)
+print(f"Call price: {price:.4f}")
+print(f"Delta:      {delta(s=100, k=105, sigma=0.2, r=0.05, T=1.0):.4f}")
+print(f"Vega:       {vega(s=100, k=105, sigma=0.2, r=0.05, T=1.0):.4f}")
 
-# Quantum: Iterative Quantum Amplitude Estimation
-backend = QiskitAerBackend(shots=4096)
-quantum = european_qae_price(
-    s=100, k=105, sigma=0.2, r=0.05, T=1.0,
-    backend=backend, config=IQAEConfig(epsilon_target=0.01)
-)
-
-print(f"Black-Scholes: {classical:.4f}")
-print(f"IQAE:          {quantum:.4f}")
+# Quantum amplitude-estimation pricers live in
+# qufin.options.amplitude_estimation: IterativeAmplitudeEstimation (IQAE),
+# MaximumLikelihoodAmplitudeEstimation, QMC, QSP, Asian / American QAE.
 ```
 
 ### Portfolio optimization with QAOA
 
 ```python
-from qufin.benchmarks.problems import make_benchmark
-from qufin.portfolio.qubo import build_qubo
-from qufin.portfolio.optimizers.qaoa import QAOAOptimizer
+import numpy as np
+from qufin.portfolio.qubo import PortfolioQUBO
+from qufin.portfolio.optimizers.qaoa import QAOAConfig, QAOAPortfolio
 from qufin.backends.qiskit_backend import QiskitAerBackend
 
-problem = make_benchmark(15)
-Q = build_qubo(problem.mu, problem.sigma, risk_aversion=0.5, k=5)
+# Expected returns and covariance for 6 assets
+rng = np.random.default_rng(0)
+mu = rng.normal(0.001, 0.0005, 6)
+factor = rng.normal(0, 1, (6, 6)) * 0.1
+cov = factor @ factor.T + np.eye(6) * 0.02
 
-optimizer = QAOAOptimizer(
-    backend=QiskitAerBackend(shots=4096),
-    p=2, mixer="xy_ring",
+# Cardinality-constrained Markowitz QUBO: pick exactly K=3 assets
+qubo = PortfolioQUBO(mu=mu, cov=cov, gamma=1.0, cardinality=3)
+
+optimizer = QAOAPortfolio(
+    qubo,
+    QAOAConfig(p=2, mixer="xy_ring", cardinality=3, shots=4096, seed=42),
+    QiskitAerBackend(seed=42),
 )
-result = optimizer.solve(Q, n_assets=15, k=5)
-print(f"Selected assets: {result.selected}")
-print(f"Objective:       {result.objective:.6f}")
+result = optimizer.run()
+selected = [i for i, bit in enumerate(result.best_bitstring) if bit == "1"]
+print(f"Selected assets: {selected}")
+print(f"Feasible (==K):  {result.feasible}")
 ```
 
 <details>
@@ -140,33 +141,44 @@ print(f"Objective:       {result.objective:.6f}")
 **Synthetic market data**
 
 ```python
-from qufin.data.synthetic import gbm_paths, heston_paths, HestonParams
+from qufin.data.synthetic import gbm_paths, heston_paths
 
+# Geometric Brownian motion -> array of shape (n_paths, n_steps + 1)
 paths = gbm_paths(s0=100, mu=0.08, sigma=0.2, T=1.0,
                   n_steps=252, n_paths=10_000)
 
-params = HestonParams(v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7)
-paths = heston_paths(s0=100, mu=0.08, params=params, T=1.0,
-                     n_steps=252, n_paths=10_000)
+# Heston stochastic volatility -> (prices, variances)
+prices, variances = heston_paths(
+    s0=100, v0=0.04, kappa=2.0, theta=0.04, xi=0.3, rho=-0.7,
+    mu=0.08, T=1.0, n_steps=252, n_paths=10_000,
+)
 ```
 
 **Backtesting**
 
 ```python
+import numpy as np
 from qufin.backtesting.engine import BacktestEngine
-from qufin.backtesting.metrics import compute_metrics
+from qufin.backtesting.metrics import performance_summary
 
-engine = BacktestEngine(rebalance_freq="monthly", window=252)
-portfolio_values = engine.run(prices_df, strategy_fn)
-metrics = compute_metrics(portfolio_values)
-print(f"Sharpe: {metrics['sharpe']:.2f}")
+returns = np.random.default_rng(0).normal(0.0004, 0.01, (600, 5))
+engine = BacktestEngine(returns, train_window=252, test_window=21)
+
+def equal_weight(mu, cov):          # strategy: (mu, cov) -> weights
+    return np.ones(len(mu)) / len(mu)
+
+result = engine.run(equal_weight, strategy_name="equal_weight")
+summary = performance_summary(result.portfolio_returns)
+print(f"Sharpe: {summary.sharpe_ratio:.2f}")
 ```
 
 **Automatic backend selection**
 
 ```python
+from qiskit.circuit import QuantumCircuit
 from qufin.backends.auto_select import auto_select_backend
 
+circuit = QuantumCircuit(3); circuit.h(0); circuit.cx(0, 1); circuit.measure_all()
 backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock
 ```
 
@@ -235,7 +247,10 @@ backend = auto_select_backend(circuit)  # GPU -> Aer -> Mock
 All quantum algorithms accept any `Backend` implementation. Swap without changing algorithm code.
 
 ```python
+from qiskit.circuit import QuantumCircuit
 from qufin.backends.auto_select import auto_select_backend
+
+circuit = QuantumCircuit(3); circuit.h(0); circuit.cx(0, 1); circuit.measure_all()
 backend = auto_select_backend(circuit)
 ```
 
@@ -260,13 +275,11 @@ backend = auto_select_backend(circuit)
 Standardized suites for honest quantum-vs-classical comparison.
 
 ```python
-from qufin.benchmarks.runner import BenchmarkRunner
-from qufin.benchmarks.problems import make_benchmark
+from qufin.benchmarks.problems import portfolio_small, portfolio_medium, portfolio_large
 
-runner = BenchmarkRunner()
-results = runner.run(make_benchmark(15),
-                     algorithms=["qaoa", "vqe", "mean_variance"])
-runner.summary(results)
+# Standardized benchmark problems (15 / 25 / 50 assets, with cardinality + sector caps)
+problem = portfolio_small()
+print(problem.problem_id, "| assets:", problem.mu.shape[0], "| K:", problem.cardinality)
 ```
 
 - **Problem sets**: 15, 25, 50 asset portfolios

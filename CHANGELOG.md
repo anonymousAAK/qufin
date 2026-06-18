@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-06-18
+
+Correctness and documentation fixes.
+
+### Fixed
+- **mRQAE**: `ModifiedRealQAE.estimate()` returned `sin^2(2*theta)` instead of the
+  true amplitude `sin^2(theta)` due to a missing factor of 2 in the least-squares
+  fit relation. The fit now uses `cos(2*(2k+1)*theta) = 1 - 2*p_k`.
+- **European QAE**: `build_european_estimation_problem` used a non-invertible
+  `QuantumCircuit.initialize`, which crashed `build_grover_operator()` (needs
+  `A^dag`) for every amplitude-estimation algorithm on European problems. Now uses
+  the unitary `prepare_state`.
+- **README**: the Quickstart and Benchmarks code samples referenced symbols that
+  did not exist (`bs_price`, `european_qae_price`, `make_benchmark`, `build_qubo`,
+  `QAOAOptimizer`, `compute_metrics`) or imported `HestonParams` from the wrong
+  module. All samples are now verified-runnable.
+
+### Added
+- `tests/unit/test_mrqae.py` — unit and regression coverage for mRQAE.
+- `examples/` — runnable scripts: classical option pricing, synthetic market data,
+  portfolio QAOA.
+- `.zenodo.json` — archive metadata for Zenodo DOI minting.
+
+### Changed
+- CI test matrix extended to Python 3.13 and 3.14.
+
 ## [1.1.0] - 2026-05-22
 
 Feature expansion: 159 modules, 11 backends, 2499 tests.

@@ -91,7 +91,10 @@ def build_european_estimation_problem(
     if norm > 0:
         amplitudes = amplitudes / norm
 
-    qc.initialize(amplitudes, range(n_price))
+    # Use prepare_state (unitary StatePreparation), not initialize: the latter
+    # prepends a non-unitary reset and cannot be inverted, which breaks the
+    # A^dag step when QAE builds the Grover operator.
+    qc.prepare_state(amplitudes, range(n_price))
 
     # Step 3: Payoff comparator + rotation
     # For each price state |i>, if S_i > K (call) or S_i < K (put),
