@@ -20,7 +20,7 @@ Research-grade algorithms. Production-grade engineering. Honest benchmarks.
 [![Python](https://img.shields.io/pypi/pyversions/qufin)](https://pypi.org/project/qufin/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![codecov](https://codecov.io/gh/anonymousAAK/qufin/branch/main/graph/badge.svg)](https://codecov.io/gh/anonymousAAK/qufin)
-[![Status](https://img.shields.io/badge/status-0.x%20in--development-orange)]()
+[![Status](https://img.shields.io/badge/status-1.x%20active--development-blue)]()
 
 <br>
 
@@ -55,10 +55,10 @@ Every quantum algorithm ships alongside the best classical solver for the same p
 - **Mathematically correct** &mdash; Grover global phase, IQAE multi-branch theta, canonical QPE. Details matter for derivative pricing.
 - **Production patterns** &mdash; Typed configs, reproducibility manifests, noise-aware simulation, 8 error-mitigation strategies, finance-optimized transpilation.
 
-> **Project status: 0.x, in active development.** The classical quant core
+> **Project status: 1.x, actively developed.** The classical quant core
 > (Black-Scholes/Greeks, Monte Carlo, VaR/CVaR, mean-variance, HRP, GARCH,
 > backtesting) is well-tested and matches textbook values. Several quantum
-> paths are research-stage and evolving. APIs may change before 1.0. The
+> paths are research-stage and evolving, and may change between minor versions. The
 > Quickstart below is exercised end-to-end by
 > [`examples/quickstart.py`](examples/quickstart.py).
 

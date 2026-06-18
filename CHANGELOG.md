@@ -5,17 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project intends to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> **Versioning note.** This project has **not yet cut a tagged release**. The
-> current development line is **0.1.x** (build version derived from VCS, e.g.
-> `0.1.devN`). The version headings below record development milestones during
-> the build-out; none of them correspond to a published git tag or PyPI
-> release yet. All recent work is grouped under **Unreleased** until the first
-> tag is created.
-
 ## [Unreleased]
 
-Latest development line (0.1.x). Feature expansion: 159 modules, 11 backends,
-~2,507 tests collected.
+## [1.1.2] - 2026-06-18
+
+### Fixed
+- **mRQAE**: `ModifiedRealQAE.estimate()` returned `sin^2(2*theta)` instead of
+  the true amplitude `sin^2(theta)` due to a missing factor of 2 in the
+  least-squares fit. The fit now uses `cos(2*(2k+1)*theta) = 1 - 2*p_k`, and the
+  module gains unit and regression tests (`tests/unit/test_mrqae.py`).
+
+## [1.1.0 development line]
+
+Feature expansion: 159 modules, 11 backends, ~2,507 tests collected.
 
 ### Added
 
