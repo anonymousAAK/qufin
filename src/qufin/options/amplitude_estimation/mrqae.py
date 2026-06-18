@@ -4,10 +4,11 @@ An alternative to standard QAE that uses direct encoding and fewer qubits.
 Instead of QPE, mRQAE collects measurement probabilities at multiple
 Grover depths and fits the amplitude via least-squares on the relation
 
-    cos((2k+1) * theta) = 1 - 2 * p_k
+    cos(2 * (2k+1) * theta) = 1 - 2 * p_k
 
 where p_k is the probability of measuring the objective qubit in |1>
-after k Grover iterations.
+after k Grover iterations.  This follows from the amplitude-amplification
+identity p_k = sin^2((2k+1) * theta), so 1 - 2 * p_k = cos(2 * (2k+1) * theta).
 
 Multiple depths break the periodicity ambiguity, and a least-squares fit
 over all (k, p_k) pairs gives a robust estimate even with shot noise.
@@ -92,7 +93,7 @@ class ModifiedRealQAE:
     probabilities at a *schedule* of Grover depths and fits the angle
     theta from the over-determined system
 
-        cos((2k+1) * theta) = 1 - 2 * p_k   for each depth k
+        cos(2 * (2k+1) * theta) = 1 - 2 * p_k   for each depth k
 
     using least-squares minimisation.  This approach:
 
@@ -194,10 +195,10 @@ class ModifiedRealQAE:
 
         For each depth k with measured probability p_k, the relation is:
 
-            cos((2k+1) * theta) = 1 - 2 * p_k
+            cos(2 * (2k+1) * theta) = 1 - 2 * p_k
 
-        We minimise sum_k [ cos((2k+1)*theta) - (1 - 2*p_k) ]^2
-        over theta in [0, pi/2].
+        which follows from p_k = sin^2((2k+1) * theta).  We minimise
+        sum_k [ cos(2*(2k+1)*theta) - (1 - 2*p_k) ]^2 over theta in [0, pi/2].
 
         Parameters
         ----------
@@ -213,9 +214,10 @@ class ModifiedRealQAE:
         """
         from scipy.optimize import minimize_scalar
 
-        # Target values: c_k = 1 - 2*p_k = cos((2k+1)*theta)
+        # Target values: c_k = 1 - 2*p_k = cos(2*(2k+1)*theta), since the
+        # measured P(good) after k Grover iterations is sin^2((2k+1)*theta).
         targets = np.array([1.0 - 2.0 * p for p in measurements])
-        factors = np.array([2 * k + 1 for k in depths])
+        factors = np.array([2 * (2 * k + 1) for k in depths])
 
         def cost(theta: float) -> float:
             residuals = np.cos(factors * theta) - targets
