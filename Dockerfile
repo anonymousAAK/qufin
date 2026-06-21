@@ -17,7 +17,7 @@
 # ---- Stage 1: builder (install deps, build wheel) -----------------------
 # Pinned by digest for reproducibility / supply-chain integrity.
 # Tag at pin time: python:3.12-slim (resolved 2026-06-04).
-FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203 AS builder
+FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97 AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential git && \
@@ -36,7 +36,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # ---- Stage 2: slim runtime ----------------------------------------------
 # Same digest pin as the builder stage.
-FROM python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203 AS runtime
+FROM python:3.14-slim@sha256:c845af9399020c7e562969a13689e929074a10fd057acd1b1fad06a2fb068e97 AS runtime
 
 ARG GPU=0
 
