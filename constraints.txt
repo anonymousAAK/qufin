@@ -21,7 +21,7 @@
 numpy==2.4.6
 scipy==1.17.1
 pandas==3.0.3
-pyarrow==24.0.0
+pyarrow==25.0.0
 
 # Validation / settings
 pydantic==2.13.4
