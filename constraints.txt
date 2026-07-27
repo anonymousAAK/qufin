@@ -38,7 +38,7 @@ statsmodels==0.14.6
 arch==8.0.0
 
 # Market data
-yfinance==1.4.1
+yfinance==1.5.2
 fredapi==0.5.2
 
 # Graphs / plotting
